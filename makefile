@@ -11,7 +11,7 @@ examples:
 
 .PHONY : doc
 doc:
-	doxygen Doxyfile
+	export JLE_CPP_TK="`cat VERSION`"; doxygen Doxyfile
 
 
 .PHONY : show_doc
