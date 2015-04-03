@@ -18,6 +18,11 @@ doc:
 show_doc:
 	firefox doc/html/index.html
 
+.PHONY : test
+test:
+	make -C test test
+
+
 
 .PHONY : github
 github:
