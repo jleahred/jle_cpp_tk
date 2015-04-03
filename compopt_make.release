@@ -1,0 +1,35 @@
+
+# compiler flags (-g -O2 -Wall)
+CXXFLAGS_RELEASE = -std=c++14 -g -O2 -Werror -Wall -W -Wundef -Wpointer-arith  -Wfloat-equal -fexceptions -Winit-self -Wconversion
+
+CXXFLAGS_RELEASE += -Wclobbered  -Wempty-body  -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -Wno-unused-result
+
+CXXFLAGS_RELEASE += -Wnon-virtual-dtor -Wreorder -Woverloaded-virtual -Wsign-promo -Winit-self -Wignored-qualifiers -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wshadow -Wcast-qual -Wwrite-strings
+#-Winline
+
+
+CFLAGS_RELEASE = -O2
+
+# with old gcc versions
+# CXXFLAGS_RELEASE = -O2
+
+
+# linker flags
+LDFLAGS_RELEASE = -O2
+
+
+# compiler
+CXX_RELEASE = g++
+
+
+# compiler
+CC_RELEASE = gcc
+
+
+
+
+CXXFLAGS=$(CXXFLAGS_RELEASE)
+CFLAGS=$(CFLAGS_RELEASE)
+LDFLAGS=$(LDFLAGS_RELEASE)
+CXX=$(CXX_RELEASE)
+CC=$(CC_RELEASE)

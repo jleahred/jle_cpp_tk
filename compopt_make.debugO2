@@ -1,0 +1,30 @@
+
+# compiler flags (-g -O2 -Wall)
+CXXFLAGS = -std=c++14 -O2 -g
+CFLAGS = -O0
+
+
+# linker flags
+LDFLAGS = -O2 
+
+
+# compiler
+CXX = g++
+
+
+# compiler
+CC = gcc
+
+
+# esta línea es para la compilación y ejecución secuencial de ejemplos y test de regresión
+VALGRIND = valgrind --tool=memcheck --leak-check=full
+#--leak-check=yes
+#--leak-check=full
+
+
+
+CXXFLAGS=$(CXXFLAGS_RELEASE)
+CFLAGS=$(CFLAGS_RELEASE)
+LDFLAGS=$(LDFLAGS_RELEASE)
+CXX=$(CXX_RELEASE)
+CC=$(CC_RELEASE)

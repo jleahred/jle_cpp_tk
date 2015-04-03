@@ -1,0 +1,36 @@
+# compiler flags (-g -O2 -Wall)
+CXXFLAGS_DEBUG = -std=c++14 -g -O0 -Werror -Wall -W -Wundef -Wpointer-arith  -Wfloat-equal -fexceptions -Winit-self -Wconversion
+
+CXXFLAGS_DEBUG += -Wclobbered  -Wempty-body  -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -Wno-unused-result
+
+CXXFLAGS_DEBUG += -Wnon-virtual-dtor -Wreorder -Woverloaded-virtual -Wsign-promo -Winit-self -Wignored-qualifiers -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wshadow -Wcast-qual -Wwrite-strings
+
+
+
+CFLAGS_DEBUG = -O0
+
+
+# linker flags
+LDFLAGS_DEBUG = -O0
+
+
+# compiler
+CXX_DEBUG = g++
+
+
+# compiler
+CC_DEBUG = gcc
+
+
+VALGRIND = valgrind --tool=memcheck --leak-check=full  --show-reachable=yes
+#VALGRIND = valgrind --tool=memcheck --leak-check=full
+#--suppressions=valgrind.supp
+#--leak-check=yes
+#--leak-check=full
+
+
+CXXFLAGS=$(CXXFLAGS_RELEASE)
+CFLAGS=$(CFLAGS_RELEASE)
+LDFLAGS=$(LDFLAGS_RELEASE)
+CXX=$(CXX_RELEASE)
+CC=$(CC_RELEASE)

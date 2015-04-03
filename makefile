@@ -1,11 +1,18 @@
 .PHONY : default
 default:
-	@echo  choose a target   libs doc clean
+	@echo  choose a target   libs doc clean  examples
+
+
+.PHONY : examples
+examples:
+	make -C examples  run
+
 
 
 .PHONY : doc
 doc:
 	doxygen Doxyfile
+
 
 .PHONY : show_doc
 show_doc:
@@ -15,6 +22,7 @@ show_doc:
 .PHONY : github
 github:
 	git push github master --force
+
 
 .PHONY : github_doc
 github_doc:  #doc
