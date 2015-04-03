@@ -5,6 +5,11 @@ default:
 
 .PHONY : doc
 doc:
-	cd data/doxygen/; doxygen Doxyfile
+	doxygen Doxyfile
+
+
+.PHONY : github
+github:
+	git push github master --force
 
 
