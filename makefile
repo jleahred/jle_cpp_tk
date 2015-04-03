@@ -32,3 +32,9 @@ github_doc:  #doc
 	cd /home/maiquel/inet.prj/web/jleahred.github.io/; git gui; git push github master
 
 
+
+
+.PHONY : space_trailing
+space_trailing:
+	for f in `find . -type f -regex '.*\.hpp$$\|.*\.h$$\|.*\.cpp$$\|.*\.impl$$\|.*\.fsm$$\|.*\.msg$$\|.*\makefile$$\|.*\.mak$$\|.*\_make\.release$$\|.*\_make\.debug$$'` ; do  cat $$f | sed 's/[ \t]*$$//' > temp.rms; mv -f temp.rms $$f;  done
+
