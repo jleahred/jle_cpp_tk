@@ -16,23 +16,26 @@
 ## About
 ### Why
 
+C++ is not the safest programing language in the world. In fact, it's easy to produce *undefined behaviour* working with C++.
+It would be interesting to work with C++ in a safe way. Not only for me, also for less C++ experience people in a team.
+
 Some years ago I wrote a C++ toolkit with regular expressions, tuples, class definition IDL, fsm IDL, config files. LL(n) parser, signal-slot, monotonic date time with adjustments...
 
-These last years, C++ world has moved a lot.
+These last years, C++'s world has moved a lot.
 
 Now gcc and other compilers run a lot of features from C++11, C++14 and partially from C++17
 
 Some of the tools I wrote or added to my library, are not necessary any more.
 The implementation and API can also be improved.
 
-In example... I wrote a smart_pointer called CountPtr. I also wrote to manage tuples I added a small library for regular expressions. These 
-features has been added to C++
+For example... I wrote a smart_pointer called CountPtr. I also wrote to manage tuples, I added a small library for regular expressions. These
+features have been added to C++
 
 Now, we also have type inference, lambdas, variadic templates, initializer lists...
 
 It's time to enjoy and write a new set of tools based on modern C++
 
-Previously I wrote the documentation with **asciidoc**, muse over emacs and doxys. Now I'm going to do it with doxygen with this project (I'm not a fan of these kind of tools, but it's an extandard).
+Previously I wrote the documentation with **asciidoc**, muse over emacs and doxys. Now I'm going to do it with doxygen (I'm not a fan of these kind of tools, but it's a standard).
 
 
 ### Directives
@@ -73,6 +76,7 @@ Null pointer  | generate an exception is better to undefined behaviour (usually 
 Dangling pointers | smart pointers and signal slot. Please RAII everywhere <br> No arithmetic pointers
 Invalid iterators | Exception is better than undefined behaviour (even for deterministic false positives, fail fast)
 Memory leaks | same as previous one
+Resource manament |  memory is not the only resource. RAII everywhere
 Infinite loops | reduce loops ussage
 Consuming all resources | _
 Integer zero division | throw an exception
@@ -129,9 +133,10 @@ I don't plan to use it daily. I will write it simultaneously with... web applica
 
 In any case, I plan to follow next order (more or less)...
 
-- smart_pointer
-    - just a safe wrapper over stl
+- (done) ~~smart_pointer~~
+    - (done) ~~just a safe wrapper over stl~~
 - signal-slot
+- safe containers
 - date_time
 - exception type with stack
 - integer div 0 protection
@@ -152,7 +157,7 @@ In any case, I plan to follow next order (more or less)...
 - ...
 
 
-   
+
 ## Todo
 
 - At this moment... almost all

@@ -220,6 +220,9 @@ void test_operators()
 }
 void test_exception_on_expired()
 {
+    #define JLE_TEST_EXCEPTION(__EXPRESION__)  \
+        {bool except = false; try { (void) (__EXPRESION__);  } catch(...) { except=true; };  JLE_TEST_ASSERT(except);}
+
     JLE_TEST_INIT
 
     {
