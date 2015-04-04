@@ -1,6 +1,8 @@
 #ifndef JLE_SIGNAL_SLOT_H
 #define JLE_SIGNAL_SLOT_H
 
+///  \example  ./support/signal_slot.cpp
+
 
 #include <list>
 #include <stdexcept>    //  run_time_error exception
@@ -10,7 +12,13 @@
 #include "support/shared_ptr.hpp"
 
 
-#define JLE_CONNECT_THIS(__SIGNAL__, __METHOD_NAME__)     (__SIGNAL__).connect(this, &std::remove_reference<decltype(*this)>::type::__METHOD_NAME__);
+
+#define JLE_CONNECT_INSTANCE(__SIGNAL__, __INSTANCE__, __METHOD_NAME__)     \
+            (__SIGNAL__).connect(&__INSTANCE__, &std::remove_reference<decltype(__INSTANCE__)>::type::__METHOD_NAME__);
+
+#define JLE_CONNECT_THIS(__SIGNAL__, __METHOD_NAME__)  JLE_CONNECT_INSTANCE(__SIGNAL__, *this, __METHOD_NAME__)
+
+
 
 
 namespace jle
@@ -57,43 +65,43 @@ public:
 
 //----------------------------------------------------------------------------
 
-//      S i g n a l R e c e p t o r
+//      s i g n a l _ r e c e p t o r
 
 //----------------------------------------------------------------------------
 
 
 
 class signal_receptor : private jle::non_copyable {
-    std::list<jle::weak_ptr<internal::base_connection>> listConnections;
+    std::list<jle::weak_ptr<internal::base_connection>> list_connections;
 
 public:
     signal_receptor(void) {};
 
-    void RegisterConnection(jle::shared_ptr<internal::base_connection> pconnection) {
-        listConnections.push_back(pconnection);
+    void register_connection(jle::shared_ptr<internal::base_connection> pconnection) {
+        list_connections.push_back(pconnection);
     };
 
-    void UnRegisterConnection(jle::shared_ptr<internal::base_connection> connection) {
-        auto itConnection = listConnections.begin();
-        while(itConnection != listConnections.end())
+    void un_register_connection(jle::shared_ptr<internal::base_connection> connection) {
+        auto it_connection = list_connections.begin();
+        while(it_connection != list_connections.end())
         {
             //  it is safe to delete here
             //  we only itereate the list at this point and in destructor
-            if ( itConnection->expired() ) {
-                itConnection = listConnections.erase(itConnection);
+            if ( it_connection->expired() ) {
+                it_connection = list_connections.erase(it_connection);
             }
             else {
-                auto sp_it = itConnection->lock();
+                auto sp_it = it_connection->lock();
                 //  cleaning
                 if ( sp_it->is_disconnected()) {
-                    itConnection = listConnections.erase(itConnection);
+                    it_connection = list_connections.erase(it_connection);
                 }
                 else if ( sp_it->isSame(connection.get()) ) {
                     sp_it->disconnect();
-                    itConnection = listConnections.erase(itConnection);
+                    it_connection = list_connections.erase(it_connection);
                 }
                 else
-                    ++itConnection;
+                    ++it_connection;
             }
         }
     };
@@ -101,15 +109,15 @@ public:
     virtual ~signal_receptor(void) {
         try{
             //  say goodbye to singals pointing to us
-            auto itConnection = listConnections.begin();
-            while(itConnection != listConnections.end())
+            auto it_connection = list_connections.begin();
+            while(it_connection != list_connections.end())
             {
-                if ( itConnection->expired() ) {
-                    itConnection = listConnections.erase(itConnection);
+                if ( it_connection->expired() ) {
+                    it_connection = list_connections.erase(it_connection);
                     continue;
                 }
-                itConnection->lock()->disconnect();
-                ++itConnection;
+                it_connection->lock()->disconnect();
+                ++it_connection;
             }
         } catch(...){
             std::cerr << __PRETTY_FUNCTION__ << "(" << __FILE__ << ":" << __LINE__ << ")"  << "exception on destructor"  <<  std::endl;
@@ -135,7 +143,7 @@ public:
 
     virtual void emit(Args...)=0;
 
-    virtual signal_receptor*  GetSignalReceptor(void) const  = 0;
+    virtual signal_receptor*  get_signal_receptor(void) const  = 0;
 
 };
 
@@ -144,43 +152,43 @@ public:
 
 
 template<typename TReceiver, typename... Args>
-class Connection
+class connection
         : public base_connectionParam<Args...>
 {
-    TReceiver* pt2Object;
+    TReceiver* pt2object;
     void (TReceiver::*fpt)(Args...);
 
 
 public:
-    Connection(TReceiver* _pt2Object, void (TReceiver::*_fpt)(Args...))
-        :   pt2Object(_pt2Object),
+    connection(TReceiver* _pt2Object, void (TReceiver::*_fpt)(Args...))
+        :   pt2object(_pt2Object),
             fpt(_fpt)
         {}
 
     void emit(Args... args){
-        (*pt2Object.*fpt)();
+        (*pt2object.*fpt)(args...);
     };
 
 
 
-    TReceiver* GetReceiver(void)  {
-        return pt2Object;
+    TReceiver* get_receiver(void)  {
+        return pt2object;
     };
-    void (TReceiver::*GetFuncPointer(void)) (Args...)   {
+    void (TReceiver::*get_func_pointer(void)) (Args...)   {
         return fpt;
     };
 
     bool isSame(base_connection* pbc)
     {
-        Connection<TReceiver>* pc = dynamic_cast<Connection<TReceiver>* > (pbc);
+        connection<TReceiver, Args...>* pc = dynamic_cast<connection<TReceiver, Args...>* > (pbc);
         if (pc)
             return this == pc;
         else
             return false;
     }
 
-    signal_receptor*  GetSignalReceptor(void) const {
-        return pt2Object;
+    signal_receptor*  get_signal_receptor(void) const {
+        return pt2object;
     }
 
 };
@@ -191,8 +199,8 @@ public:
 
 
 template <typename... Args>
-class Signal
-        :   public signal_receptor//,public non_copyable (implicit)
+class signal
+        :   public signal_receptor   // ,  private non_copyable (implicit)
 {
 	int processing_emit;
     std::list< jle::shared_ptr<internal::base_connectionParam<Args...> > > connections;
@@ -202,13 +210,13 @@ class Signal
 
 
 public:
-	Signal() : processing_emit(0) {}
+	signal() : processing_emit(0) {}
 
-	~Signal() {
+	~signal() {
         try{
             disconnect_all();
             if (processing_emit>0)
-                throw std::runtime_error("~Signal<> on emit");
+                throw std::runtime_error("~signal<> on emit");
                 //	pending to check
         } catch(...){
             std::cerr << __PRETTY_FUNCTION__ << "(" << __FILE__ << ":" << __LINE__ << ")"  << "exception on destructor"  <<  std::endl;
@@ -238,34 +246,28 @@ public:
 
 
         jle::shared_ptr<internal::base_connectionParam<Args...> >
-                pbc (new internal::Connection<TReceiver>(receiver, fpt));
+                pbc (new internal::connection<TReceiver, Args...>(receiver, fpt));
         connections.push_back(pbc);
-        //pbc.DANGEROUS_ThisInstance_NOT_Delete();  //  done by receptor
-        receiver->RegisterConnection(jle::shared_ptr<internal::base_connection>(pbc));
+        receiver->register_connection(jle::shared_ptr<internal::base_connection>(pbc));
     };
 
     template<typename TReceiver>
     bool disconnect(TReceiver* receiver, void (TReceiver::*fpt)(Args...)) {
         auto it2ptrbase_connection = connections.begin();
         while(it2ptrbase_connection != connections.end())
-        //for(auto&& it2ptrbase_connection : connections)
         {
-            internal::Connection<TReceiver>* pconnection = dynamic_cast<internal::Connection<TReceiver>* > (it2ptrbase_connection->get());
+            internal::connection<TReceiver>* pconnection = dynamic_cast<internal::connection<TReceiver>* > (it2ptrbase_connection->get());
             if  (
                     pconnection
                     &&
-                    pconnection->GetReceiver()    == receiver
+                    pconnection->get_receiver()    == receiver
                     &&
-                    pconnection->GetFuncPointer() == fpt
+                    pconnection->get_func_pointer() == fpt
                     &&
                     (*it2ptrbase_connection)->is_disconnected() == false  //  this line reduces performance
                 )
             {
-                receiver->UnRegisterConnection(
-                                //jle::shared_ptr<base_connection>(*it2ptrbase_connection)
-                                //jle::make_shared<base_connection>(*it2ptrbase_connection)
-                                //internal::base_connectionParam<Args...>
-                                //jle::make_shared<internal::base_connectionParam<Args...>>(*it2ptrbase_connection)
+                receiver->un_register_connection(
                                 jle::shared_ptr<internal::base_connection>(*it2ptrbase_connection)
                             );
                 //  WARNING: someone could disconnect from emit context
@@ -288,8 +290,8 @@ public:
         for(auto&&   it2ptrbase_connection : connections)
         {
             if ( it2ptrbase_connection->is_disconnected() == false) {
-                signal_receptor* sr = it2ptrbase_connection->GetSignalReceptor();
-                sr->UnRegisterConnection(jle::shared_ptr<internal::base_connection>(it2ptrbase_connection));
+                signal_receptor* sr = it2ptrbase_connection->get_signal_receptor();
+                sr->un_register_connection(jle::shared_ptr<internal::base_connection>(it2ptrbase_connection));
 				if (processing_emit>0)
 					it2ptrbase_connection->disconnect();
 
@@ -372,7 +374,7 @@ public:
     //  syntax shortut to connect with other signals
     template<typename TReceiver>
     void connect(TReceiver* receiver) {
-        connect(receiver, &jle::Signal<Args...>::operator());
+        connect(receiver, &jle::signal<Args...>::operator());
     }
 
 
