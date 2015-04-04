@@ -8,7 +8,7 @@
 
 
 //-------------------------
-class Prueba : public jle::SignalReceptor
+class Prueba : public jle::signal_receptor
 {
     int valor;
 
@@ -26,7 +26,7 @@ public:
 
 
 
-class Prueba2 : public jle::SignalReceptor
+class Prueba2 : public jle::signal_receptor
 {
     jle::Signal<> signal;
 

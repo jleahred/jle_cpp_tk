@@ -10,7 +10,7 @@
 #include "support/shared_ptr.hpp"
 
 
-#define JLE_CONNECT_THIS(CT_SIGNAL, CT_METHOD_NAME)     (CT_SIGNAL).connect(this, &std::remove_reference<decltype(*this)>::type::CT_METHOD_NAME);
+#define JLE_CONNECT_THIS(__SIGNAL__, __METHOD_NAME__)     (__SIGNAL__).connect(this, &std::remove_reference<decltype(*this)>::type::__METHOD_NAME__);
 
 
 namespace jle
@@ -25,6 +25,8 @@ const int SIGNAL_SLOT_MAX_DEEP_EMIT = 20;
 //    B a s e C o n n e c t i o n
 
 //----------------------------------------------------------------------------
+namespace internal {
+
 
 class base_connection
         : private jle::non_copyable
@@ -37,15 +39,15 @@ public:
     virtual ~base_connection(){};
     virtual bool isSame(base_connection*)= 0;
 
-    void Disconnect(void) {
+    void disconnect(void) {
         disconnected = true;
     };
 
-    bool IsDisconnected(void) const { return disconnected; };
+    bool is_disconnected(void) const { return disconnected; };
 
 };
 
-
+};  //  namespace internal
 
 
 
@@ -61,17 +63,17 @@ public:
 
 
 
-class SignalReceptor : private jle::non_copyable {
-    std::list<jle::weak_ptr<base_connection>> listConnections;
+class signal_receptor : private jle::non_copyable {
+    std::list<jle::weak_ptr<internal::base_connection>> listConnections;
 
 public:
-    SignalReceptor(void) {};
+    signal_receptor(void) {};
 
-    void RegisterConnection(jle::shared_ptr<base_connection> pconnection) {
+    void RegisterConnection(jle::shared_ptr<internal::base_connection> pconnection) {
         listConnections.push_back(pconnection);
     };
 
-    void UnRegisterConnection(jle::shared_ptr<base_connection> connection) {
+    void UnRegisterConnection(jle::shared_ptr<internal::base_connection> connection) {
         auto itConnection = listConnections.begin();
         while(itConnection != listConnections.end())
         {
@@ -83,11 +85,11 @@ public:
             else {
                 auto sp_it = itConnection->lock();
                 //  cleaning
-                if ( sp_it->IsDisconnected()) {
+                if ( sp_it->is_disconnected()) {
                     itConnection = listConnections.erase(itConnection);
                 }
                 else if ( sp_it->isSame(connection.get()) ) {
-                    sp_it->Disconnect();
+                    sp_it->disconnect();
                     itConnection = listConnections.erase(itConnection);
                 }
                 else
@@ -96,7 +98,7 @@ public:
         }
     };
 
-    virtual ~SignalReceptor(void) {
+    virtual ~signal_receptor(void) {
         try{
             //  say goodbye to singals pointing to us
             auto itConnection = listConnections.begin();
@@ -106,7 +108,7 @@ public:
                     itConnection = listConnections.erase(itConnection);
                     continue;
                 }
-                itConnection->lock()->Disconnect();
+                itConnection->lock()->disconnect();
                 ++itConnection;
             }
         } catch(...){
@@ -117,6 +119,8 @@ public:
 };
 
 
+
+namespace internal {
 
 
 template<typename... Args>
@@ -131,7 +135,7 @@ public:
 
     virtual void emit(Args...)=0;
 
-    virtual SignalReceptor*  GetSignalReceptor(void) const  = 0;
+    virtual signal_receptor*  GetSignalReceptor(void) const  = 0;
 
 };
 
@@ -175,22 +179,23 @@ public:
             return false;
     }
 
-    SignalReceptor*  GetSignalReceptor(void) const {
+    signal_receptor*  GetSignalReceptor(void) const {
         return pt2Object;
     }
 
 };
 
 
+};      //  namespace internal {
 
 
 
 template <typename... Args>
 class Signal
-        :   public SignalReceptor//,public non_copyable (implicit)
+        :   public signal_receptor//,public non_copyable (implicit)
 {
 	int processing_emit;
-    std::list< jle::shared_ptr<base_connectionParam<Args...> > > connections;
+    std::list< jle::shared_ptr<internal::base_connectionParam<Args...> > > connections;
 
     //  connection to funcions (pointer and   is_connected?)
     std::list< std::tuple<void (*)(Args...), bool> >  functConnections;
@@ -219,7 +224,7 @@ public:
             auto it2ptrbase_connection = connections.begin();
             while(it2ptrbase_connection != connections.end())
             {
-                if  ((*it2ptrbase_connection)->IsDisconnected() == true)
+                if  ((*it2ptrbase_connection)->is_disconnected() == true)
                 {
                     if (processing_emit==0)
                     {
@@ -232,11 +237,11 @@ public:
         }
 
 
-        jle::shared_ptr<base_connectionParam<Args...> >
-                pbc (new Connection<TReceiver>(receiver, fpt));
+        jle::shared_ptr<internal::base_connectionParam<Args...> >
+                pbc (new internal::Connection<TReceiver>(receiver, fpt));
         connections.push_back(pbc);
         //pbc.DANGEROUS_ThisInstance_NOT_Delete();  //  done by receptor
-        receiver->RegisterConnection(jle::shared_ptr<base_connection>(pbc));
+        receiver->RegisterConnection(jle::shared_ptr<internal::base_connection>(pbc));
     };
 
     template<typename TReceiver>
@@ -245,7 +250,7 @@ public:
         while(it2ptrbase_connection != connections.end())
         //for(auto&& it2ptrbase_connection : connections)
         {
-            Connection<TReceiver>* pconnection = dynamic_cast<Connection<TReceiver>* > (it2ptrbase_connection->get());
+            internal::Connection<TReceiver>* pconnection = dynamic_cast<internal::Connection<TReceiver>* > (it2ptrbase_connection->get());
             if  (
                     pconnection
                     &&
@@ -253,20 +258,20 @@ public:
                     &&
                     pconnection->GetFuncPointer() == fpt
                     &&
-                    (*it2ptrbase_connection)->IsDisconnected() == false  //  this line reduces performance
+                    (*it2ptrbase_connection)->is_disconnected() == false  //  this line reduces performance
                 )
             {
                 receiver->UnRegisterConnection(
                                 //jle::shared_ptr<base_connection>(*it2ptrbase_connection)
                                 //jle::make_shared<base_connection>(*it2ptrbase_connection)
-                                //base_connectionParam<Args...>
-                                //jle::make_shared<base_connectionParam<Args...>>(*it2ptrbase_connection)
-                                jle::shared_ptr<base_connection>(*it2ptrbase_connection)
+                                //internal::base_connectionParam<Args...>
+                                //jle::make_shared<internal::base_connectionParam<Args...>>(*it2ptrbase_connection)
+                                jle::shared_ptr<internal::base_connection>(*it2ptrbase_connection)
                             );
                 //  WARNING: someone could disconnect from emit context
                 //  it's not safe to delete here from list
 				if (processing_emit>0)
-					(*it2ptrbase_connection)->Disconnect();
+					(*it2ptrbase_connection)->disconnect();
 				else
 				{
 					connections.erase(it2ptrbase_connection);
@@ -282,11 +287,11 @@ public:
         //  cleaning
         for(auto&&   it2ptrbase_connection : connections)
         {
-            if ( it2ptrbase_connection->IsDisconnected() == false) {
-                SignalReceptor* sr = it2ptrbase_connection->GetSignalReceptor();
-                sr->UnRegisterConnection(jle::shared_ptr<base_connection>(it2ptrbase_connection));
+            if ( it2ptrbase_connection->is_disconnected() == false) {
+                signal_receptor* sr = it2ptrbase_connection->GetSignalReceptor();
+                sr->UnRegisterConnection(jle::shared_ptr<internal::base_connection>(it2ptrbase_connection));
 				if (processing_emit>0)
-					it2ptrbase_connection->Disconnect();
+					it2ptrbase_connection->disconnect();
 
             }
         }
@@ -322,7 +327,7 @@ public:
             while(itconnection != connections.end())
             {
                 //  WARNING: someone could disconnect from emmit context
-				if ( (*itconnection)->IsDisconnected() == false) {
+				if ( (*itconnection)->is_disconnected() == false) {
 					(*itconnection)->emit(args...);
 					++count;
                     ++itconnection;
