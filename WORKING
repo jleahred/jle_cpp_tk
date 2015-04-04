@@ -1,0 +1,10 @@
+signal slot
+
+
+documentation (doxygen)
+
+performance
+
+on exception, process next signal and rethrow at the end (check performance)
+
+support for destroying signal on emit scope (check performance)
