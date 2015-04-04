@@ -77,11 +77,11 @@ class signal_receptor : private jle::non_copyable {
 public:
     signal_receptor(void) {};
 
-    void register_connection(jle::shared_ptr<internal::base_connection> pconnection) {
+    void internal_register_connection(jle::shared_ptr<internal::base_connection> pconnection) {
         list_connections.push_back(pconnection);
     };
 
-    void un_register_connection(jle::shared_ptr<internal::base_connection> connection) {
+    void un_internal_register_connection(jle::shared_ptr<internal::base_connection> connection) {
         auto it_connection = list_connections.begin();
         while(it_connection != list_connections.end())
         {
@@ -248,7 +248,7 @@ public:
         jle::shared_ptr<internal::base_connectionParam<Args...> >
                 pbc (new internal::connection<TReceiver, Args...>(receiver, fpt));
         connections.push_back(pbc);
-        receiver->register_connection(jle::shared_ptr<internal::base_connection>(pbc));
+        receiver->internal_register_connection(jle::shared_ptr<internal::base_connection>(pbc));
     };
 
     template<typename TReceiver>
@@ -267,7 +267,7 @@ public:
                     (*it2ptrbase_connection)->is_disconnected() == false  //  this line reduces performance
                 )
             {
-                receiver->un_register_connection(
+                receiver->un_internal_register_connection(
                                 jle::shared_ptr<internal::base_connection>(*it2ptrbase_connection)
                             );
                 //  WARNING: someone could disconnect from emit context
@@ -291,7 +291,7 @@ public:
         {
             if ( it2ptrbase_connection->is_disconnected() == false) {
                 signal_receptor* sr = it2ptrbase_connection->get_signal_receptor();
-                sr->un_register_connection(jle::shared_ptr<internal::base_connection>(it2ptrbase_connection));
+                sr->un_internal_register_connection(jle::shared_ptr<internal::base_connection>(it2ptrbase_connection));
 				if (processing_emit>0)
 					it2ptrbase_connection->disconnect();
 
