@@ -246,9 +246,6 @@ public:
         @brief it will give the number of emits on scope
 
         Used internally to check if running on destructor
-
-        Example:
-        \include ./support/signal_slot.cpp
     */
 	int get_processing_emits(void) const {  return  processing_emit; }
 
@@ -283,9 +280,6 @@ public:
 
         If you have connected a signal more than one to a method (allowed), disconnect will remove
         only one of the connections
-
-        Example:
-        \include ./support/signal_slot.cpp
     */
     template<typename TReceiver>
     bool disconnect(TReceiver* receiver, void (TReceiver::*fpt)(Args...)) {
@@ -325,9 +319,6 @@ public:
         @brief disconnect all signals
 
         It will disconnect from functions, methods and other signals
-
-        Example:
-        \include ./support/signal_slot.cpp
     */
     void disconnect_all(void) {
         //  cleaning
@@ -362,9 +353,6 @@ public:
 
         emit is defined as a macro on Qt toolkit.
         Using notify avoid conflicts with Qt
-
-        Example:
-        \include ./support/signal_slot.cpp
     */
     int notify(Args... args) {
         return emit(args...);
@@ -372,9 +360,6 @@ public:
 
     /**
         @brief call all connected to the signal
-
-        Example:
-        \include ./support/signal_slot.cpp
     */
     int emit(Args... args) {
         int count=0;
@@ -430,9 +415,6 @@ public:
         @brief same as emit
 
         I don't like this option, but it is quite frecuent
-
-        Example:
-        \include ./support/signal_slot.cpp
     */
     void operator()(Args... args) {
         emit(args...);
@@ -447,9 +429,6 @@ public:
 
     /**
         @brief connect a signal to a function
-
-        Example:
-        \include ./support/signal_slot.cpp
     */
     void connect( void (*pt2Function)(Args...) ) {
         functConnections.push_back( std::make_tuple(pt2Function, true));
@@ -457,9 +436,6 @@ public:
 
     /**
         @brief disonnect a signal from a function
-
-        Example:
-        \include ./support/signal_slot.cpp
     */
     bool disconnect( void (*pt2Function)(Args...) ) {
         auto itconnection2funct = functConnections.begin();
