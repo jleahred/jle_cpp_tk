@@ -81,7 +81,7 @@ Resource manament |  memory is not the only resource. RAII everywhere
 Infinite loops | reduce loops ussage
 Consuming all resources | _
 Integer zero division | throw an exception
-Concurrency and paralelims | reduce or remove parallelism
+Concurrency and paralelims | reduce or remove parallelism <br> do not share, message passing
 Float comparison |  don't do it and request for help to the compiler
 
 ### Let the compiler help you
@@ -136,13 +136,14 @@ In any case, I plan to follow next order (more or less)...
 
 - (done) ~~smart_pointer~~
     - (done) ~~just a safe wrapper over stl~~
-- signal-slot
+- (done) ~~signal_slot~~
 - safe containers
 - date_time
 - exception type with stack
 - integer div 0 protection
 - double safe comparison
 - string tools
+- timers
 - LL(n) parser
 - .ini and .cfg parsing files
 - IDL class generation

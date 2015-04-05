@@ -153,7 +153,7 @@ links:
     - header: @link /support/signal_slot.hpp  @endlink
 
 \warning
-    What if you destroy the signal while it is emiting? <br>
+    **What if you destroy the signal while it is emiting?** <br>
     This is not a specific signal_slot pattern problem <br>
     It's possible to manage this situation in a safe way with signals, but is an incomplete solution. <br>
     The params could be references or raw pointers (please, do not use raw pointers) and they could
@@ -161,3 +161,9 @@ links:
     Providing a partial solution is not a good idea. In case you do something similar,
     a message will be emmited on cerr <br>
     It will be added asynchronous signals. They we'll deal with this situations with no problem, but they will requiere copy on params.
+
+\warning
+    **What if an exception is thrown processing a signal?** <br>
+    At the moment, it is not managed. The exception will break the control flow not emiting the last connected signals. <br>
+    This looks logical. An exception is an exception. I'm thinking about the option on trapping the exception and rethrow a
+    new one after finishing signaling. But I'm not sure it is a good idea.
