@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "support/string.h"
+#include "support/misc.h"
 
 
 /** \brief  It writes and recolect information about a file starting a test

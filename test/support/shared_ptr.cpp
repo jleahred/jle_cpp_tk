@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "support/shared_ptr.hpp"
-#include "support/misc.h"
 #include "support/test.h"
 
 

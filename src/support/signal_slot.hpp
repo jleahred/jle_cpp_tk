@@ -13,10 +13,10 @@
 
 
 
-#define JLE_CONNECT_INSTANCE(__SIGNAL__, __INSTANCE__, __METHOD_NAME__)     \
+#define JLE_CONNECT_METHOD(__SIGNAL__, __INSTANCE__, __METHOD_NAME__)     \
             (__SIGNAL__).connect(&__INSTANCE__, &std::remove_reference<decltype(__INSTANCE__)>::type::__METHOD_NAME__);
 
-#define JLE_CONNECT_THIS(__SIGNAL__, __METHOD_NAME__)  JLE_CONNECT_INSTANCE(__SIGNAL__, *this, __METHOD_NAME__)
+#define JLE_CONNECT_THIS(__SIGNAL__, __METHOD_NAME__)  JLE_CONNECT_METHOD(__SIGNAL__, *this, __METHOD_NAME__)
 
 
 

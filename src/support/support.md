@@ -100,7 +100,7 @@ orphan live references (problem for counter ptrs and garbage collectors)
 Connection  | Syntax
 ------------- | -------------
 signal -> function  |  signal.connect(on_function_name);
-signal -> method  |    JLE_CONNECT_INSTANCE(signal, instance, on_method);
+signal -> method  |    JLE_CONNECT_METHOD(signal, instance, on_method);
 signal -> method on this  |  JLE_CONNECT_THIS(signal, on_method);
 signal -> signal  |  signal.connect(&signal_receiver);
 
@@ -165,3 +165,11 @@ links:
     At the moment, it is not managed. The exception will break the control flow not emiting the last connected signals. <br>
     This looks logical. An exception is an exception. I'm thinking about the option on trapping the exception and rethrow a
     new one after finishing signaling. But I'm not sure it is a good idea.
+
+\warning
+    **Probably you know a lambda is a function** <br>
+    Even when you assign to a variable, the function keep existing and signal is never disconnected automatically (it's a function).
+
+You can connect signals to lambdas (as connecting to functions). <br>
+If you are surprised with problems connecting to lambdas who capture scope... this is good. <br>
+Capturing scope is not a good idea and new mechanisms are provided in C++14.

@@ -11,7 +11,7 @@ public:
     Signal_receptor(int _instance) : instance(_instance)
     {
         signal_resend.connect(this, &Signal_receptor::on_internal_resend);
-        JLE_CONNECT_INSTANCE(signal_resend, *this, on_internal_resend);
+        JLE_CONNECT_METHOD(signal_resend, *this, on_internal_resend);
 
         //  connecting with this, proposed syntax  ------------------------
         JLE_CONNECT_THIS(signal_resend, on_internal_resend);
@@ -98,7 +98,7 @@ int main(void)
             Signal_receptor  sr2{2};
             {
                 signal.connect(&sr1, &Signal_receptor::on_void_method);
-                JLE_CONNECT_INSTANCE(signal, sr2, on_void_method);
+                JLE_CONNECT_METHOD(signal, sr2, on_void_method);
 
                 signal.emit();
             }
@@ -110,7 +110,7 @@ int main(void)
             Signal_receptor  sr2{2};
             {
                 signal.connect(&sr1, &Signal_receptor::on_number_method);
-                JLE_CONNECT_INSTANCE(signal, sr2, on_number_method);
+                JLE_CONNECT_METHOD(signal, sr2, on_number_method);
 
                 signal.emit(1);
             }
@@ -122,7 +122,7 @@ int main(void)
             Signal_receptor  sr2{2};
             {
                 signal.connect(&sr1, &Signal_receptor::on_number_string_method);
-                JLE_CONNECT_INSTANCE(signal, sr2, on_number_string_method);
+                JLE_CONNECT_METHOD(signal, sr2, on_number_string_method);
 
                 signal.emit(1, "one");
                 signal.emit(2, "two");
