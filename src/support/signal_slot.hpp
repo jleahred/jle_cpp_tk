@@ -70,6 +70,15 @@ public:
 //----------------------------------------------------------------------------
 
 
+/**
+    @brief Any object connected to signals, has to inherit from signal_receptor
+
+    It will track the life in order to properly disconnection
+
+    Example:
+    \include ./support/signal_slot.cpp
+*/
+
 
 class signal_receptor : private jle::non_copyable {
     std::list<jle::weak_ptr<internal::base_connection>> list_connections;
@@ -198,11 +207,21 @@ public:
 
 
 
+/**
+    @brief signal instance to connect and emit
+
+    You can connect to functions methods and even other signals
+    It is static, good performance and compiling time checked
+
+    Example:
+    \include ./support/signal_slot.cpp
+*/
+
 template <typename... Args>
 class signal
         :   public signal_receptor   // ,  private non_copyable (implicit)
 {
-	int processing_emit;
+	int processing_emit{0};
     std::list< jle::shared_ptr<internal::base_connectionParam<Args...> > > connections;
 
     //  connection to funcions (pointer and   is_connected?)
@@ -210,7 +229,7 @@ class signal
 
 
 public:
-	signal() : processing_emit(0) {}
+	signal() = default;
 
 	~signal() {
         try{
@@ -223,6 +242,14 @@ public:
         }
     }
 
+    /**
+        @brief it will give the number of emits on scope
+
+        Used internally to check if running on destructor
+
+        Example:
+        \include ./support/signal_slot.cpp
+    */
 	int get_processing_emits(void) const {  return  processing_emit; }
 
     template<typename TReceiver>
@@ -251,6 +278,15 @@ public:
         receiver->internal_register_connection(jle::shared_ptr<internal::base_connection>(pbc));
     };
 
+    /**
+        @brief disconnect a signal from a method
+
+        If you have connected a signal more than one to a method (allowed), disconnect will remove
+        only one of the connections
+
+        Example:
+        \include ./support/signal_slot.cpp
+    */
     template<typename TReceiver>
     bool disconnect(TReceiver* receiver, void (TReceiver::*fpt)(Args...)) {
         auto it2ptrbase_connection = connections.begin();
@@ -285,6 +321,14 @@ public:
         return false;
     };
 
+    /**
+        @brief disconnect all signals
+
+        It will disconnect from functions, methods and other signals
+
+        Example:
+        \include ./support/signal_slot.cpp
+    */
     void disconnect_all(void) {
         //  cleaning
         for(auto&&   it2ptrbase_connection : connections)
@@ -313,10 +357,25 @@ public:
 
     };
 
+    /**
+        @brief same as emit
+
+        emit is defined as a macro on Qt toolkit.
+        Using notify avoid conflicts with Qt
+
+        Example:
+        \include ./support/signal_slot.cpp
+    */
     int notify(Args... args) {
         return emit(args...);
     };
 
+    /**
+        @brief call all connected to the signal
+
+        Example:
+        \include ./support/signal_slot.cpp
+    */
     int emit(Args... args) {
         int count=0;
 		try
@@ -367,6 +426,14 @@ public:
         return count;
     };
 
+    /**
+        @brief same as emit
+
+        I don't like this option, but it is quite frecuent
+
+        Example:
+        \include ./support/signal_slot.cpp
+    */
     void operator()(Args... args) {
         emit(args...);
     };
@@ -378,11 +445,22 @@ public:
     }
 
 
-    //  connect to functions ----------------------------------------
+    /**
+        @brief connect a signal to a function
+
+        Example:
+        \include ./support/signal_slot.cpp
+    */
     void connect( void (*pt2Function)(Args...) ) {
         functConnections.push_back( std::make_tuple(pt2Function, true));
     }
 
+    /**
+        @brief disonnect a signal from a function
+
+        Example:
+        \include ./support/signal_slot.cpp
+    */
     bool disconnect( void (*pt2Function)(Args...) ) {
         auto itconnection2funct = functConnections.begin();
         while(itconnection2funct != functConnections.end())
