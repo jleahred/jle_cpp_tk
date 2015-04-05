@@ -156,6 +156,10 @@ In any case, I plan to follow next order (more or less)...
     - ...
 - IDL fsm generation
 - async signals
+- soft-realtime facilities
+- paralelism help
+- nullable type
+- factory template
 - ...
 
 

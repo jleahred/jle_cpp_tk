@@ -1,11 +1,9 @@
-# libs
+# lib_support
 
-\section support
-
-\subsection smart_pointers
+\section smart_pointers
 
 
-### shared_ptr
+## shared_ptr
 Safe shared_ptr wrapper
 
 links:
@@ -13,7 +11,7 @@ links:
  - example: @link /support/shared_ptr.cpp @endlink
 
 
-### weak_ptr
+## weak_ptr
 Safe weak_ptr wrapper
 
 
@@ -23,7 +21,7 @@ links:
     - header: @link /support/shared_ptr.hpp  @endlink
 
 
-\subsection test
+\section test
 
 Some macros and functions to help with test support/test.h
 
@@ -45,9 +43,9 @@ links:
     - header: @link /support/test.h  @endlink
 
 
-\subsection string
+\section string
 
-### Concatenation  JLE_SS
+## Concatenation  JLE_SS
 
 Code like...
 
@@ -79,7 +77,7 @@ links:
 
 
 
-\subsection signal_slot
+\section signal_slot
 
 An good event system is great in order to compose.
 signal_slot is a static event system (good performance and strict compiling type check)
@@ -97,7 +95,7 @@ You don't have to take care of disconnection before exit (destructor), neither d
 orphan live references (problem for counter ptrs and garbage collectors)
 
 
-### Connection syntax recomendations...
+## Connection syntax recomendations...
 
 Connection  | Syntax
 ------------- | -------------
@@ -106,7 +104,7 @@ signal -> method  |    JLE_CONNECT_INSTANCE(signal, instance, on_method);
 signal -> method on this  |  JLE_CONNECT_THIS(signal, on_method);
 signal -> signal  |  signal.connect(&signal_receiver);
 
-### Performance
+## Performance
 
 In my computer with no params, you can emit arround 200.000 signals per second...
 
