@@ -1,6 +1,7 @@
 #include <memory>
 #include <cstddef>
 #include <exception>
+#include <bits/shared_ptr.h>
 
 /**
  *     \example  ./support/shared_ptr.cpp
@@ -159,6 +160,9 @@ public:
 //    : PENDING
 
 
+
+    std::shared_ptr<_Tp>  __internal_dangerous__get_std_shared_ptr(void) const { return ptr; }
+
   /**
    *  @brief  If @a __r is empty, constructs an empty %shared_ptr;
    *          otherwise construct a %shared_ptr that shares ownership
@@ -167,9 +171,9 @@ public:
    *  @post   get() == __r.get() && use_count() == __r.use_count()
    */
     template<typename _Tp1, typename = typename
-       std::enable_if<std::is_convertible<_Tp1*, _Tp*>::value>::type>
+      std::enable_if<std::is_convertible<_Tp1*, _Tp*>::value>::type>
     shared_ptr(const shared_ptr<_Tp1>& __r) /*noexcept*/
-    : ptr(__r.ptr) {}
+    : ptr(std::shared_ptr<_Tp>(__r.__internal_dangerous__get_std_shared_ptr())) {}
 
   /**
    *  @brief  Move-constructs a %shared_ptr instance from @a __r.
