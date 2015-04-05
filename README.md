@@ -28,12 +28,13 @@ Now gcc and other compilers run a lot of features from C++11, C++14 and partiall
 Some of the tools I wrote or added to my library, are not necessary any more.
 The implementation and API can also be improved.
 
-For example... I wrote a smart_pointer called CountPtr. I also wrote to manage tuples, I added a small library for regular expressions. These
-features have been added to C++
+For example... I wrote a smart_pointer called CountPtr. I also wrote to manage tuples,
+I wrote a beautifull, platform independent, safe, and easy to use classes to deal with date_time and durations,
+I added a small library for regular expressions. These features have been added to C++
 
 Now, we also have type inference, lambdas, variadic templates, initializer lists...
 
-It's time to enjoy and write a new set of tools based on modern C++
+It's time to enjoy and write a new set of tools based on modern C++ (more reduced than previous one, but with a better language)
 
 Previously I wrote the documentation with **asciidoc**, muse over emacs and doxys. Now I'm going to do it with doxygen (I'm not a fan of these kind of tools, but it's a standard).
 
@@ -80,7 +81,7 @@ Resource manament |  memory is not the only resource. RAII everywhere
 Infinite loops | reduce loops ussage
 Consuming all resources | _
 Integer zero division | throw an exception
-Concurrency and paralelims | reduce or remove parallelism
+Concurrency and paralelims | reduce or remove parallelism <br> do not share, message passing
 Float comparison |  don't do it and request for help to the compiler
 
 ### Let the compiler help you
@@ -135,13 +136,14 @@ In any case, I plan to follow next order (more or less)...
 
 - (done) ~~smart_pointer~~
     - (done) ~~just a safe wrapper over stl~~
-- signal-slot
+- (done) ~~signal_slot~~
 - safe containers
 - date_time
 - exception type with stack
 - integer div 0 protection
 - double safe comparison
 - string tools
+- timers
 - LL(n) parser
 - .ini and .cfg parsing files
 - IDL class generation
