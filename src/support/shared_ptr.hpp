@@ -4,14 +4,14 @@
 #include <bits/shared_ptr.h>
 
 /**
- *     \example  ./support/shared_ptr.cpp
- *     \example  ./support/weak_ptr.cpp
+ *     \example  ./support/ex_shared_ptr.cpp
+ *     \example  ./support/ex_weak_ptr.cpp
  */
 
 
 
-#ifndef JLT_SHARED_PTR_H
-#define JLT_SHARED_PTR_H 1
+#ifndef JLE_SHARED_PTR_H
+#define JLE_SHARED_PTR_H 1
 
 namespace  jle
 {
@@ -398,20 +398,20 @@ private:
             throw std::runtime_error("shared_ptr pointer not valid");
     }
 
-  // This constructor is non-standard, it is used by allocate_shared.
-    template<typename _Alloc, typename... _Args>
-    shared_ptr(std::_Sp_make_shared_tag __tag, const _Alloc& __a,
-       _Args&&... __args)
-    : ptr(__tag, __a, __args...) {}
-
-    template<typename _Tp1, typename _Alloc, typename... _Args>
-    friend shared_ptr<_Tp1>
-    allocate_shared(const _Alloc& __a, _Args&&... __args);
-
-    // This constructor is non-standard, it is used by weak_ptr::lock().
-    shared_ptr(const jle::weak_ptr<_Tp>& __r, std::nothrow_t)
-    : ptr(__r, std::nothrow) {}
-
+//  // This constructor is non-standard, it is used by allocate_shared.
+//    template<typename _Alloc, typename... _Args>
+//    shared_ptr(std::_Sp_make_shared_tag __tag, const _Alloc& __a,
+//       _Args&&... __args)
+//    : ptr(__tag, __a, __args...) {}
+//
+//    template<typename _Tp1, typename _Alloc, typename... _Args>
+//    friend shared_ptr<_Tp1>
+//    allocate_shared(const _Alloc& __a, _Args&&... __args);
+//
+//    // This constructor is non-standard, it is used by weak_ptr::lock().
+//    shared_ptr(const jle::weak_ptr<_Tp>& __r, std::nothrow_t)
+//    : ptr(__r, std::nothrow) {}
+//
     friend class jle::weak_ptr<_Tp>;
 };
 
@@ -691,7 +691,7 @@ __enable_shared_from_this_helper(const std::__shared_count<>& __pn,
   mutable weak_ptr<_Tp>  _M_weak_this;
 };
 
-/**
+/*
 *  @brief  Create an object that is owned by a shared_ptr.
 *  @param  __a     An allocator.
 *  @param  __args  Arguments for the @a _Tp object's constructor.
@@ -702,13 +702,13 @@ __enable_shared_from_this_helper(const std::__shared_count<>& __pn,
 *  A copy of @a __a will be used to allocate memory for the shared_ptr
 *  and the new object.
 */
-template<typename _Tp, typename _Alloc, typename... _Args>
-inline shared_ptr<_Tp>
-allocate_shared(const _Alloc& __a, _Args&&... __args)
-{
-  return shared_ptr<_Tp>(std::_Sp_make_shared_tag(), __a,
-             std::forward<_Args>(__args)...);
-}
+//template<typename _Tp, typename _Alloc, typename... _Args>
+//inline shared_ptr<_Tp>
+//allocate_shared(const _Alloc& __a, _Args&&... __args)
+//{
+//  return shared_ptr<_Tp>(std::_Sp_make_shared_tag(), __a,
+//             std::forward<_Args>(__args)...);
+//}
 
 /**
 *  @brief  Create an object that is owned by a shared_ptr.
@@ -744,4 +744,4 @@ make_shared(_Args&&... __args)
 
 };  //  namespace  jle
 
-#endif // JLT_SHARED_PTR_H
+#endif // JLE_SHARED_PTR_H

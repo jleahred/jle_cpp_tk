@@ -3,7 +3,7 @@
 
 
 /**
- *     \example  ./support/test.cpp
+ *     \example  ./support/ex_test.cpp
  */
 
 

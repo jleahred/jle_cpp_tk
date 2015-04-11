@@ -5,7 +5,7 @@
 #include <sstream>
 
 
-///  \example  ./support/jle_ss.cpp
+///  \example  ./support/ex_jle_ss.cpp
 
 #define JLE_SS(__EXPR__) (static_cast<std::ostringstream*>(&(std::ostringstream().flush() << __EXPR__))->str())
 

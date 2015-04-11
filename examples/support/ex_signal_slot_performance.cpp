@@ -28,7 +28,7 @@ void count (void)
 
 
 
-const long REPETITIONS = 1000000000L;
+const long REPETITIONS = 1'000'000'000L;
 
 
 int main (int /*argc*/, char** /*argv*/)

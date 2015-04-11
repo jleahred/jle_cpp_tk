@@ -1,7 +1,7 @@
 #ifndef JLE_SIGNAL_SLOT_H
 #define JLE_SIGNAL_SLOT_H
 
-///  \example  ./support/signal_slot.cpp
+///  \example  ./support/ex_signal_slot.cpp
 
 
 #include <list>

@@ -8,7 +8,7 @@ Safe shared_ptr wrapper
 
 links:
  - see: #jle::shared_ptr
- - example: @link /support/shared_ptr.cpp @endlink
+ - example: @link /support/ex_shared_ptr.cpp @endlink
 
 
 ## weak_ptr
@@ -17,7 +17,7 @@ Safe weak_ptr wrapper
 
 links:
     - see: #jle::weak_ptr
-    - example: @link /support/shared_ptr.cpp @endlink
+    - example: @link /support/ex_shared_ptr.cpp @endlink
     - header: @link /support/shared_ptr.hpp  @endlink
 
 
@@ -39,7 +39,7 @@ JLE_TEST_ASSERT_NO_DOT:  |  check truth without writting a dot
 JLE_TEST_EXCEPTION:  |  check expression throws an exception
 
 links:
-    - example: @link /support/test.cpp @endlink
+    - example: @link /support/ex_test.cpp @endlink
     - header: @link /support/test.h  @endlink
 
 
@@ -72,7 +72,7 @@ JLE_SS("asdfds" << var1 << var2 << std::endl);
 **JLE_SS** will produce a `ostringstream` with all it powers (and safer than +), therefore more expressive
 
 links:
-    - example: @link /support/jle_ss.cpp @endlink
+    - example: @link /support/ex_jle_ss.cpp @endlink
     - header: @link /support/string.h  @endlink
 
 
@@ -147,7 +147,7 @@ Executing...  @link /support/signal_slot_performance.cpp @endlink
 
 links:
     - see: #jle::signal  #jle::signal_receptor
-    - example: @link /support/signal_slot.cpp @endlink
+    - example: @link /support/ex_signal_slot.cpp @endlink
     - header: @link /support/signal_slot.hpp  @endlink
 
 \warning
