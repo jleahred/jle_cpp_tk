@@ -15,6 +15,11 @@ int main(void)
     }
 
     {
+        jle::chrono::time_point  tp = jle::chrono::now() + 10min;
+        std::cout << tp << std::endl;
+    }
+
+    {
         std::cout << std::chrono::hours(26) + 5s +333ms << std::endl;
     }
 
