@@ -13,8 +13,20 @@ namespace jle {  namespace  chrono {
     using  time_point = std::chrono::steady_clock::time_point;
     using  duration   = std::chrono::milliseconds;
 
-    time_point      now (void);
+    namespace  t {
+        struct year  {  int __value;  };
+        struct month {  int __value;  };
+        struct day   {  int __value;  };
+    };
 
+    time_point      now     (void);
+
+    time_point      today   (void);
+
+    time_point      make_from_date   (const t::year&, const t::month&, const t::day&);
+
+
+    std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp);
 
 
 
