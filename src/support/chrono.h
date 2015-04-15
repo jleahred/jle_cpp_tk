@@ -10,13 +10,46 @@ using namespace std::literals;
 
 namespace jle {  namespace  chrono {
 
-    using  time_point = std::chrono::steady_clock::time_point;
     using  duration   = std::chrono::milliseconds;
 
     namespace  t {
         struct year  {  int __value;  };
         struct month {  int __value;  };
         struct day   {  int __value;  };
+    };
+
+
+    class time_point {
+            std::chrono::steady_clock::time_point  tp;
+            //  todo: correction
+
+            time_point(const std::chrono::steady_clock::time_point&  _tp) :  tp(_tp) {}
+
+
+        public:
+            time_point()=delete;
+            time_point(const time_point&)=default;
+            time_point(      time_point&&);
+            time_point& operator=(const time_point&)=default;
+            time_point& operator=(      time_point&&);
+
+            time_point& operator +=  (const duration&   dtn);
+            time_point& operator -=  (const duration&   dtn);
+            time_point  operator +   (const duration&   dtn)  const;
+            time_point  operator -   (const duration&   dtn)  const;
+            duration    operator -   (const time_point& _tp)  const;
+            bool        operator ==  (const time_point& rhs)  const;
+            bool        operator !=  (const time_point& rhs)  const;
+            bool        operator <   (const time_point& rhs)  const;
+            bool        operator >   (const time_point& rhs)  const;
+            bool        operator >=  (const time_point& rhs)  const;
+            bool        operator <=  (const time_point& rhs)  const;
+
+
+            friend  time_point  now  (void);
+            friend  time_point  today(void);
+            friend  time_point  make_from_date   (const t::year& y, const t::month& m, const t::day& d);
+            friend  std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp);
     };
 
     time_point      now     (void);

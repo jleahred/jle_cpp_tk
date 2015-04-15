@@ -20,9 +20,85 @@ namespace {
 
 namespace jle {  namespace  chrono {
 
+
+
+    time_point::time_point(time_point&& _tp)
+        :  tp(std::move(_tp.tp))  {}
+
+    time_point& time_point::operator=(time_point&& _tp)
+    {
+        tp = std::move(_tp.tp);
+        return *this;
+    }
+
+    time_point& time_point::operator +=  (const duration&   dtn)
+    {
+        tp += dtn;
+        return *this;
+    }
+
+    time_point& time_point::operator -=  (const duration&   dtn)
+    {
+        tp -= dtn;
+        return *this;
+    }
+
+    time_point  time_point::operator +   (const duration&   dtn)  const
+    {
+        return (this->tp + dtn);
+    }
+
+    time_point  time_point::operator -   (const duration&   dtn)  const
+    {
+        return (this->tp - dtn);
+    }
+
+    duration  time_point::operator -   (const time_point& _tp)  const
+    {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(this->tp - _tp.tp);
+    }
+
+    bool        time_point::operator ==  (const time_point& rhs)  const
+    {
+        return (tp == rhs.tp);
+    }
+
+    bool        time_point::operator !=  (const time_point& rhs)  const
+    {
+        return (tp != rhs.tp);
+    }
+
+    bool        time_point::operator <   (const time_point& rhs)  const
+    {
+        return (tp < rhs.tp);
+    }
+
+    bool        time_point::operator >   (const time_point& rhs)  const
+    {
+        return (tp > rhs.tp);
+    }
+
+    bool        time_point::operator >=  (const time_point& rhs)  const
+    {
+        return (tp >= rhs.tp);
+    }
+
+    bool        time_point::operator <=  (const time_point& rhs)  const
+    {
+        return (tp <= rhs.tp);
+    }
+
+
+
+
+
+
+
+
+
 time_point      now()
 {
-    return std::chrono::steady_clock::now();
+    return time_point{std::chrono::steady_clock::now()};
 }
 
 
@@ -54,7 +130,7 @@ time_point      make_from_date   (const t::year& y, const t::month& m, const t::
                         std::chrono::duration_cast<std::chrono::milliseconds>
                         (result.time_since_epoch()).count() % 1000};
                     ;
-    return result + std::chrono::milliseconds{1000};
+    return result;
 }
 
 
@@ -76,13 +152,13 @@ std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp)
     static auto init_machine_time = std::get<0>(ref_times);
     static auto init_monotonic_time = std::get<1>(ref_times);
 
-    std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp - init_monotonic_time));
+    std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp.tp - init_monotonic_time));
     struct tm * ptm;
     ptm = gmtime ( &time_t );
 
     int milliseconds {static_cast<int>(
                         std::chrono::duration_cast<std::chrono::milliseconds>
-                                    (tp.time_since_epoch())
+                                    (tp.tp.time_since_epoch())
                                     .count()) % 1000
                      };
     return std::make_tuple(*ptm, milliseconds);
@@ -125,6 +201,8 @@ std::ostream& operator<<(std::ostream& out, const jle::chrono::time_point &tp)
 std::ostream& operator<<(std::ostream& out, const jle::chrono::duration &d)
 {
     long pending = d.count();
+    std::string  sign = pending < 0 ? "-" : "";
+    if(pending<0)   pending*=-1;
 
 
     #define __JLE__REDUCE(__NAME__, __VALUE__)   \
@@ -146,14 +224,17 @@ std::ostream& operator<<(std::ostream& out, const jle::chrono::duration &d)
         if(__NAME__ != 0)  out << __NAME__ << __MAGNITUDE__ << " ";
 
 
+    out << sign;
     __JLE__PRINT(days, "d");
     __JLE__PRINT(hours, "h");
     __JLE__PRINT(minutes, "m");
     __JLE__PRINT(seconds, "s");
     __JLE__PRINT(milliseconds, "ms");
 
-
     #undef __JLE__PRINT
+
+    if(days + hours + minutes + seconds + milliseconds  == 0)
+        out << "0ms";
 
     return out;
 }

@@ -1,39 +1,59 @@
 #include <iostream>
+
 #include "support/chrono.h"
+#include "support/misc.h"
+
 
 
 
 int main(void)
 {
     {
-        auto  n = jle::chrono::now();
-        std::cout << "now ->  " << n << std::endl;
+        JLE_COUT_TRACE(jle::chrono::now());
     }
 
     {
-        std::cout << "now + 1s+333ms ->  " << jle::chrono::now() +1s +333ms << std::endl;
+        JLE_COUT_TRACE(jle::chrono::now() +1s +333ms);
     }
 
     {
-        jle::chrono::time_point  tp = jle::chrono::now() + 10min;
-        std::cout << "now +10min ->  " << tp << std::endl;
+        JLE_COUT_TRACE(jle::chrono::now() + 10min);
     }
 
     {
-        std::cout << "(24*360)h + 5s + 333ms ->  " << std::chrono::hours(24*360) + 5s +333ms << std::endl;
+        JLE_COUT_TRACE(std::chrono::hours(24*360) + 5s +333ms);
     }
 
     {
         auto start = jle::chrono::now() -1s -253ms;
-        std::cout << "time between now and start ->  " << jle::chrono::now() - start << std::endl;
+        JLE_COUT_TRACE(jle::chrono::now() - start);
     }
 
     {
         using namespace jle::chrono::t;
-        std::cout << "make_from_date(year{2015}, month{4}, day{13}) ->  " << jle::chrono::make_from_date(year{2015}, month{4}, day{13}) << std::endl;
+        JLE_COUT_TRACE(jle::chrono::make_from_date(year{2015}, month{4}, day{13}));
     }
 
     {
-        std::cout << "today ->  " << jle::chrono::today() << std::endl;
+        JLE_COUT_TRACE(jle::chrono::today());
     }
+
+    {
+        auto  a = jle::chrono::now();
+        JLE_COUT_TRACE(a-a);
+    }
+
+    {
+        auto a = jle::chrono::now();
+        auto b = a + 1s +303ms;
+        JLE_COUT_TRACE(a-b);
+        JLE_COUT_TRACE(b-a);
+        JLE_COUT_TRACE(a<b);
+        JLE_COUT_TRACE(a>b);
+        JLE_COUT_TRACE(a==b);
+        JLE_COUT_TRACE(a!=b);
+        JLE_COUT_TRACE(a<=b);
+        JLE_COUT_TRACE(a>=b);
+    }
+
 }
