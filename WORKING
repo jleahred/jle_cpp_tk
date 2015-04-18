@@ -1,5 +1,7 @@
-version.h
 chrono
   uadjust time
   big adjust time per day
 
+alarms
+containers
+strings
