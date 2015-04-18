@@ -1,14 +1,14 @@
 # include directories
-INCLUDES = -I../../src
+INCLUDES = -I../../../src
 
 
 # library paths
-LIBS = -L../../lib  -ljlesupport
+LIBS = -L../../../lib  -ljlesupport
 
 
 
 # compiler options
-include ../../compopt_make  #si es de depuración, las opciones de compilación serán -O0 -g y definirá la macro VALGRIND
+include ../../../compopt_make  #si es de depuración, las opciones de compilación serán -O0 -g y definirá la macro VALGRIND
 
 
 
