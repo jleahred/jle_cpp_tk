@@ -137,15 +137,15 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~smart_pointer~~
     - (done) ~~just a safe wrapper over stl~~
 - (done) ~~signal_slot~~
+- (50%) date_time
+- (50%) string tools
+- (50%) exception type with stack
 - safe containers
-- date_time
-- exception type with stack
-- integer div 0 protection
 - double safe comparison
-- string tools
-- timers
+- integer div 0 protection
 - LL(n) parser
 - .ini and .cfg parsing files
+- timers
 - IDL class generation
     - stream
     - yaml
