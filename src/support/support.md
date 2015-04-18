@@ -199,6 +199,9 @@ To reduce verbosity, there are proposed some helpers
 
 As usual, take a look to examples.
 
+\todo micro-adjustments and one big adjustment per day
+
+
 links:
     - see: #jle::chrono::time_point
     - example: @link /support/ex_chrono.cpp @endlink
