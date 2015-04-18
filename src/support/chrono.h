@@ -7,18 +7,23 @@ using namespace std::literals;
 
 
 
+/**
+ *     \example  ./support/ex_chrono.cpp
+ */
+
+
 
 namespace jle {  namespace  chrono {
 
     using  duration   = std::chrono::milliseconds;
 
-    namespace  t {
-        struct year  {  int __value;  };
-        struct month {  int __value;  };
-        struct day   {  int __value;  };
-    };
+    struct year  {  int __value;  };
+    struct month {  int __value;  };
+    struct day   {  int __value;  };
 
 
+    /** \brief  similar to std::chrono::time_point but monotonic with adjustments to system_clock
+     */
     class time_point {
             std::chrono::steady_clock::time_point  tp;
             //  todo: correction
@@ -48,7 +53,8 @@ namespace jle {  namespace  chrono {
 
             friend  time_point  now  (void);
             friend  time_point  today(void);
-            friend  time_point  make_from_date   (const t::year& y, const t::month& m, const t::day& d);
+            friend  time_point  make_from_date   (const year& y, const month& m, const day& d);
+
             friend  std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp);
     };
 
@@ -56,9 +62,11 @@ namespace jle {  namespace  chrono {
 
     time_point      today   (void);
 
-    time_point      make_from_date   (const t::year&, const t::month&, const t::day&);
+    time_point      make_from_date   (const year&, const month&, const day&);
 
 
+    /** \brief  get a std::tm and milliseconds in int from time_point
+     */
     std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp);
 
 

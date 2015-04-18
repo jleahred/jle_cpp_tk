@@ -102,7 +102,7 @@ time_point      now()
 }
 
 
-time_point      make_from_date   (const t::year& y, const t::month& m, const t::day& d)
+time_point      make_from_date   (const year& y, const month& m, const day& d)
 {
     static auto ref_times           =   get_init_ref_times();
     static auto init_machine_time   =   std::get<0>(ref_times);
@@ -138,9 +138,9 @@ time_point      today   (void)
 {
     std::tm tm;
     std::tie(tm, std::ignore) = get_tm_millisecs(std::chrono::steady_clock::now());
-    return make_from_date(  t::year{tm.tm_year+1900},
-                            t::month{tm.tm_mon+1},
-                            t::day{tm.tm_mday});
+    return make_from_date(  year{tm.tm_year+1900},
+                            month{tm.tm_mon+1},
+                            day{tm.tm_mday});
 }
 
 
@@ -220,8 +220,14 @@ std::ostream& operator<<(std::ostream& out, const jle::chrono::duration &d)
     #undef __JLE__REDUCE
 
 
+    bool first = true;
+
     #define __JLE__PRINT(__NAME__, __MAGNITUDE__)   \
-        if(__NAME__ != 0)  out << __NAME__ << __MAGNITUDE__ << " ";
+        if(__NAME__ != 0) {  \
+            if(!first)  out << " ";  \
+            out << __NAME__ << __MAGNITUDE__;  \
+            first = false;  \
+        }
 
 
     out << sign;

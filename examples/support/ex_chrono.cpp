@@ -30,8 +30,7 @@ int main(void)
     }
 
     {
-        using namespace jle::chrono::t;
-        JLE_COUT_TRACE(jle::chrono::make_from_date(year{2015}, month{4}, day{13}));
+        JLE_COUT_TRACE(jle::chrono::make_from_date(jle::chrono::year{2015}, jle::chrono::month{4}, jle::chrono::day{13}));
     }
 
     {

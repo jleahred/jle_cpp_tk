@@ -3,6 +3,13 @@ default:
 	@echo  choose a target   libs doc clean  examples
 
 
+.PHONY : all
+all:  space_trailing  libs
+
+
+
+
+
 .PHONY : examples
 examples:
 	make -C examples  run
@@ -52,3 +59,35 @@ generate_commit_sha1_file:
 .PHONY : delete_commit_sha1_file
 delete_commit_sha1_file:
 	echo "\"\"" >  COMMIT
+
+
+
+
+.PHONY : prepare
+prepare:
+	mkdir -p lib
+	mkdir -p temp
+
+
+.PHONY : clean
+clean: cleanlibs
+
+
+.PHONY : cleanlibs
+cleanlibs:
+	make -C src/support clean
+	find . -name temp | xargs rm -rf
+
+
+
+
+.PHONY : libs
+libs: prepare clean   lib_jle_support
+	make -C src/support lib
+
+
+.PHONY : lib_jle_support
+lib_jle_support: prepare
+	make -C src/support lib
+
+

@@ -2,26 +2,26 @@
 
 
 #include "support/shared_ptr.hpp"
- 
+
 struct Foo {
     Foo() { std::cout << "Foo...\n"; }
     ~Foo() { std::cout << "~Foo...\n"; }
 };
- 
-struct D { 
+
+struct D {
     void operator()(Foo* p) const {
         std::cout << "Call delete for Foo object...\n";
         delete p;
     }
 };
- 
+
 int main()
 {
     {
         std::cout << "constructor with no managed object\n";
         jle::shared_ptr<Foo> sh1;
     }
- 
+
     {
         std::cout << "constructor with object\n";
         jle::shared_ptr<Foo> sh2(new Foo);
@@ -29,12 +29,12 @@ int main()
         std::cout << sh2.use_count() << '\n';
         std::cout << sh3.use_count() << '\n';
     }
- 
+
     {
         std::cout << "constructor with object and deleter\n";
         jle::shared_ptr<Foo> sh4(new Foo, D());
     }
-    
+
     {
         std::cout << "valid pointer" << std::endl;
         auto ptr = jle::make_shared<int>(22);
@@ -54,7 +54,7 @@ int main()
         std::cout << "expired " << int(ptr.expired()) << std::endl;
     }
 
-    {    
+    {
         jle::shared_ptr<int> foo = jle::make_shared<int> (10);
         // same as:
         jle::shared_ptr<int> foo2 (new int(10));

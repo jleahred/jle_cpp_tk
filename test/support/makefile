@@ -3,7 +3,7 @@ INCLUDES = -I../../src
 
 
 # library paths
-#LIBS = -L../../../lib  -ljlesupport  -lrt
+LIBS = -L../../lib  -ljlesupport
 
 
 
@@ -24,10 +24,14 @@ default: test
 
 .PHONY : prepare
 prepare:
-	rm *.exec  ||  true
+	@rm *.exec  ||  true  2> /dev/null
 
 test : prepare  $(EXECS)
-	@echo "FIN ----------------------------------------------------------------"
+	@echo
+	@echo
+	@echo #"TEST ENDED <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+	@echo
+	@echo
 
 
 .PHONY : debug
@@ -38,10 +42,14 @@ debug:
 
 
 %.exec: %.cpp
-	@echo $@ '----------------------------------------------------------------'
+	@echo
+	@echo
+	@echo
+	@echo #$@
+	@echo '----------------------------------------------------------------------------'
 	@$(CXX) $(INCLUDES) $(CXXFLAGS) $<  $(LIBS) -o $@
 	$(VALGRIND) ./$@
-	rm -f ./$@
+	@rm -f ./$@
 
 
 
