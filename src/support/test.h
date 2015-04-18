@@ -39,6 +39,7 @@
     if((__EXPRESION__) == false)   \
     {   \
         std::cerr << std::endl << "ERROR... in " << JLE_HERE << std::endl;   \
+        std::cerr << std::endl << #__EXPRESION__ << std::endl;   \
         exit(-1);   \
     }
 

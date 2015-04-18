@@ -47,13 +47,13 @@ My aim is different from C++.
     - I don't like undefined behaviour
     - I don't like crashes due to programming mistakes
     - C++ is a dangerous language. It's easy to have crashes, I want a library protecting and helping the programmer.
-- KISS
+- KISS and YAGNI
     - Easy to use API (the implmentation could be complex)
+    - I will introduce features as soon I will require
+    - No thousands of options, better few options easy to use and less verbose
 - Avoid write only code using this library. The code using this library...
     - could not be simple to write
     - has to be easy to read
-- YAGNI
-    - I will introduce features as soon I will require
 - Small
     - This is to have basic features, not incredible posibilies. There are great C++ libraries for that.
 - Portability (win/linux)

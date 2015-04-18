@@ -173,3 +173,35 @@ links:
 You can connect signals to lambdas (as connecting to functions). <br>
 If you are surprised with problems connecting to lambdas who capture scope... this is good. <br>
 Capturing scope is not a good idea and new mechanisms are provided in C++14.
+
+
+
+\section chrono
+
+**std::chrono** is great, but it's very flexible and therefore verbose.
+
+For realtime applications, I need a precisse monotonic clock.
+
+PC clock is not precisse at all. And system clock syncroniced with ntp is not guaranteed to be monotonic.
+
+**jle::time_point** will be monotonic ant it will syncrhonize with system clock slowly. Except once per day.
+
+using jle::chono (`#include "support/chrono.h"`), is a bit intrusive...
+
+- It will add `using namespace std::literals;` in order to use time literals as `1s + 123ms`
+- It will define `operator<<` on `stream` for `duration`
+
+To reduce verbosity, there are proposed some helpers
+
+- `jle::chrono::duration`
+- `jle::chrono::now()`
+- `jle::chrono::make_from_date(const year&, const month&, const day&)`
+
+As usual, take a look to examples.
+
+links:
+    - see: #jle::chrono::time_point
+    - example: @link /support/ex_chrono.cpp @endlink
+    - header: @link /support/chrono.h  @endlink
+
+

@@ -3,7 +3,7 @@ INCLUDES = -I../../src
 
 
 # library paths
-#LIBS = -L../../../lib  -ljlesupport  -lrt
+LIBS = -L../../lib  -ljlesupport
 
 
 
@@ -24,7 +24,7 @@ default: run
 
 .PHONY : prepare
 prepare:
-	rm *.exec  ||  true
+	@rm *.exec  ||  true  2>  /dev/null
 
 run : prepare  $(EXECS)
 	@echo "END ----------------------------------------------------------------"
@@ -38,16 +38,21 @@ debug:
 
 
 %.exec: %.cpp
-	@echo $@ '----------------------------------------------------------------'
+	@echo
+	@echo
+	@echo
+	@echo '______________________________________________________________________'
+	@echo $@
+	@echo
 	@$(CXX) $(INCLUDES) $(CXXFLAGS) $<  $(LIBS) -o $@
 	$(VALGRIND) ./$@
-	rm -f ./$@
+	@rm -f ./$@
 
 
 
 .PHONY : clean
 clean:
-	rm -f *.exec
+	@rm -f *.exec  2> /dev/null
 
 
 #onefile.exec : onefile.cpp
