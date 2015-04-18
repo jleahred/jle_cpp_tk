@@ -1,6 +1,8 @@
 #ifndef JLE_VERSION_HPP_INCLUDED
 #define JLE_VERSION_HPP_INCLUDED
 
+
+//!  generic namespace
 namespace jle
 {
 

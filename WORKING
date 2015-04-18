@@ -1,3 +1,7 @@
+test  string.h
+examples string.h
+std::vector in string.h  replace it with  jle::vector
+
 chrono
   uadjust time
   big adjust time per day
@@ -5,3 +9,6 @@ chrono
 alarms
 containers
 strings
+YAML
+  · alarm -> YAML
+  · YAML -> alarm

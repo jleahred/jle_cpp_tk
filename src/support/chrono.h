@@ -13,7 +13,10 @@ using namespace std::literals;
 
 
 
-namespace jle {  namespace  chrono {
+namespace jle {
+
+    //! Here we have helpers and functions for time_point and durations
+    namespace  chrono {
 
     using  duration   = std::chrono::milliseconds;
 
