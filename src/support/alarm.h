@@ -7,6 +7,7 @@
 #include <list>
 
 #include "support/chrono.h"
+#include "support/string.h"
 
 
 
@@ -15,10 +16,8 @@ namespace jle {
 //! small helpers for alarms
 namespace al {
 
-#define __INTERNAL_ALARM_LOCAL_MTK_SS(__EXPR__) (static_cast<std::ostringstream*>(&(std::ostringstream().flush() << __EXPR__))->str())
 
-
-#define  JLE_HERE  __INTERNAL_LOCAL_MTK_SS(__PRETTY_FUNCTION__ << "(" << __FILE__ << ":" << __LINE__ << ")")
+#define  JLE_HERE  JLE_SS(__PRETTY_FUNCTION__ << "(" << __FILE__ << ":" << __LINE__ << ")")
 
 
 //---------------------------------------------------------------------------
@@ -57,7 +56,7 @@ struct  base_alarm {
     std::string             message         ;
     al::priority            priority        ;
     al::type                type            ;
-    chrono::time_point      time_point      ;
+    jle::chrono::time_point time_point      ;
 
     base_alarm (
                         const std::string&      _code_source  ,
@@ -71,7 +70,7 @@ struct  base_alarm {
             message     (_message),
             priority    (_priority),
             type        (_type),
-            time_point  (chrono::now())
+            time_point  (jle::chrono::now())
             {};
 
 
@@ -149,57 +148,57 @@ extern void alarm_msg (const alarm& error);
 
 
 
-//  rethrow no apila si los mensajes son iguales
-#define MTK_CATCH_RETHROW(__SUBJECT__, __DESCRIPTION__)    \
-                  catch (mtk::Alarm& __alarm__) {                   \
+//  rethrow will ignore when alarms are equals
+#define JLE_CATCH_RETHROW(__SUBJECT__, __DESCRIPTION__)    \
+                  catch (jle::Alarm& __alarm__) {                   \
                     if (__alarm__.subject == __SUBJECT__   &&  __alarm__.message ==(__DESCRIPTION__ +std::string(" alarm")))  \
                         throw __alarm__;  \
-                    mtk::Alarm  mtkError(                              \
-                                MTK_HERE,                            \
+                    jle::Alarm  jle_error(                              \
+                                JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  +std::string(" alarm"), \
                                 __alarm__.priority,                      \
                                 __alarm__.type                            \
                         );                                              \
-                    mtkError.Add(__alarm__);                         \
-                    throw (mtkError);                                   \
+                    jle_error.add(__alarm__);                         \
+                    throw (jle_error);                                   \
                 } catch (std::exception& e) {                           \
-                    throw mtk::Alarm(                                 \
-                                MTK_HERE,                            \
+                    throw jle::alarm(                                 \
+                                JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  +std::string(" exception ") + e.what(),\
-                                mtk::alPriorCritic);                    \
+                                jle::alPriorCritic);                    \
                 } catch (...) {                                         \
-                    throw mtk::Alarm(                                 \
-                                MTK_HERE,                            \
+                    throw jle::alarm(                                 \
+                                JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__   +std::string(" ..."), \
-                                mtk::alPriorCritic);                    \
+                                jle::alPriorCritic);                    \
                 }
 
-#define MTK_CATCH_CALLFUNCION(__FUNCTION2CALL__, __SUBJECT__, __DESCRIPTION__)    \
-                  catch (const mtk::Alarm& __alarm__) {                   \
-                    mtk::Alarm  mtkError(                              \
-                                MTK_HERE,                            \
+#define JLE_CATCH_CALLFUNCION(__FUNCTION2CALL__, __SUBJECT__, __DESCRIPTION__)    \
+                  catch (const jle::alarm& __alarm__) {                   \
+                    jle::alarm  jle_error(                              \
+                                JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  + std::string(" alarm"),\
                                 __alarm__.priority,                      \
                                 __alarm__.type                            \
                         );                                              \
-                    mtkError.Add(__alarm__);				\
-                    __FUNCTION2CALL__ (mtkError);                                   \
+                    jle_error.add(__alarm__);				\
+                    __FUNCTION2CALL__ (jle_error);                                   \
                 } catch (std::exception& e) {                           \
-                    __FUNCTION2CALL__ (mtk::Alarm(                                 \
-                                MTK_HERE,                            \
+                    __FUNCTION2CALL__ (jle::alarm(                                 \
+                                JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  + std::string(" exception ") + e.what(), \
-                                mtk::alPriorCritic));                    \
+                                jle::alPriorCritic));                    \
                 } catch (...) {                                         \
-                    __FUNCTION2CALL__ (mtk::Alarm(                                 \
-                                MTK_HERE,                            \
+                    __FUNCTION2CALL__ (jle::alarm(                                 \
+                                JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  + std::string(" exception"),\
-                                mtk::alPriorCritic));                    \
+                                jle::alPriorCritic));                    \
                 }
 
 
