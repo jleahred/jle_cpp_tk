@@ -65,14 +65,15 @@ void write_body (std::ostream& os, const al::base_alarm&  a)
         << " @" << a.code_source;
 }
 
-
-std::ostream& operator<< (std::ostream& os, const al::base_alarm&  a)
+namespace al {
+std::ostream& operator<< (std::ostream& os, const base_alarm&  a)
 {
     write_time(os, a.time_point);
     write_body(os, a);
 
     return os;
 };
+}  // namespace al
 
 std::ostream& operator<< (std::ostream& os, const alarm& a)
 {
@@ -85,7 +86,7 @@ std::ostream& operator<< (std::ostream& os, const alarm& a)
     while (it != a.stack_alarms.end())
     {
         os << std::endl;
-        os <<  s_AlignRight(JLE_SS(it->time_point - a.time_point), 12);
+        os <<  s_align_right(JLE_SS(it->time_point - a.time_point), 12);
         write_body(os, *it);
         ++it;
     }
