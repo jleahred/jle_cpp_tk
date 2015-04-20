@@ -80,7 +80,8 @@ std::ostream& operator<< (std::ostream& os, const base_alarm&  a)
 };      //  namespace jle {
 
 
-std::ostream& operator<< (std::ostream& os, const jle::alarm& a)
+
+std::ostream& operator<< (std::ostream& os, const ::jle::alarm& a)
 {
     os << static_cast<const jle::al::base_alarm&>(a);
 
@@ -91,11 +92,11 @@ std::ostream& operator<< (std::ostream& os, const jle::alarm& a)
     while (it != a.stack_alarms.end())
     {
         os << std::endl;
-        os << jle::chrono::now();
-        os << jle::s_align_right(JLE_SS("it->time_point - a.time_point" << 88), 12);
+        os << jle::s_align_right(JLE_SS(it->time_point - a.time_point), 12);
         jle::write_body(os, *it);
         ++it;
     }
 
     return os;
 };
+
