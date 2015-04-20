@@ -76,8 +76,9 @@ struct  base_alarm {
 
     virtual ~base_alarm(){};
 
-    friend std::ostream& operator<< (std::ostream& os, const al::base_alarm& a);
+    friend std::ostream& operator<< (std::ostream& os, const ::jle::al::base_alarm& a);
 };
+std::ostream& operator<< (std::ostream& os, const ::jle::al::base_alarm& a);
 
 
 };      //  namespace al
@@ -128,11 +129,12 @@ struct alarm : public  al::base_alarm
 
     std::list<base_alarm>   stack_alarms;
 
-friend std::ostream& operator<< (std::ostream& os, const alarm& a);
+    friend std::ostream& operator<< (std::ostream& os, const jle::alarm& a);
 
 private:
     static int  class_alarm_id;
 };
+
 
 
 //---------------------------------------------------------------------------
@@ -205,6 +207,8 @@ extern void alarm_msg (const alarm& error);
 
 };   // end namespace jle {
 
+
+std::ostream& operator<< (std::ostream& os, const jle::alarm& a);
 
 
 #endif   // JLE_ALARM_H

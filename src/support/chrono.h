@@ -81,11 +81,11 @@ namespace jle {
 
 namespace jle {  namespace  chrono { namespace  stream {
 
-    std::ostream& operator<<(std::ostream& out, const jle::chrono::time_point &);
-    std::ostream& operator<<(std::ostream& out, const jle::chrono::duration &);
+    std::ostream& operator<<(std::ostream& out, const ::jle::chrono::time_point &);
+    std::ostream& operator<<(std::ostream& out, const ::jle::chrono::duration &);
 
     template<typename T, typename __p>
-    std::ostream& operator<<(std::ostream& out, const std::chrono::duration<T, __p> &d)
+    std::ostream& operator<<(std::ostream& out, const ::std::chrono::duration<T, __p> &d)
     {
         return operator<<(out, std::chrono::duration_cast<std::chrono::milliseconds>(d));
     }

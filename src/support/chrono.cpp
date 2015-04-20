@@ -174,7 +174,7 @@ std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp)
 
 namespace jle {  namespace  chrono { namespace  stream {
 
-std::ostream& operator<<(std::ostream& out, const jle::chrono::time_point &tp)
+std::ostream& operator<<(std::ostream& out, const ::jle::chrono::time_point &tp)
 {
     std::tm _tm;
     int milliseconds;
@@ -198,7 +198,7 @@ std::ostream& operator<<(std::ostream& out, const jle::chrono::time_point &tp)
     return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const jle::chrono::duration &d)
+std::ostream& operator<<(std::ostream& out, const ::jle::chrono::duration &d)
 {
     long pending = d.count();
     std::string  sign = pending < 0 ? "-" : "";

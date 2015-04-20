@@ -75,25 +75,27 @@ std::ostream& operator<< (std::ostream& os, const base_alarm&  a)
 };
 }  // namespace al
 
-std::ostream& operator<< (std::ostream& os, const alarm& a)
+
+//---------------------------------------------------------------------------
+};      //  namespace jle {
+
+
+std::ostream& operator<< (std::ostream& os, const jle::alarm& a)
 {
-    os << static_cast<const al::base_alarm&>(a);
+    os << static_cast<const jle::al::base_alarm&>(a);
 
     if (a.stack_alarms.size()>0)
         os << " [" << a.alarm_id<< "]";
 
-    std::list<al::base_alarm>::const_iterator it = a.stack_alarms.cbegin();
+    std::list<jle::al::base_alarm>::const_iterator it = a.stack_alarms.cbegin();
     while (it != a.stack_alarms.end())
     {
         os << std::endl;
-        os <<  s_align_right(JLE_SS(it->time_point - a.time_point), 12);
-        write_body(os, *it);
+        os << jle::chrono::now();
+        os << jle::s_align_right(JLE_SS("it->time_point - a.time_point" << 88), 12);
+        jle::write_body(os, *it);
         ++it;
     }
 
     return os;
 };
-
-//---------------------------------------------------------------------------
-};      //  namespace jle {
-
