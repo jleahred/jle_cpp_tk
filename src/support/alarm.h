@@ -11,6 +11,11 @@
 
 
 
+//!  \example  ./support/ex_alarm.cpp
+
+
+
+
 namespace jle {
 
 //! small helpers for alarms
@@ -75,10 +80,7 @@ struct  base_alarm {
 
 
     virtual ~base_alarm(){};
-
-    friend std::ostream& operator<< (std::ostream& os, const ::jle::al::base_alarm& a);
 };
-std::ostream& operator<< (std::ostream& os, const ::jle::al::base_alarm& a);
 
 
 };      //  namespace al
@@ -129,8 +131,6 @@ struct alarm : public  al::base_alarm
 
     std::list<base_alarm>   stack_alarms;
 
-    friend std::ostream& operator<< (std::ostream& os, const ::jle::alarm& a);
-
 private:
     static int  class_alarm_id;
 };
@@ -152,10 +152,10 @@ extern void alarm_msg (const alarm& error);
 
 //  rethrow will ignore when alarms are equals
 #define JLE_CATCH_RETHROW(__SUBJECT__, __DESCRIPTION__)    \
-                  catch (jle::Alarm& __alarm__) {                   \
+                  catch (jle::alarm& __alarm__) {                   \
                     if (__alarm__.subject == __SUBJECT__   &&  __alarm__.message ==(__DESCRIPTION__ +std::string(" alarm")))  \
                         throw __alarm__;  \
-                    jle::Alarm  jle_error(                              \
+                    jle::alarm  jle_error(                              \
                                 JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  +std::string(" alarm"), \
@@ -169,13 +169,13 @@ extern void alarm_msg (const alarm& error);
                                 JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  +std::string(" exception ") + e.what(),\
-                                jle::alPriorCritic);                    \
+                                jle::al::priority::critic);                    \
                 } catch (...) {                                         \
                     throw jle::alarm(                                 \
                                 JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__   +std::string(" ..."), \
-                                jle::alPriorCritic);                    \
+                                jle::al::priority::critic);                    \
                 }
 
 #define JLE_CATCH_CALLFUNCION(__FUNCTION2CALL__, __SUBJECT__, __DESCRIPTION__)    \
@@ -194,20 +194,20 @@ extern void alarm_msg (const alarm& error);
                                 JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  + std::string(" exception ") + e.what(), \
-                                jle::alPriorCritic));                    \
+                                jle::al::priority::critic));                    \
                 } catch (...) {                                         \
                     __FUNCTION2CALL__ (jle::alarm(                                 \
                                 JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  + std::string(" exception"),\
-                                jle::alPriorCritic));                    \
+                                jle::al::priority::critic));                    \
                 }
 
 
 };   // end namespace jle {
 
+std::ostream& operator<< (std::ostream& os, const jle::alarm& a);
 
-std::ostream& operator<< (std::ostream& os, const ::jle::alarm& a);
 
 
 

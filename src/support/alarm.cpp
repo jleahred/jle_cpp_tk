@@ -56,6 +56,8 @@ void write_body (std::ostream& os, const al::base_alarm&  a)
         os << " RealTm";
     else if (a.type == al::type::unknown)
         os << " Unkown";
+    else if (a.type == al::type::logic_error)
+        os << " LogErr";
     else
         os << " <" << int(a.type) << ">";
 

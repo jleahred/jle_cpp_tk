@@ -71,9 +71,28 @@ JLE_SS("asdfds" << var1 << var2 << std::endl);
 
 **JLE_SS** will produce a `ostringstream` with all it powers (and safer than +), therefore more expressive
 
+
+
+##  Converting
+
+s_try_sxxx  Convert an string to integer, double, duration, time point...
+
+You can provide a value in case conversion fail.
+It will return a tuple with the converted value or the default and a boolean indicating if conversion was right
+
+Another utilities are...
+
+- Trimming
+- Align
+- Splitting
+
+
 links:
     - example: @link /support/ex_jle_ss.cpp @endlink
+    - example: @link /support/ex_jle_string.cpp @endlink
     - header: @link /support/string.h  @endlink
+
+
 
 
 
@@ -208,3 +227,18 @@ links:
     - header: @link /support/chrono.h  @endlink
 
 
+
+\section alarm
+
+C++, in case of an exception, will not inform you about the call stack.
+
+We have the exception type. It's great, but we don't have nested calls.
+
+We can not force the compiler to inform about the stack call when an exception is raised, but
+we can give you the opportunity to stack errors information.
+
+
+links:
+    - see: #jle::alarm
+    - example: @link /support/ex_alarm.cpp @endlink
+    - header: @link /support/alarm.h  @endlink

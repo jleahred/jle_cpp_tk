@@ -10,8 +10,9 @@
 
 
 //!  \example  ./support/ex_jle_ss.cpp
+//!  \example  ./support/ex_jle_string.cpp
 
-//#define JLE_SS(__EXPR__) (static_cast<std::ostringstream*>(&(std::ostringstream().flush() << __EXPR__)->str())
+
 #define JLE_SS(__EXPR__) ((dynamic_cast<std::ostringstream &>(std::ostringstream().seekp(0, std::ios_base::cur) << __EXPR__ )).str())
 
 
@@ -21,7 +22,7 @@ namespace jle
 
 
 
-    //! \brief  try to convert from string to duration
+    //! \brief  try to convert from string to double
     std::tuple<double, bool>
     s_try_s2d                (const std::string&    s, double def_val );
 

@@ -284,7 +284,7 @@ std::string     s_align_right(const std::string& s, int size, char char_fill)
 
 std::string s_normalize_utf8(const std::string& source_string)
 {
-    std::string deestination_string;
+    std::string destination_string;
     unsigned char aux_char;
 
     for (unsigned int contador=0; contador < source_string.size(); contador++)
@@ -296,69 +296,69 @@ std::string s_normalize_utf8(const std::string& source_string)
             switch (aux_char)
             {
                 case 0xE1: //'á'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0xA1);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0xA1);
                     break;
                 case 0xC1: //'Á'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0x81);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0x81);
                     break;
                 case 0xE9: //'é'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0xA9);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0xA9);
                     break;
                 case 0xC9: //'É'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0x89);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0x89);
                     break;
                 case 0xEA: //'í'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0xAD);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0xAD);
                     break;
                 case 0xCD: //'Í'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0x8D);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0x8D);
                     break;
                 case 0xF3: //'ó'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0xB3);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0xB3);
                     break;
                 case 0xD3: //'Ó'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0x93);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0x93);
                     break;
                 case 0xFA: //'ú'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0xBA);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0xBA);
                     break;
                 case 0xDA: //'Ú'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0x9A);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0x9A);
                     break;
                 case 0xF1: //'ñ'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0xB1);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0xB1);
                     break;
                 case 0xD1: //'Ñ'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0x91);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0x91);
                     break;
                 case 0xFC: //'ü'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0xBC);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0xBC);
                     break;
                 case 0xDC: //'Ü'
-                    deestination_string+=char(0xC3);
-                    deestination_string+=char(0x9C);
+                    destination_string+=char(0xC3);
+                    destination_string+=char(0x9C);
                     break;
                 default:
-                    deestination_string+="_";
+                    destination_string+="_";
             }
         }
         else
-            deestination_string+=source_string[contador];
+            destination_string+=source_string[contador];
     }
-    return deestination_string;
+    return destination_string;
 }
 
 
