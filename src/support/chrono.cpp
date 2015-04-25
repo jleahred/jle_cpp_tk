@@ -153,7 +153,7 @@ std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp)
     static auto init_monotonic_time = std::get<1>(ref_times);
 
     int correct_sign = tp.tp < init_monotonic_time  ?  1  :  0;
-    std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp.tp - init_monotonic_time) - std::chrono::seconds(correct_sign));
+    std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp.tp - init_monotonic_time) /*- std::chrono::seconds(correct_sign)*/);
     struct tm * ptm;
     ptm = gmtime ( &time_t );
 
