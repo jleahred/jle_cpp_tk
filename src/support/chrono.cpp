@@ -152,15 +152,17 @@ std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp)
     static auto init_machine_time = std::get<0>(ref_times);
     static auto init_monotonic_time = std::get<1>(ref_times);
 
-    std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp.tp - init_monotonic_time));
+    int correct_sign = tp.tp < init_monotonic_time  ?  1  :  0;
+    std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp.tp - init_monotonic_time) /*- std::chrono::seconds(correct_sign)*/);
     struct tm * ptm;
     ptm = gmtime ( &time_t );
 
     int milliseconds {static_cast<int>(
                         std::chrono::duration_cast<std::chrono::milliseconds>
                                     (tp.tp.time_since_epoch())
-                                    .count()) % 1000
+                                    .count() % 1000)
                      };
+    if(milliseconds<0)  milliseconds = correct_sign*1000 +milliseconds;
     return std::make_tuple(*ptm, milliseconds);
 }
 
@@ -174,7 +176,7 @@ std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp)
 
 namespace jle {  namespace  chrono { namespace  stream {
 
-std::ostream& operator<<(std::ostream& out, const jle::chrono::time_point &tp)
+std::ostream& operator<<(std::ostream& out, const ::jle::chrono::time_point &tp)
 {
     std::tm _tm;
     int milliseconds;
@@ -198,7 +200,7 @@ std::ostream& operator<<(std::ostream& out, const jle::chrono::time_point &tp)
     return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const jle::chrono::duration &d)
+std::ostream& operator<<(std::ostream& out, const ::jle::chrono::duration &d)
 {
     long pending = d.count();
     std::string  sign = pending < 0 ? "-" : "";

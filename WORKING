@@ -1,7 +1,16 @@
+rename support -> core
+
+
+std::vector in string.h  replace it with  jle::vector
+
 chrono
   uadjust time
   big adjust time per day
 
-alarms
 containers
-strings
+
+YAML
+  · alarm -> YAML
+  · YAML -> alarm
+
+JSON

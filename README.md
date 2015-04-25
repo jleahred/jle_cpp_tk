@@ -17,7 +17,9 @@
 ### Why
 
 C++ is not the safest programing language in the world. In fact, it's easy to produce *undefined behaviour* working with C++.
-It would be interesting to work with C++ in a safe way. Not only for me, also for less C++ experience people in a team.
+In several cases, it would be interesting to work in a safe way (no body like crashes).
+Working in a team (generally diferent levels), it's also desirable to have safety in mind.
+
 
 Some years ago I wrote a C++ toolkit with regular expressions, tuples, class definition IDL, fsm IDL, config files. LL(n) parser, signal-slot, monotonic date time with adjustments...
 
@@ -28,9 +30,9 @@ Now gcc and other compilers run a lot of features from C++11, C++14 and partiall
 Some of the tools I wrote or added to my library, are not necessary any more.
 The implementation and API can also be improved.
 
-For example... I wrote a smart_pointer called CountPtr. I also wrote to manage tuples,
+For example... I wrote a smart_pointer called CountPtr. I also wrote code to manage tuples,
 I wrote a beautifull, platform independent, safe, and easy to use classes to deal with date_time and durations,
-I added a small library for regular expressions. These features have been added to C++
+I added a small wrapper library for PCRE regular expressions. These features have been added to C++
 
 Now, we also have type inference, lambdas, variadic templates, initializer lists...
 
@@ -47,11 +49,13 @@ My aim is different from C++.
     - I don't like undefined behaviour
     - I don't like crashes due to programming mistakes
     - C++ is a dangerous language. It's easy to have crashes, I want a library protecting and helping the programmer.
+    - Reactive programming
+    - If we have a fail processing a message, usually is better to inform about it and continue with next one.
 - KISS and YAGNI
-    - Easy to use API (the implmentation could be complex)
+    - Easy to use API (the implementation could be complex)
     - I will introduce features as soon I will require
-    - No thousands of options, better few options easy to use and less verbose
-- Avoid write only code using this library. The code using this library...
+    - No thousands of options, better few options, easy to use and less verbose
+- Make dificult to write only code using this library. The code using this library...
     - could not be simple to write
     - has to be easy to read
 - Small
@@ -137,15 +141,18 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~smart_pointer~~
     - (done) ~~just a safe wrapper over stl~~
 - (done) ~~signal_slot~~
+- (90%) date_time
+- (done) ~~string tools~~
+- (done) ~~exception type with stack~~
 - safe containers
-- date_time
-- exception type with stack
-- integer div 0 protection
 - double safe comparison
-- string tools
-- timers
+- nullable type
+- integer div 0 protection
+- integer get_decimals
 - LL(n) parser
+- qt gui for LL(n)
 - .ini and .cfg parsing files
+- timers
 - IDL class generation
     - stream
     - yaml
@@ -158,7 +165,6 @@ In any case, I plan to follow next order (more or less)...
 - async signals
 - soft-realtime facilities
 - paralelism help
-- nullable type
 - factory template
 - ...
 

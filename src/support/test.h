@@ -16,15 +16,16 @@
 /** \brief  It writes and recolect information about a file starting a test
  *
  */
-#define JLE_TEST_FILE std::cout << std::endl << std::endl << "TESTING on  FILE ->   " << __FILE__ << std::endl;
+#define JLE_TEST_FILE std::cout << std::endl << std::endl << std::endl   \
+            << "_________________________________________________" << std::endl << std::endl   \
+            << "TESTING on  FILE ->   " << __FILE__ << std::endl;
 
 
 /** \brief  It writes and recolect about specific test
  *
  */
 #define JLE_TEST_INIT std::cout << std::endl \
-            << "_________________________________________________" << std::endl << std::endl  \
-            << "INIT:>  << " << __FUNCTION__ << " >>" << std::endl;
+            << std::endl << "INIT:>  << " << __FUNCTION__ << " >>" << std::endl;
 
 /** \brief  It writes a dot con cout in order to show test progression
  *
@@ -57,7 +58,7 @@
 /** \brief  Gets an write recolected test info
  *
  */
-#define JLE_TEST_REPORT   std::cout << std::endl << "FINISHED TEST  OK." << std::endl;
+#define JLE_TEST_REPORT   std::cout << std::endl << "FINISHED TEST  OK." << std::endl;  return 0;
 
 
 #define JLE_TEST_EXCEPTION(__EXPRESION__)  \
