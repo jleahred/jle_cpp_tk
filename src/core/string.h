@@ -5,12 +5,12 @@
 #include <sstream>
 #include <vector>
 
-#include "support/chrono.h"
+#include "core/chrono.h"
 
 
 
-//!  \example  ./support/ex_jle_ss.cpp
-//!  \example  ./support/ex_jle_string.cpp
+//!  \example  ./core/ex_jle_ss.cpp
+//!  \example  ./core/ex_jle_string.cpp
 
 
 #define JLE_SS(__EXPR__) ((dynamic_cast<std::ostringstream &>(std::ostringstream().seekp(0, std::ios_base::cur) << __EXPR__ )).str())

@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "support/chrono.h"
-#include "support/misc.h"
-#include "support/test.h"
+#include "core/chrono.h"
+#include "core/misc.h"
+#include "core/test.h"
 
 
 void test_sum_duration(void)

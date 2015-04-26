@@ -9,5 +9,5 @@ default:
 
 .PHONY : test
 test:
-	make -C support/ test
+	make -C core/ test
 

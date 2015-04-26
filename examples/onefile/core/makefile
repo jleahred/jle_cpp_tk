@@ -3,7 +3,7 @@ INCLUDES = -I../../../src
 
 
 # library paths
-LIBS = -L../../../lib  -ljlesupport
+LIBS = -L../../../lib  -ljlecore
 
 
 

@@ -4,8 +4,8 @@
 #include <bits/shared_ptr.h>
 
 /**
- *     \example  ./support/ex_shared_ptr.cpp
- *     \example  ./support/ex_weak_ptr.cpp
+ *     \example  ./core/ex_shared_ptr.cpp
+ *     \example  ./core/ex_weak_ptr.cpp
  */
 
 
@@ -34,7 +34,7 @@ class weak_ptr;
     _No external dependencies_
 
     Example:
-    \include ./support/shared_ptr.cpp
+    \include ./core/shared_ptr.cpp
 */
 
 template<typename _Tp, std::_Lock_policy _Lp = std::__default_lock_policy>
@@ -557,7 +557,7 @@ return shared_ptr<_Tp>(__r, __p);
 
     Example...
 
-    @include ./support/weak_ptr.cpp
+    @include ./core/weak_ptr.cpp
 
 */
 /**

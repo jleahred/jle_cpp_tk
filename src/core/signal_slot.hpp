@@ -1,15 +1,15 @@
 #ifndef JLE_SIGNAL_SLOT_H
 #define JLE_SIGNAL_SLOT_H
 
-///  \example  ./support/ex_signal_slot.cpp
+///  \example  ./core/ex_signal_slot.cpp
 
 
 #include <list>
 #include <stdexcept>    //  run_time_error exception
 #include <tuple>
 
-#include "support/basic_types.hpp"
-#include "support/shared_ptr.hpp"
+#include "core/basic_types.hpp"
+#include "core/shared_ptr.hpp"
 
 
 
@@ -76,7 +76,7 @@ public:
     It will track the life in order to properly disconnection
 
     Example:
-    \include ./support/signal_slot.cpp
+    \include ./core/signal_slot.cpp
 */
 
 
@@ -214,7 +214,7 @@ public:
     It is static, good performance and compiling time checked
 
     Example:
-    \include ./support/signal_slot.cpp
+    \include ./core/signal_slot.cpp
 */
 
 template <typename... Args>

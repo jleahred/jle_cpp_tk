@@ -1,4 +1,4 @@
-# lib_support
+# lib_core
 
 \section smart_pointers
 
@@ -8,7 +8,7 @@ Safe shared_ptr wrapper
 
 links:
  - see: #jle::shared_ptr
- - example: @link /support/ex_shared_ptr.cpp @endlink
+ - example: @link /core/ex_shared_ptr.cpp @endlink
 
 
 ## weak_ptr
@@ -17,15 +17,15 @@ Safe weak_ptr wrapper
 
 links:
     - see: #jle::weak_ptr
-    - example: @link /support/ex_shared_ptr.cpp @endlink
-    - header: @link /support/shared_ptr.hpp  @endlink
+    - example: @link /core/ex_shared_ptr.cpp @endlink
+    - header: @link /core/shared_ptr.hpp  @endlink
 
 
 \section test
 
-Some macros and functions to help with test support/test.h
+Some macros and functions to help with test core/test.h
 
-See on \ref examples/support/test_shared_ptr.cpp
+See on \ref examples/core/test_shared_ptr.cpp
 
 briefly...
 
@@ -39,8 +39,8 @@ JLE_TEST_ASSERT_NO_DOT:  |  check truth without writting a dot
 JLE_TEST_EXCEPTION:  |  check expression throws an exception
 
 links:
-    - example: @link /support/ex_test.cpp @endlink
-    - header: @link /support/test.h  @endlink
+    - example: @link /core/ex_test.cpp @endlink
+    - header: @link /core/test.h  @endlink
 
 
 \section string
@@ -88,9 +88,9 @@ Another utilities are...
 
 
 links:
-    - example: @link /support/ex_jle_ss.cpp @endlink
-    - example: @link /support/ex_jle_string.cpp @endlink
-    - header: @link /support/string.h  @endlink
+    - example: @link /core/ex_jle_ss.cpp @endlink
+    - example: @link /core/ex_jle_string.cpp @endlink
+    - header: @link /core/string.h  @endlink
 
 
 
@@ -127,7 +127,7 @@ signal -> signal  |  signal.connect(&signal_receiver);
 
 In my computer with no params, you can emit arround 200.000 signals per second...
 
-Executing...  @link /support/signal_slot_performance.cpp @endlink
+Executing...  @link /core/signal_slot_performance.cpp @endlink
 
      > ---------------------------------------------------------------------
      add int loop
@@ -166,8 +166,8 @@ Executing...  @link /support/signal_slot_performance.cpp @endlink
 
 links:
     - see: #jle::signal  #jle::signal_receptor
-    - example: @link /support/ex_signal_slot.cpp @endlink
-    - header: @link /support/signal_slot.hpp  @endlink
+    - example: @link /core/ex_signal_slot.cpp @endlink
+    - header: @link /core/signal_slot.hpp  @endlink
 
 \warning
     **What if you destroy the signal while it is emiting?** <br>
@@ -205,7 +205,7 @@ PC clock is not precisse at all. And system clock syncroniced with ntp is not gu
 
 **jle::time_point** will be monotonic ant it will syncrhonize with system clock slowly. Except once per day.
 
-using jle::chono (`#include "support/chrono.h"`), is a bit intrusive...
+using jle::chono (`#include "core/chrono.h"`), is a bit intrusive...
 
 - It will add `using namespace std::literals;` in order to use time literals as `1s + 123ms`
 - It will define `operator<<` on `stream` for `duration`
@@ -223,8 +223,8 @@ As usual, take a look to examples.
 
 links:
     - see: #jle::chrono::time_point
-    - example: @link /support/ex_chrono.cpp @endlink
-    - header: @link /support/chrono.h  @endlink
+    - example: @link /core/ex_chrono.cpp @endlink
+    - header: @link /core/chrono.h  @endlink
 
 
 
@@ -240,5 +240,5 @@ we can give you the opportunity to stack errors information.
 
 links:
     - see: #jle::alarm
-    - example: @link /support/ex_alarm.cpp @endlink
-    - header: @link /support/alarm.h  @endlink
+    - example: @link /core/ex_alarm.cpp @endlink
+    - header: @link /core/alarm.h  @endlink

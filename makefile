@@ -75,19 +75,19 @@ clean: cleanlibs
 
 .PHONY : cleanlibs
 cleanlibs:
-	make -C src/support clean
+	make -C src/core clean
 	find . -name temp | xargs rm -rf
 
 
 
 
 .PHONY : libs
-libs: prepare clean   lib_jle_support
-	make -C src/support lib
+libs: prepare clean   lib_jle_core
+	make -C src/core lib
 
 
-.PHONY : lib_jle_support
-lib_jle_support: prepare
-	make -C src/support lib
+.PHONY : lib_jle_core
+lib_jle_core: prepare
+	make -C src/core lib
 
 

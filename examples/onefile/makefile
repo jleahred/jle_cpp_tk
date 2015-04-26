@@ -9,5 +9,5 @@ default:
 
 .PHONY : run
 run:
-	make -C support/ run
+	make -C core/ run
 

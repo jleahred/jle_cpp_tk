@@ -8,7 +8,7 @@ using namespace std::literals;
 
 
 /**
- *     \example  ./support/ex_chrono.cpp
+ *     \example  ./core/ex_chrono.cpp
  */
 
 

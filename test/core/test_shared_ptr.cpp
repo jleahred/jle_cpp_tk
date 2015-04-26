@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "support/shared_ptr.hpp"
-#include "support/test.h"
+#include "core/shared_ptr.hpp"
+#include "core/test.h"
 
 
 

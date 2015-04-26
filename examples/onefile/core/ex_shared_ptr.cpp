@@ -1,7 +1,7 @@
 #include <iostream>
 
 
-#include "support/shared_ptr.hpp"
+#include "core/shared_ptr.hpp"
 
 struct Foo {
     Foo() { std::cout << "Foo...\n"; }

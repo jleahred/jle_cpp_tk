@@ -1,5 +1,5 @@
 #include <iostream>
-#include "support/alarm.h"
+#include "core/alarm.h"
 
 
 int main()

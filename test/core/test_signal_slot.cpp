@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "support/signal_slot.hpp"
-#include "support/test.h"
+#include "core/signal_slot.hpp"
+#include "core/test.h"
 
 
 

@@ -1,10 +1,10 @@
-#include "support/test.h"
+#include "core/test.h"
 
 
 #include <tuple>
 
-#include "support/string.h"
-#include "support/chrono.h"
+#include "core/string.h"
+#include "core/chrono.h"
 
 
 

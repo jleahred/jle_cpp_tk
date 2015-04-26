@@ -103,7 +103,7 @@ jle will also provide a base exception class with stack. You will have to fill t
 Folder  | Description
 ------------- | -------------
 src  |  source code
-src/support  |  _
+src/core  |  _
 src/xxx  |  pending
 bin  | generated bins
 doc  | generated doc

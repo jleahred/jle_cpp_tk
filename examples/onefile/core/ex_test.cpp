@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "support/shared_ptr.hpp"
-#include "support/misc.h"
-#include "support/test.h"
+#include "core/shared_ptr.hpp"
+#include "core/misc.h"
+#include "core/test.h"
 
 
 

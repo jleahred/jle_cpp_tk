@@ -3,14 +3,14 @@
 
 
 /**
- *     \example  ./support/ex_test.cpp
+ *     \example  ./core/ex_test.cpp
  */
 
 
 #include <iostream>
 
-#include "support/string.h"
-#include "support/misc.h"
+#include "core/string.h"
+#include "core/misc.h"
 
 
 /** \brief  It writes and recolect information about a file starting a test

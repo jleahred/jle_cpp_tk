@@ -175,7 +175,7 @@ STRIP_FROM_INC_PATH    =
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter (but
 # less readable) file names. This can be useful is your file systems doesn't
-# support long names like on DOS, Mac, or CD-ROM.
+# core long names like on DOS, Mac, or CD-ROM.
 # The default value is: NO.
 
 SHORT_NAMES            = NO
@@ -278,7 +278,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 # parses. With this tag you can assign which parser to use for a given
 # extension. Doxygen has a built-in mapping, but you can override or extend it
 # using this tag. The format is ext=language, where ext is a file extension, and
-# language is one of the parsers supported by doxygen: IDL, Java, Javascript,
+# language is one of the parsers coreed by doxygen: IDL, Java, Javascript,
 # C#, C, C++, D, PHP, Objective-C, Python, Fortran (fixed format Fortran:
 # FortranFixed, free formatted Fortran: FortranFree, unknown formatted Fortran:
 # Fortran. In the later case the parser tries to guess whether the code is fixed
@@ -293,7 +293,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 
 EXTENSION_MAPPING      =
 
-# If the MARKDOWN_SUPPORT tag is enabled then doxygen pre-processes all comments
+# If the MARKDOWN_core tag is enabled then doxygen pre-processes all comments
 # according to the Markdown format, which allows for more readable
 # documentation. See http://daringfireball.net/projects/markdown/ for details.
 # The output of markdown processing is further processed by doxygen, so you can
@@ -301,15 +301,15 @@ EXTENSION_MAPPING      =
 # case of backward compatibilities issues.
 # The default value is: YES.
 
-MARKDOWN_SUPPORT       = YES
+MARKDOWN_core       = YES
 
 # When enabled doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
 # be prevented in individual cases by by putting a % sign in front of the word
-# or globally by setting AUTOLINK_SUPPORT to NO.
+# or globally by setting AUTOLINK_core to NO.
 # The default value is: YES.
 
-AUTOLINK_SUPPORT       = YES
+AUTOLINK_core       = YES
 
 # If you use STL classes (i.e. std::string, std::vector, etc.) but do not want
 # to include (a tag file for) the STL sources as input, then you should set this
@@ -319,21 +319,21 @@ AUTOLINK_SUPPORT       = YES
 # diagrams that involve STL classes more complete and accurate.
 # The default value is: NO.
 
-BUILTIN_STL_SUPPORT    = NO
+BUILTIN_STL_core    = NO
 
 # If you use Microsoft's C++/CLI language, you should set this option to YES to
-# enable parsing support.
+# enable parsing core.
 # The default value is: NO.
 
-CPP_CLI_SUPPORT        = NO
+CPP_CLI_core        = NO
 
-# Set the SIP_SUPPORT tag to YES if your project consists of sip (see:
+# Set the SIP_core tag to YES if your project consists of sip (see:
 # http://www.riverbankcomputing.co.uk/software/sip/intro) sources only. Doxygen
 # will parse them like normal C++ but will assume all classes use public instead
 # of private inheritance when no explicit protection keyword is present.
 # The default value is: NO.
 
-SIP_SUPPORT            = NO
+SIP_core            = NO
 
 # For Microsoft's IDL there are propget and propput attributes to indicate
 # getter and setter methods for a property. Setting this option to YES will make
@@ -343,7 +343,7 @@ SIP_SUPPORT            = NO
 # should set this option to NO.
 # The default value is: YES.
 
-IDL_PROPERTY_SUPPORT   = YES
+IDL_PROPERTY_core   = YES
 
 # If member grouping is used in the documentation and the DISTRIBUTE_GROUP_DOC
 # tag is set to YES, then doxygen will reuse the documentation of the first
@@ -504,7 +504,7 @@ INTERNAL_DOCS          = NO
 # If the CASE_SENSE_NAMES tag is set to NO then doxygen will only generate file
 # names in lower-case letters. If set to YES upper-case letters are also
 # allowed. This is useful if you have classes or files whose names only differ
-# in case and if your file system supports case sensitive file names. Windows
+# in case and if your file system cores case sensitive file names. Windows
 # and Mac users are advised to set this option to NO.
 # The default value is: system dependent.
 
@@ -1425,7 +1425,7 @@ DISABLE_INDEX          = NO
 # structure should be generated to display hierarchical information. If the tag
 # value is set to YES, a side panel will be generated containing a tree-like
 # index structure (just like the one that is generated for HTML Help). For this
-# to work a browser that supports JavaScript, DHTML, CSS and frames is required
+# to work a browser that cores JavaScript, DHTML, CSS and frames is required
 # (i.e. any modern browser). Windows users are probably better off using the
 # HTML help feature. Via custom stylesheets (see HTML_EXTRA_STYLESHEET) one can
 # further fine-tune the look of the index. As an example, the default style
@@ -1473,7 +1473,7 @@ FORMULA_FONTSIZE       = 10
 
 # Use the FORMULA_TRANPARENT tag to determine whether or not the images
 # generated for formulas are transparent PNGs. Transparent PNGs are not
-# supported properly for IE 6.0, but are supported on all modern browsers.
+# coreed properly for IE 6.0, but are coreed on all modern browsers.
 #
 # Note that when changing this option you need to delete any form_*.png files in
 # the HTML output directory before the changes have effect.
@@ -1794,10 +1794,10 @@ COMPACT_RTF            = NO
 # If the RTF_HYPERLINKS tag is set to YES, the RTF that is generated will
 # contain hyperlink fields. The RTF file will contain links (just like the HTML
 # output) instead of page references. This makes the output suitable for online
-# browsing using Word or some other Word compatible readers that support those
+# browsing using Word or some other Word compatible readers that core those
 # fields.
 #
-# Note: WordPad (write) and others do not support links.
+# Note: WordPad (write) and others do not core links.
 # The default value is: NO.
 # This tag requires that the tag GENERATE_RTF is set to YES.
 
@@ -2303,7 +2303,7 @@ DOT_IMAGE_FORMAT       = png
 # Note that this requires a modern browser other than Internet Explorer. Tested
 # and working are Firefox, Chrome, Safari, and Opera.
 # Note: For IE 9+ you need to set HTML_FILE_EXTENSION to xhtml in order to make
-# the SVG files visible. Older versions of IE do not have SVG support.
+# the SVG files visible. Older versions of IE do not have SVG core.
 # The default value is: NO.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
@@ -2369,7 +2369,7 @@ MAX_DOT_GRAPH_DEPTH    = 0
 
 # Set the DOT_TRANSPARENT tag to YES to generate images with a transparent
 # background. This is disabled by default, because dot on Windows does not seem
-# to support this out of the box.
+# to core this out of the box.
 #
 # Warning: Depending on the platform used, enabling this option may lead to
 # badly anti-aliased labels on the edges of a graph (i.e. they become hard to
@@ -2381,7 +2381,7 @@ DOT_TRANSPARENT        = NO
 
 # Set the DOT_MULTI_TARGETS tag to YES allow dot to generate multiple output
 # files in one run (i.e. multiple -o and -T options on the command line). This
-# makes dot run faster, but since only newer versions of dot (>1.8.10) support
+# makes dot run faster, but since only newer versions of dot (>1.8.10) core
 # this, this feature is disabled by default.
 # The default value is: NO.
 # This tag requires that the tag HAVE_DOT is set to YES.

@@ -15,7 +15,7 @@ include ../../compopt_make
 
 
 # Output...
-OUT = ../../lib/libjlesupport.a
+OUT = ../../lib/libjlecore.a
 
 # include directories
 INCLUDES = -I..

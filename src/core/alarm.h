@@ -6,12 +6,12 @@
 #include <sstream>
 #include <list>
 
-#include "support/chrono.h"
-#include "support/string.h"
+#include "core/chrono.h"
+#include "core/string.h"
 
 
 
-//!  \example  ./support/ex_alarm.cpp
+//!  \example  ./core/ex_alarm.cpp
 
 
 
