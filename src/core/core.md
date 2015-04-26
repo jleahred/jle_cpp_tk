@@ -242,3 +242,29 @@ links:
     - see: #jle::alarm
     - example: @link /core/ex_alarm.cpp @endlink
     - header: @link /core/alarm.h  @endlink
+
+
+
+\section   dbl
+
+IEEE754 is great but isn't infinite accurate.
+
+There are two risk.
+
+- Rounds with conmutativity and asociativity operations
+- Base ten exact values that are periodic on binary
+
+http://joseluisestebanaparicio.blogspot.com.es/2008/04/el-famoso-formato-ieee754.html
+
+See also:
+- jle::log
+- jle::pow
+- jle::get_decimals10
+
+
+Using ''-Wfloat-equal'' helps a lot, but we want to compare in a quite safe way. This is jle::dbl for.
+
+links:
+    - see: #jle::dbl
+    - example: @link /core/ex_dbl.cpp @endlink
+    - header: @link /core/dbl.h  @endlink

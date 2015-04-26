@@ -103,7 +103,7 @@ jle will also provide a base exception class with stack. You will have to fill t
 Folder  | Description
 ------------- | -------------
 src  |  source code
-src/core  |  _
+src/core  |  Basic tools (signal-slot, strings...)
 src/xxx  |  pending
 bin  | generated bins
 doc  | generated doc
@@ -144,8 +144,8 @@ In any case, I plan to follow next order (more or less)...
 - (90%) date_time
 - (done) ~~string tools~~
 - (done) ~~exception type with stack~~
+- (done) ~~double safe comparison~~
 - safe containers
-- double safe comparison
 - nullable type
 - integer div 0 protection
 - integer get_decimals
