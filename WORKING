@@ -1,4 +1,8 @@
+containers examples and doc
+
 std::vector in string.h  replace it with  jle::vector
+
+
 
 tuples ostream <<
 
