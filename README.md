@@ -145,7 +145,7 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~string tools~~
 - (done) ~~exception type with stack~~
 - (done) ~~double safe comparison~~
-- safe containers
+- (done) ~~safe containers~~
 - nullable type
 - integer div 0 protection
 - integer get_decimals

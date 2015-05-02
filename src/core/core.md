@@ -268,3 +268,41 @@ links:
     - see: #jle::dbl
     - example: @link /core/ex_dbl.cpp @endlink
     - header: @link /core/dbl.h  @endlink
+
+
+\section   containers
+
+stl containers are great, but not safe.
+
+Iterators on stl::containers could dangle and they could generate indefined behaviour.
+
+In order to avoid it with moderate performance penalty, jle library will check the validity of iterators with "fail fast" pattern.
+
+It looks a bad idea to keep iterators when the container has been modified, adding or removing elements.
+It isn't very expensive to track iterators on these conditions.
+
+jle will throw an exception on invalid iterator operations (instead of undefined behaviour)...
+
+- Iterator pointing a modifyed container (added or removed elements)
+- Iterators on empty containers
+- Derrefering end iterator
+- Comparing iterators from different containers
+
+jle::containers are wrappers to stl containers with iterators verification
+
+
+See also:
+
+
+
+links:
+    - jle::vector
+    - jle::list
+    - jle::map
+    - jle::set
+    - example: @link /core/ex_container.cpp @endlink
+    - headers:
+        - @link /core/vector.hpp  @endlink
+        - @link /core/list.hpp  @endlink
+        - @link /core/map.hpp  @endlink
+        - @link /core/set.hpp  @endlink
