@@ -139,7 +139,7 @@ I don't plan to use it daily. I will write it simultaneously with... web applica
 In any case, I plan to follow next order (more or less)...
 
 - (done) ~~smart_pointer~~
-    - (done) ~~just a safe wrapper over stl~~
+    - (done) ~~just a safe wrapper over stl, but safer~~
 - (done) ~~signal_slot~~
 - (90%) date_time
 - (done) ~~string tools~~
@@ -148,7 +148,6 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~safe containers~~
 - nullable type
 - integer div 0 protection
-- integer get_decimals
 - LL(n) parser
 - qt gui for LL(n)
 - .ini and .cfg parsing files
