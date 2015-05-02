@@ -33,10 +33,18 @@ void test_vector(void)
     JLE_TEST_ASSERT(vint.back() == 33);
 
 
-    int counter = 0;
-    for(auto itvector=vint.begin(); itvector!=vint.end(); ++itvector)
-        ++counter;
-    JLE_TEST_ASSERT(counter == 5)
+    {
+        int counter = 0;
+        for(auto itvector=vint.begin(); itvector!=vint.end(); ++itvector)
+            ++counter;
+        JLE_TEST_ASSERT(counter == 5)
+    }
+    {
+        int sum = 0;
+        for(auto itvector : vint)
+            sum += itvector;
+        JLE_TEST_ASSERT(sum == 47)
+    }
 
     JLE_TEST_EXCEPTION(vint[100]);
     JLE_TEST_EXCEPTION(vint[5]);
@@ -66,7 +74,7 @@ void  test_map()
     JLE_TEST_ASSERT(mis.size() == 3);
 
     int counter=0;
-    for(auto it=mis.begin(); it != mis.end(); ++it)
+    for(auto _ : mis)
     {
         ++counter;
     }
@@ -101,10 +109,8 @@ void  test_list()
     JLE_TEST_ASSERT(li.size() == 3);
 
     int counter=0;
-    for(auto it=li.begin(); it != li.end(); ++it)
-    {
+    for(auto _ : li)
         ++counter;
-    }
 
     JLE_TEST_ASSERT(counter==3);
 
