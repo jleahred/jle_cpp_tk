@@ -288,6 +288,8 @@ jle will throw an exception on invalid iterator operations (instead of undefined
 - Derrefering end iterator
 - Comparing iterators from different containers
 
+jle::containers are wrappers to stl containers with iterators verification
+
 
 See also:
 
