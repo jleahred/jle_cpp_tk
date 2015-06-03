@@ -67,4 +67,12 @@ int main()
         std::cout << "*bar: " << *bar << '\n';
         std::cout << "*baz: " << baz->first << ' ' << baz->second << '\n';
     }
+
+    {
+        std::cout << "invalid pointer" << std::endl;
+        auto ptr = jle::make_shared<int>(22);
+        ptr = {};
+        std::cout << "expired " << int(ptr.expired()) << std::endl;
+    }
+
 }

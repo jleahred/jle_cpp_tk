@@ -21,6 +21,13 @@ namespace jle
         explicit constexpr nullopt_t(_Construct) { }
     };
 
+    /// Tag type for in-place construction.
+    struct in_place_t { };
+
+    /// Tag for in-place construction.
+    constexpr in_place_t in_place { };
+
+
     /**
      * @brief Class template for optional values.
      */
@@ -31,6 +38,46 @@ namespace jle
         std::experimental::optional<_Tp>  iopt;
 
     public:
+    //  constructors ..........
+        constexpr optional() noexcept  {}
+
+        constexpr optional(nullopt_t) noexcept {}
+
+        // Constructors for engaged optionals.
+        constexpr optional(const _Tp& __t)
+            : iopt{__t}  {}
+
+        constexpr optional(_Tp&& __t)
+            : iopt{__t}  {}
+
+        template<typename... _Args>
+        constexpr explicit optional(in_place_t, _Args&&... __args)
+            : iopt{in_place, __args ...}  {}
+
+        template<typename _Up, typename... _Args,
+            typename std::enable_if<std::is_constructible<_Tp,
+               std::initializer_list<_Up>&,
+               _Args&&...>::value,
+            int>::type...>
+        constexpr explicit optional(in_place_t,
+                std::initializer_list<_Up> __il,
+                _Args&&... __args)
+            : iopt{in_place, __il, __args ...}  {}
+
+        // Copy and move constructors.
+        optional(const optional& __other)
+            : iopt{__other.iopt} {}
+
+        optional(optional&& __other)
+            noexcept(std::is_nothrow_move_constructible<_Tp>())
+            : iopt{__other.iopt}  {}
+    //  constructors ..........
+
+
+
+
+
+
         //using value_type = _Tp;
 
         optional&
@@ -41,6 +88,24 @@ namespace jle
 //            this->_M_reset();
 //            return *this;
         }
+
+        optional&
+        operator=(const optional& __other)
+        {
+            iopt = __other.iopt;
+            return *this;
+
+        }
+
+        optional&
+        operator=(optional&& __other)
+            noexcept(std::__and_<std::is_nothrow_move_constructible<_Tp>,
+            std::is_nothrow_move_assignable<_Tp>>())
+        {
+            iopt = __other.iopt;
+            return *this;
+        }
+
 
         template<typename _Up>
         typename std::enable_if<
@@ -96,7 +161,7 @@ namespace jle
             //noexcept(std::is_nothrow_move_constructible<_Tp>()
             //&& noexcept(swap(declval<_Tp&>(), declval<_Tp&>())))
         {
-            iopt.swap(__other);
+            iopt.swap(__other.iopt);
 //            using std::swap;
 //
 //            if (this->_M_is_engaged() && __other._M_is_engaged())
