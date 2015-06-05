@@ -17,7 +17,7 @@ examples:
 
 
 .PHONY : doc
-doc: generate_commit_sha1_file
+doc: generate_commit_sha1_file  stats
 	export JLE_CPP_TK="`cat VERSION`  sh1:`cat COMMIT`"; doxygen Doxyfile
 	echo "\"\"" >  COMMIT
 
@@ -91,3 +91,14 @@ lib_jle_core: prepare
 	make -C src/core lib
 
 
+.PHONY : stats
+stats: 
+	@echo "# STATS" > STATS.md
+	@echo  >> STATS.md
+	@echo  "_ | lines | files" >> STATS.md
+	@echo  "------------- | -------------: | -------------:" >> STATS.md
+	@echo "/ | "  $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
+	@echo "src/ | "  $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
+	@echo "src/core/ | "  $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
+	@echo "examples/ | "  $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
+	@echo "test/ | "  $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
