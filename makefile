@@ -91,3 +91,15 @@ lib_jle_core: prepare
 	make -C src/core lib
 
 
+
+.PHONY : coverity
+coverity:
+	export PATH=$PATH:/home/maiquel/inet.prj/cov-analysis-linux64-7.6.0/bin/
+	cov-build --dir cov-int make libs
+	tar czvf jle_cpp_tk.tgz cov-int
+	curl --form token=Umtbp4HSV3PFODRaQHSKyw \
+		--form email=jleahred@gmail.com \
+		--form file=@jle_cpp_tk.tgz \
+		--form version="Version" \
+		--form description="Description" \
+		https://scan.coverity.com/builds?project=jleahred%2Fjle_cpp_tk

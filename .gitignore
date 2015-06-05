@@ -3,3 +3,5 @@ bin/
 prj/
 temp/
 lib/
+cov-int/
+jle_cpp_tk.tgz
