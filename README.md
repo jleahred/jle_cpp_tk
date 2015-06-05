@@ -4,6 +4,10 @@
 [(online doc)](http://jleahred.github.io/jle_cpp_tk.doc/index.html)
 
 
+<a href="https://scan.coverity.com/projects/5356">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/5356/badge.svg"/>
+</a>
 
 ## Modifs
 
