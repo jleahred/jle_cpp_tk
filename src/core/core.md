@@ -6,6 +6,8 @@
 ## shared_ptr
 Safe shared_ptr wrapper
 
+Same interface as std::shared_ptr but, with no undefined behaviour
+
 links:
  - see: #jle::shared_ptr
  - example: @link /core/ex_shared_ptr.cpp @endlink
@@ -13,6 +15,8 @@ links:
 
 ## weak_ptr
 Safe weak_ptr wrapper
+
+Same interface as std::shared_ptr but, with no undefined behaviour
 
 
 links:
@@ -31,7 +35,7 @@ briefly...
 
 Macro  | Description
 ------------- | -------------
-JLE_TEST_header:  |  at the begining of execution file
+JLE_TEST_FILE:  |  at the begining of execution file
 JLE_TEST_REPORT:  |  at the end of execution file
 JLE_TEST_INIT:  |  at the beggining of a test (generally a function)
 JLE_TEST_ASSERT:  |  check truth and write a dot
@@ -306,3 +310,16 @@ links:
         - @link /core/list.hpp  @endlink
         - @link /core/map.hpp  @endlink
         - @link /core/set.hpp  @endlink
+
+
+
+\section optional
+
+
+Safe std::experimental::optional wrapper. No undefined behaviour
+
+
+links:
+ - see: #jle::optional
+ - example: @link /core/ex_optional.cpp @endlink
+
