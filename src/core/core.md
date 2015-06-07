@@ -315,8 +315,18 @@ links:
 
 \section optional
 
+I could contain a value, it could not contain a value...
 
-Safe std::experimental::optional wrapper. No undefined behaviour
+
+This is a safe std::experimental::optional wrapper. No undefined behaviour
+
+Some years ago, I wrote something similar with the name of nullable.
+
+The right way to do it, is using algebraic data types. But, we don't have it in C++.
+
+I was thinking of working with algebraic data types with templates and macros, but finally, I decided to postpone it to the sdl to define data structs.
+
+But this is a common, basic, core and very frecuently needed, therefore, here it is the optional type.
 
 
 links:
