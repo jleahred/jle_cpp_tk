@@ -202,12 +202,12 @@ namespace jle
 
 
 
-std::vector<std::string> s_split (
+jle::vector<std::string> s_split (
                                 const std::string&  s,
                                 const std::string&  separator
                             )
 {
-    std::vector<std::string> result;
+    jle::vector<std::string> result;
     size_t current_pos = 0;
     size_t prev_pos    = 0;
 

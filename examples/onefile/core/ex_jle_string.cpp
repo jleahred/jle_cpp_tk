@@ -4,6 +4,13 @@
 #include "core/string.h"
 
 
+void jle::alarm_msg(const jle::alarm& al)
+{
+    std::cout << "ouch...: "  << al << std::endl;
+
+}
+
+
 int main()
 {
     {

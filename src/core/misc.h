@@ -1,8 +1,9 @@
 #ifndef JLECPPTK_MISC_H
 #define JLECPPTK_MISC_H
 
-#include "core/string.h"
 
+
+#define  JLE_SS(__EXPR__) ((dynamic_cast<std::ostringstream &>(std::ostringstream().seekp(0, std::ios_base::cur) << __EXPR__ )).str())
 
 #define  JLE_HERE  JLE_SS(__PRETTY_FUNCTION__ << "(" << __FILE__ << ":" << __LINE__ << ")")
 

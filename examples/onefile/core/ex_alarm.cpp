@@ -2,9 +2,15 @@
 #include "core/alarm.h"
 
 
+void jle::alarm_msg(const jle::alarm& al)
+{
+    std::cout << "ouch...: "  << al << std::endl;
+
+}
+
+
 int main()
 {
-
     {
         auto alarm = jle::alarm{JLE_HERE, "sub", JLE_SS("Description " << jle::chrono::now()), jle::al::priority::critic, jle::al::type::logic_error};
         std::cout << alarm << std::endl;

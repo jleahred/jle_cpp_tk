@@ -9,6 +9,15 @@
 
 
 
+void jle::alarm_msg(const jle::alarm& al)
+{
+    std::cout << "ouch...: "  << al << std::endl;
+
+}
+
+
+
+
 #define TEST_TRIM(__INPUT__, __RESULT__, __TRIM_CRITERIA__) \
     {  \
         std::string input(__INPUT__), result(__RESULT__);  \

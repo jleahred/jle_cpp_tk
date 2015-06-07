@@ -3,7 +3,7 @@
 
 
 #include <sstream>
-#include <vector>
+#include "vector.hpp"
 
 #include "core/chrono.h"
 
@@ -68,7 +68,7 @@ namespace jle
 
 
     //! \brief  divide string ``s``  with ``separator``
-    std::vector<std::string> s_split (
+    jle::vector<std::string> s_split (
                                     const std::string&  s,
                                     const std::string&  separator
                                 );
