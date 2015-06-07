@@ -6,6 +6,8 @@
 ## shared_ptr
 Safe shared_ptr wrapper
 
+Same interface as std::shared_ptr but, with no undefined behaviour
+
 links:
  - see: #jle::shared_ptr
  - example: @link /core/ex_shared_ptr.cpp @endlink
@@ -13,6 +15,8 @@ links:
 
 ## weak_ptr
 Safe weak_ptr wrapper
+
+Same interface as std::shared_ptr but, with no undefined behaviour
 
 
 links:
@@ -31,7 +35,7 @@ briefly...
 
 Macro  | Description
 ------------- | -------------
-JLE_TEST_header:  |  at the begining of execution file
+JLE_TEST_FILE:  |  at the begining of execution file
 JLE_TEST_REPORT:  |  at the end of execution file
 JLE_TEST_INIT:  |  at the beggining of a test (generally a function)
 JLE_TEST_ASSERT:  |  check truth and write a dot
@@ -306,3 +310,26 @@ links:
         - @link /core/list.hpp  @endlink
         - @link /core/map.hpp  @endlink
         - @link /core/set.hpp  @endlink
+
+
+
+\section optional
+
+I could contain a value, it could not contain a value...
+
+
+This is a safe std::experimental::optional wrapper. No undefined behaviour
+
+Some years ago, I wrote something similar with the name of nullable.
+
+The right way to do it, is using algebraic data types. But, we don't have it in C++.
+
+I was thinking of working with algebraic data types with templates and macros, but finally, I decided to postpone it to the sdl to define data structs.
+
+But this is a common, basic, core and very frecuently needed, therefore, here it is the optional type.
+
+
+links:
+ - see: #jle::optional
+ - example: @link /core/ex_optional.cpp @endlink
+
