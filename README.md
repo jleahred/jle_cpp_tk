@@ -91,6 +91,8 @@ Consuming all resources | _
 Integer zero division | throw an exception
 Concurrency and paralelims | reduce or remove parallelism <br> do not share, message passing
 Float comparison |  don't do it and request for help to the compiler
+Race conditions | Share nothing, send messages, high level concurrency tools... or reduce paralelism
+
 
 ### Let the compiler help you
 I have next flags activated on gcc/g++
@@ -150,12 +152,13 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~exception type with stack~~
 - (done) ~~double safe comparison~~
 - (done) ~~safe containers~~
-- nullable type
+- (done) ~~nullable type, it is a wrapper from std::experimental::optional~~
 - integer div 0 protection
 - LL(n) parser
 - qt gui for LL(n)
 - .ini and .cfg parsing files
-- timers
+- reactive, synchr, timers
+- ashared_ptr. Destroy it ansynchronous way to avoid destroy when using it
 - IDL class generation
     - stream
     - yaml

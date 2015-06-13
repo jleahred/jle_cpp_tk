@@ -1,0 +1,89 @@
+# travis ci doesn't work with gcc5
+
+
+language: cpp
+
+#sudo: required
+
+
+compiler:
+  - gcc
+  #- clang  soon
+
+
+#cache:
+#  - apt
+#  - ccache
+
+#addons:
+#  apt:
+#    sources:
+#      - ubuntu-toolchain-r-test
+#      - llvm-toolchain-precise-3.6
+#    packages:
+#      - gcc-5
+#      - g++-5
+#      #- clang-3.6
+
+#before_install:
+  #- sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50
+  #- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 50
+  #- sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-5 50
+  #- if [ ${CC} == "clang" ]; then
+  #  export CC=/usr/bin/clang-3.6 CXX=/usr/bin/clang++-3.6;
+  #  fi
+
+#before_install:
+#  # g++5
+#  - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
+#  # clang
+#  #- if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
+#  - sudo apt-get update -qq
+
+
+install:
+  - sudo apt-get install -qq gcc-5 g++-5
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
+
+#install:
+  # g++5
+  #- if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-5; fi
+  #- if [ "$CXX" = "g++" ]; then export CXX="g++-5"; fi
+
+  # clang 3.4
+  #- if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.4; fi
+  #- if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
+
+
+#before_script:
+#    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+
+script: make libs; make examples; make test
+
+#after_success:
+#  - if [ $TRAVIS_BRANCH == $TRAVIS_TAG ]; then rake deploy; fi
+
+branches:
+  only:
+    - master
+#    - 1.8.7
+#    - 2.2
+#    - /^v\d+\./
+
+notifications:
+  email: false
+#  webhooks:
+#    urls:
+#      - https://webhooks.gitter.im/e/9502afd22ca6c8e85fb3
+#    on_success: change
+#    on_failure: always
+#    on_start: always
+
+#env:
+#  - RVM=2.0.0 LANG="en_US.UTF-8"
+
+os:
+  - linux
+  # - osx
+
+

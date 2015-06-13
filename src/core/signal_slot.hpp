@@ -229,9 +229,9 @@ class signal
 
 
 public:
-	signal() = default;
+    signal() = default;
 
-	~signal() {
+    ~signal() {
         try{
             disconnect_all();
             if (processing_emit>0)
@@ -247,7 +247,7 @@ public:
 
         Used internally to check if running on destructor
     */
-	int get_processing_emits(void) const {  return  processing_emit; }
+    int get_processing_emits(void) const {  return  processing_emit; }
 
     template<typename TReceiver>
     void connect(TReceiver* receiver, void (TReceiver::*fpt)(Args...)) {
@@ -302,12 +302,12 @@ public:
                             );
                 //  WARNING: someone could disconnect from emit context
                 //  it's not safe to delete here from list
-				if (processing_emit>0)
-					(*it2ptrbase_connection)->disconnect();
-				else
-				{
-					connections.erase(it2ptrbase_connection);
-				}
+                if (processing_emit>0)
+                    (*it2ptrbase_connection)->disconnect();
+                else
+                {
+                    connections.erase(it2ptrbase_connection);
+                }
                 return true;
             }
             ++it2ptrbase_connection;
@@ -327,24 +327,24 @@ public:
             if ( it2ptrbase_connection->is_disconnected() == false) {
                 signal_receptor* sr = it2ptrbase_connection->get_signal_receptor();
                 sr->un_internal_register_connection(jle::shared_ptr<internal::base_connection>(it2ptrbase_connection));
-				if (processing_emit>0)
-					it2ptrbase_connection->disconnect();
+                if (processing_emit>0)
+                    it2ptrbase_connection->disconnect();
 
             }
         }
 
-		if (processing_emit>0)
-		{
+        if (processing_emit>0)
+        {
             for(auto itconnection2funct : functConnections)
             {
-				std::get<1>(itconnection2funct) = false;
-			}
-		}
-		else
-		{
-			functConnections.clear();
-			connections.clear();
-		}
+                std::get<1>(itconnection2funct) = false;
+            }
+        }
+        else
+        {
+            functConnections.clear();
+            connections.clear();
+        }
 
     };
 
@@ -363,51 +363,51 @@ public:
     */
     int emit(Args... args) {
         int count=0;
-		try
-		{
-			++processing_emit;
-			if (processing_emit>jle::SIGNAL_SLOT_MAX_DEEP_EMIT)
-				throw std::runtime_error("too deep recursion on emit");
+        try
+        {
+            ++processing_emit;
+            if (processing_emit>jle::SIGNAL_SLOT_MAX_DEEP_EMIT)
+                throw std::runtime_error("too deep recursion on emit");
 
             auto itconnection = connections.begin();
             while(itconnection != connections.end())
             {
                 //  WARNING: someone could disconnect from emmit context
-				if ( (*itconnection)->is_disconnected() == false) {
-					(*itconnection)->emit(args...);
-					++count;
+                if ( (*itconnection)->is_disconnected() == false) {
+                    (*itconnection)->emit(args...);
+                    ++count;
                     ++itconnection;
-				}
-				else {
-					itconnection = connections.erase(itconnection);
+                }
+                else {
+                    itconnection = connections.erase(itconnection);
                     //  Unregister is called automatically
-				}
-			};
+                }
+            };
 
 
-					//  functions are different
+                    //  functions are different
             auto itconnection2funct = functConnections.begin();
             while(itconnection2funct != functConnections.end())
-			{
-				if (std::get<1>(*itconnection2funct))
-				{
-					(std::get<0>(*itconnection2funct))(args...);
-					++count;
+            {
+                if (std::get<1>(*itconnection2funct))
+                {
+                    (std::get<0>(*itconnection2funct))(args...);
+                    ++count;
                     ++itconnection2funct;
-				}
-				else
-				{
-					itconnection2funct = functConnections.erase(itconnection2funct);
-				}
-			}
-		}
-		catch (...)
-		{
-			--processing_emit;
+                }
+                else
+                {
+                    itconnection2funct = functConnections.erase(itconnection2funct);
+                }
+            }
+        }
+        catch (...)
+        {
+            --processing_emit;
             //  It could happend if we destroy the signal during processing emit
-			throw;
-		}
-		--processing_emit;
+            throw;
+        }
+        --processing_emit;
         return count;
     };
 
@@ -442,12 +442,12 @@ public:
         while(itconnection2funct != functConnections.end())
         {
             if (pt2Function == std::get<0>(*itconnection2funct)) {
-				if(processing_emit>0)
-					std::get<1>(*itconnection2funct) = false;
-				else
-				{
-					functConnections.erase(itconnection2funct);
-				}
+                if(processing_emit>0)
+                    std::get<1>(*itconnection2funct) = false;
+                else
+                {
+                    functConnections.erase(itconnection2funct);
+                }
                 return true;
             }
             ++itconnection2funct;
