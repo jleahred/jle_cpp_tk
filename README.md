@@ -153,6 +153,7 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~double safe comparison~~
 - (done) ~~safe containers~~
 - (done) ~~nullable type, it is a wrapper from std::experimental::optional~~
+- (done) ~~tuples ostream <<~~
 - integer div 0 protection
 - LL(n) parser
 - qt gui for LL(n)
@@ -170,7 +171,7 @@ In any case, I plan to follow next order (more or less)...
 - IDL fsm generation
 - async signals
 - soft-realtime facilities
-- paralelism help
+- paralelism helpers
 - factory template
 - ...
 
