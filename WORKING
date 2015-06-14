@@ -1,14 +1,6 @@
-std::vector in string.h  replace it with  jle::vector
-
-
-
-tuples ostream <<
-
 chrono
   uadjust time
   big adjust time per day
-
-containers
 
 YAML
   · alarm -> YAML

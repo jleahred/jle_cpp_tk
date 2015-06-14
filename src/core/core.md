@@ -333,3 +333,19 @@ links:
  - see: #jle::optional
  - example: @link /core/ex_optional.cpp @endlink
 
+
+\section tuple
+
+Now we have tuples on C++, but I want to write them at stream.
+
+jle::tuple is not a wrapper, it is just an alias to std::tuple
+
+When you include core/tuple.hpp it will inject ostream << support on tuples.
+
+As this is a bit invasive, we created the alias jle::tuple. If you see jle::tuple, you know it has ostream<< suport
+
+
+links:
+ - see: core/tuple.hpp
+ - example: @link /core/ex_tuple.cpp @endlink
+
