@@ -75,7 +75,23 @@ Performance is desired but not over safety, easy api...
 
 ## Safety
 
-Crash reasons and how to deal with it...
+C++ is focused on performance and low level abstractions.
+
+In C++ you can have *undefined behaviour* for several errors.
+
+Most of these undefined behaviours ends with a program crash.
+
+My aim is to reduce program crashes. I want my program keep running even after an error.
+
+I don't try to transform C++ in Erlang or Elixir.
+And yes, I know that Rust is the tool wich try to be efficient,
+close to metal and  with no undefined behaviour.
+
+I enjoy learning and practicing Erlang/elixir. I learnt several concepts with them.
+Rust looks quite interesting and promising, we will see what happens in the future, meanwhile,
+I'm learning and following it.
+
+Crash and errors reasons and how to deal with them...
 
 
 Crash  | Deal with...
@@ -83,9 +99,9 @@ Crash  | Deal with...
 Non trapped exception  | reactive programming with main message loop trapping all exceptions
 Null pointer  | generate an exception is better to undefined behaviour (usually crash)
 Dangling pointers | smart pointers and signal slot. Please RAII everywhere <br> No arithmetic pointers
-Invalid iterators | Exception is better than undefined behaviour (even for deterministic false positives, fail fast)
 Memory leaks | same as previous one
 Resource manament |  memory is not the only resource. RAII everywhere
+Invalid iterators | Exception is better than undefined behaviour (even for deterministic false positives, fail fast)
 Infinite loops | reduce loops ussage
 Consuming all resources | _
 Integer zero division | throw an exception
@@ -158,7 +174,7 @@ In any case, I plan to follow next order (more or less)...
 - LL(n) parser
 - qt gui for LL(n)
 - .ini and .cfg parsing files
-- reactive, synchr, timers
+- Reactive message oriented: synchr, timers
 - ashared_ptr. Destroy it ansynchronous way to avoid destroy when using it
 - IDL class generation
     - stream

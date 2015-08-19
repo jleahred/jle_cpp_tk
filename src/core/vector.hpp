@@ -168,12 +168,12 @@ public:
 
 
 
-	explicit vector() : registered_as(internal_for_containers::register_container(true))  {};
+    explicit vector() : registered_as(internal_for_containers::register_container(true))  {};
     explicit vector (std::size_t n, const T& value= T()) :  ivector{n, value}, registered_as(internal_for_containers::register_container(true))  {};
     template <class InputIterator>
     vector ( InputIterator first, InputIterator last) : ivector(first, last), registered_as(internal_for_containers::register_container(true))  {};
 
-	~vector()
+    ~vector()
     {
         try{
             internal_for_containers::unregister_container(registered_as);
@@ -200,35 +200,35 @@ public:
     const_reverse_iterator      crend       () const;
 
 
-    T& 				operator[] 		( unsigned n );
-	const T&			operator[] 		( unsigned n ) const;
-	void 				clear 			(void);
-	unsigned long 	size			() const;
-	bool 				empty 			() const;
-	const T& 			at 				( unsigned n ) const;
-    T& 				at 				( unsigned n );
-    T& 				front 			(void);
-	const T& 			front 			(void) const;
-	T& 					back 			(void);
-	const T& 			back 			(void) const;
-	void 				pop_back 		(void);
-	void 				push_back 		(const T& x);
+    T&                  operator[]          ( unsigned n );
+    const T&            operator[]          ( unsigned n ) const;
+    void                clear               (void);
+    unsigned long       size                () const;
+    bool                empty               () const;
+    const T&            at                  ( unsigned n ) const;
+    T&                  at                  ( unsigned n );
+    T&                  front               (void);
+    const T&            front               (void) const;
+    T&                  back                (void);
+    const T&            back                (void) const;
+    void                pop_back            (void);
+    void                push_back           (const T& x);
 
-    void             reserve        (size_t n);
+    void                reserve             (size_t n);
 
 
-//	iterator insert ( iterator position, const T& x )
+//    iterator insert ( iterator position, const T& x )
 //    void insert ( iterator position, unsigned n, const T& x )
-//	template <class InputIterator>
+//    template <class InputIterator>
 //    void insert ( iterator position, InputIterator first, InputIterator last )
 //iterator erase ( iterator position )
 //iterator erase ( iterator first, iterator last )
 
 private:
-	std::vector<T>  ivector;
+    std::vector<T>  ivector;
     int             registered_as;
 
-	void check_limits(unsigned n, const char* text) const;		//	hidding
+    void check_limits(unsigned n, const char* text) const;        //    hidding
 
 };
 
@@ -236,17 +236,17 @@ private:
 
 
 
-//		IMPLEMENTATION	----------------------------------------------------------
+//        IMPLEMENTATION    ----------------------------------------------------------
 
 
 
 template <typename T>
 vector<T>::vector(const vector<T>& l)
-  : registered_as (internal_for_containers::register_container( ivector.size()==0? true : false))
+  : registered_as (internal_for_containers::register_container( ivector.empty() ? true : false))
 {
-	ivector = l.ivector;
+    ivector = l.ivector;
 
-    if (ivector.size() !=0)
+    if (ivector.empty() == false)
         internal_for_containers::register_container_size_change(registered_as);
 }
 
@@ -254,9 +254,9 @@ vector<T>::vector(const vector<T>& l)
 template <typename T>
 vector<T>& vector<T>::operator=(const vector<T>& v)
 {
-	ivector = v.ivector;
-    registered_as = internal_for_containers::register_container( ivector.size()==0? true : false);
-    if (ivector.size() !=0)
+    ivector = v.ivector;
+    registered_as = internal_for_containers::register_container( ivector.empty() ? true : false);
+    if (ivector.empty() == false)
         internal_for_containers::register_container_size_change(registered_as);
     return *this;
 }
@@ -264,9 +264,9 @@ vector<T>& vector<T>::operator=(const vector<T>& v)
 //template <typename T>
 //vector<T>& vector<T>::operator=(vector<T>&& v)
 //{
-//	ivector = std::move(v.ivector);
-//    registered_as = internal_for_containers::register_container( ivector.size()==0? true : false);
-//    if (ivector.size() !=0)
+//    ivector = std::move(v.ivector);
+//    registered_as = internal_for_containers::register_container( ivector.empty() ? true : false);
+//    if (ivector.empty() == false)
 //        internal_for_containers::register_container_size_change(registered_as);
 //    return *this;
 //}
@@ -721,13 +721,13 @@ const T& vector<T>::const_reverse_iterator::operator*(void)
 
 
 template <typename T>
-void   vector<T>::check_limits 		( unsigned n, const char* text ) const
+void   vector<T>::check_limits         ( unsigned n, const char* text ) const
 {
-	if (n>=ivector.size())
+    if (n>=ivector.size())
     {
         std::ostringstream oss;
         oss << "out of limits " << "ivector.size() " << ivector.size() << " < " << n << " on... " << text;
-		throw jle::alarm(JLE_HERE, "vector", std::string("out of limits ") +
+        throw jle::alarm(JLE_HERE, "vector", std::string("out of limits ") +
                     oss.str() , jle::al::priority::error);
     }
 }
@@ -735,79 +735,79 @@ void   vector<T>::check_limits 		( unsigned n, const char* text ) const
 
 
 template <typename T>
-T&   vector<T>::operator[] 		( unsigned n )
+T&   vector<T>::operator[]         ( unsigned n )
 {
-	check_limits(n, "operator[]");
-	return  ivector[n];
+    check_limits(n, "operator[]");
+    return  ivector[n];
 }
 
 
 template <typename T>
-const T&  vector<T>::operator[] 		( unsigned n ) const
+const T&  vector<T>::operator[]         ( unsigned n ) const
 {
-	check_limits(n, "const operator[]");
-	return  ivector[n];
+    check_limits(n, "const operator[]");
+    return  ivector[n];
 }
 
 
 template <typename T>
-void vector<T>::clear 			(void)
+void vector<T>::clear             (void)
 {
     internal_for_containers::register_container_size_change(registered_as);
-	ivector.clear();
+    ivector.clear();
 }
 
 
 
 template <typename T>
-unsigned long 	vector<T>::size			() const
+unsigned long     vector<T>::size            () const
 {
     return ivector.size();
 }
 
 template <typename T>
-bool    vector<T>::empty 			() const
+bool    vector<T>::empty             () const
 {
     return ivector.empty();
 }
 
 template <typename T>
-const T&  vector<T>::at 				( unsigned n ) const
+const T&  vector<T>::at                 ( unsigned n ) const
 {
     check_limits(n , "at");
     return ivector.at(n);
 }
 
 template <typename T>
-T& vector<T>::at 				( unsigned n )
+T& vector<T>::at                 ( unsigned n )
 {
     check_limits(n , "at");
     return ivector.at(n);
 }
 
 template <typename T>
-T& 	vector<T>::front 			(void)
+T&     vector<T>::front             (void)
 {
     check_limits(0 , "front");
     return ivector.front();
 }
 
 template <typename T>
-const T&  vector<T>::front 			(void) const
+const T&  vector<T>::front             (void) const
 {
     check_limits(0 , "front");
     return ivector.front();
 }
 
 template <typename T>
-T& 	vector<T>::back 			(void)
+T&     vector<T>::back             (void)
 {
     check_limits(0 , "back");
     return ivector.back();
 }
 
 template <typename T>
-const T&  vector<T>::back 			(void) const
+const T&  vector<T>::back             (void) const
 {
     check_limits(0 , "back");
     return ivector.back();
@@ -815,7 +815,7 @@ const T&  vector<T>::back 			(void) const
 
 
 template <typename T>
-void 	vector<T>::pop_back 		(void)
+void     vector<T>::pop_back         (void)
 {
     check_limits(0 , "pop_back");
     internal_for_containers::register_container_size_change(registered_as);
@@ -823,7 +823,7 @@ void 	vector<T>::pop_back 		(void)
 }
 
 template <typename T>
-void 	vector<T>::push_back 		(const T& x)
+void     vector<T>::push_back         (const T& x)
 {
     if (internal_for_containers::get_registered_container_last_size_change(registered_as) == 0)
         internal_for_containers::register_container_size_change(registered_as);
@@ -833,7 +833,7 @@ void 	vector<T>::push_back 		(const T& x)
 
 
 template <typename T>
-void 	vector<T>::reserve         (size_t n)
+void     vector<T>::reserve         (size_t n)
 {
     internal_for_containers::register_container_size_change(registered_as);
     ivector.reserver(n);

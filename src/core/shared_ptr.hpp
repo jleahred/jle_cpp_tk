@@ -370,22 +370,22 @@ public:
 //      { return ptr._M_get_deleter(__ti); }
 //
 //      template<typename _Tp1>
-//	static _Tp1*
-//	_S_raw_ptr(_Tp1* __ptr)
-//	{ return __ptr; }
+//    static _Tp1*
+//    _S_raw_ptr(_Tp1* __ptr)
+//    { return __ptr; }
 //
 //      template<typename _Tp1>
-//	static auto
-//	_S_raw_ptr(_Tp1 __ptr) -> decltype(std::__addressof(*__ptr))
-//	{ return std::__addressof(*__ptr); }
+//    static auto
+//    _S_raw_ptr(_Tp1 __ptr) -> decltype(std::__addressof(*__ptr))
+//    { return std::__addressof(*__ptr); }
 //
 //      template<typename _Tp1, _Lock_policy _Lp1> friend class __shared_ptr;
 //      template<typename _Tp1, _Lock_policy _Lp1> friend class __weak_ptr;
 //
 //      template<typename _Del, typename _Tp1, _Lock_policy _Lp1>
-//	friend _Del* get_deleter(const __shared_ptr<_Tp1, _Lp1>&) /*noexcept*/;
+//    friend _Del* get_deleter(const __shared_ptr<_Tp1, _Lp1>&) /*noexcept*/;
 //
-//      _Tp*	   	   _M_ptr;         // Contained pointer.
+//      _Tp*              _M_ptr;         // Contained pointer.
 //      __shared_count<_Lp>  _M_refcount;    // Reference counter.
 //    };
 

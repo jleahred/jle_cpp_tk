@@ -63,7 +63,7 @@ namespace jle
     s_try_s2dur   (const std::string&    _s, const chrono::duration& def_val )
     {
         std::string s = jle::s_trim(_s, ' ');
-        if (s.size() == 0)
+        if (s.empty())
             return std::make_tuple(def_val, false);
         try
         {
@@ -225,7 +225,7 @@ jle::vector<std::string> s_split (
 std::tuple<double, bool> s_try_s2d(const std::string&    _s, double def_val)
 {
     std::string s = jle::s_trim(_s, ' ');
-    if (s.size() == 0)
+    if (s.empty())
         return std::make_tuple(def_val, false);
 
     std::istringstream i;
@@ -243,7 +243,7 @@ std::tuple<double, bool> s_try_s2d(const std::string&    _s, double def_val)
 std::tuple<int, bool> s_try_s2i(const std::string&    _s, int    def_val )
 {
     std::string s = jle::s_trim(_s, ' ');
-    if (s.size() == 0)
+    if (s.empty())
         return std::make_tuple(def_val, false);
 
     std::istringstream is;

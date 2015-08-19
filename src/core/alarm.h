@@ -188,7 +188,7 @@ extern void alarm_msg (const alarm& error);
                                 __alarm__.priority,                      \
                                 __alarm__.type                            \
                         );                                              \
-                    jle_error.add(__alarm__);				\
+                    jle_error.add(__alarm__);                \
                     __FUNCTION2CALL__ (jle_error);                                   \
                 } catch (std::exception& e) {                           \
                     __FUNCTION2CALL__ (jle::alarm(                                 \

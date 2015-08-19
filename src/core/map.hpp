@@ -95,8 +95,8 @@ public:
 
 
 
-	map()  : registered_as(internal_for_containers::register_container(true)) {};
-	~map()
+    map()  : registered_as(internal_for_containers::register_container(true)) {};
+    ~map()
     {
         try{
             internal_for_containers::unregister_container(registered_as);
@@ -148,7 +148,7 @@ public:
     std::pair<iterator, bool>  insert   (const std::pair<key_type, T>& x );
 
 private:
-	std::map<key_type, T>   imap;
+    std::map<key_type, T>   imap;
     int                     registered_as;  //  can't be constant. assign operator
 };
 
@@ -157,26 +157,26 @@ private:
 
 
 //--------------------------------------------------------------------------------
-//		IMPLEMENTATION
+//        IMPLEMENTATION
 //--------------------------------------------------------------------------------
 
 
 template <typename key_type, typename T>
 map<key_type, T>::map(const map<key_type, T>& m)
-  : registered_as (internal_for_containers::register_container( imap.size()==0? true : false))
+  : registered_as (internal_for_containers::register_container( imap.empty() ? true : false))
 {
-	imap = m.imap;
-	if(imap.size() != 0)
-	    internal_for_containers::register_container_size_change(registered_as);
+    imap = m.imap;
+    if(imap.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
 }
 
 template <typename key_type, typename T>
 map<key_type, T>& map<key_type, T>::operator=(const map<key_type, T>& m)
 {
-	imap = m.imap;
-    registered_as = internal_for_containers::register_container( imap.size()==0? true : false);
-	if(imap.size() != 0)
-	    internal_for_containers::register_container_size_change(registered_as);
+    imap = m.imap;
+    registered_as = internal_for_containers::register_container( imap.empty() ? true : false);
+    if(imap.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
     return *this;
 }
 
@@ -202,7 +202,7 @@ typename map<key_type, T>::iterator  map<key_type, T>::begin       ()
     it.registered_owner = registered_as;
     it.i_end_iterator = imap.end();
 
-    if (imap.size()>0)
+    if (imap.empty()==false)
         it.last_updated_container = internal_for_containers::get_registered_container_last_size_change(registered_as);
     else
         it.last_updated_container = 0;        //  no valid value
@@ -328,7 +328,7 @@ typename map<key_type, T>::const_iterator  map<key_type, T>::cbegin       () con
     it.registered_owner = registered_as;
     it.i_end_iterator = imap.end();
 
-    if (imap.size()>0)
+    if (imap.empty()==false)
         it.last_updated_container = internal_for_containers::get_registered_container_last_size_change(registered_as);
     else
         it.last_updated_container = 0;        //  no valid value
@@ -625,7 +625,7 @@ typename map<key_type, T>::iterator  map<key_type, T>::erase  (iterator position
 
     result.registered_owner = registered_as;
     result.i_end_iterator = imap.end();
-    if (imap.size()>0)
+    if (imap.empty()==false)
         result.last_updated_container = internal_for_containers::get_registered_container_last_size_change(registered_as);
     else
         result.last_updated_container = 0;        //  no valid value

@@ -221,7 +221,7 @@ template <typename... Args>
 class signal
         :   public signal_receptor   // ,  private non_copyable (implicit)
 {
-	int processing_emit{0};
+    int processing_emit{0};
     std::list< jle::shared_ptr<internal::base_connectionParam<Args...> > > connections;
 
     //  connection to funcions (pointer and   is_connected?)
@@ -236,7 +236,7 @@ public:
             disconnect_all();
             if (processing_emit>0)
                 throw std::runtime_error("~signal<> on emit");
-                //	pending to check
+                //    pending to check
         } catch(...){
             std::cerr << __PRETTY_FUNCTION__ << "(" << __FILE__ << ":" << __LINE__ << ")"  << "exception on destructor"  <<  std::endl;
         }
@@ -360,6 +360,12 @@ public:
 
     /**
         @brief call all connected to the signal
+
+        Exceptions are not trapped. If an exception is thrown
+        some slots couldn't receive the signal
+
+        Catching the error here to guaranty all slots are called
+        has no cpu cost. But the context information, would be limited
     */
     int emit(Args... args) {
         int count=0;
@@ -372,15 +378,19 @@ public:
             auto itconnection = connections.begin();
             while(itconnection != connections.end())
             {
-                //  WARNING: someone could disconnect from emmit context
-                if ( (*itconnection)->is_disconnected() == false) {
-                    (*itconnection)->emit(args...);
-                    ++count;
-                    ++itconnection;
-                }
-                else {
-                    itconnection = connections.erase(itconnection);
-                    //  Unregister is called automatically
+                try {
+                    //  WARNING: someone could disconnect from emmit context
+                    if ( (*itconnection)->is_disconnected() == false) {
+                        (*itconnection)->emit(args...);
+                        ++count;
+                        ++itconnection;
+                    }
+                    else {
+                        itconnection = connections.erase(itconnection);
+                        //  Unregister is called automatically
+                    }
+                } catch(...) {
+                    std::cerr << "error on signal::emit()" << std::endl;
                 }
             };
 
@@ -389,15 +399,19 @@ public:
             auto itconnection2funct = functConnections.begin();
             while(itconnection2funct != functConnections.end())
             {
-                if (std::get<1>(*itconnection2funct))
-                {
-                    (std::get<0>(*itconnection2funct))(args...);
-                    ++count;
-                    ++itconnection2funct;
-                }
-                else
-                {
-                    itconnection2funct = functConnections.erase(itconnection2funct);
+                try {
+                    if (std::get<1>(*itconnection2funct))
+                    {
+                        (std::get<0>(*itconnection2funct))(args...);
+                        ++count;
+                        ++itconnection2funct;
+                    }
+                    else
+                    {
+                        itconnection2funct = functConnections.erase(itconnection2funct);
+                    }
+                } catch(...) {
+                    std::cerr << "error on signal::emit()" << std::endl;
                 }
             }
         }

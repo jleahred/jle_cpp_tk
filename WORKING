@@ -2,6 +2,12 @@ chrono
   uadjust time
   big adjust time per day
 
+signal_slot trapping all exceptions???
+test performance
+
+
+
+
 YAML
   · alarm -> YAML
   · YAML -> alarm

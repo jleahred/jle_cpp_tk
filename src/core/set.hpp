@@ -97,8 +97,8 @@ public:
 
 
 
-	set()  : registered_as(internal_for_containers::register_container(true)) {};
-	~set()
+    set()  : registered_as(internal_for_containers::register_container(true)) {};
+    ~set()
     {
         try{
             internal_for_containers::unregister_container(registered_as);
@@ -156,26 +156,26 @@ private:
 
 
 //--------------------------------------------------------------------------------
-//		IMPLEMENTATION
+//        IMPLEMENTATION
 //--------------------------------------------------------------------------------
 
 
 template <typename key_type>
 set<key_type>::set(const set<key_type>& s)
-  : registered_as (internal_for_containers::register_container( iset.size()==0? true : false))
+  : registered_as (internal_for_containers::register_container( iset.empty() ? true : false))
 {
-	iset = s.iset;
-	if(iset.size() != 0)
-	    internal_for_containers::register_container_size_change(registered_as);
+    iset = s.iset;
+    if(iset.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
 }
 
 template <typename key_type>
 set<key_type>& set<key_type>::operator=(const set<key_type>& s)
 {
-	iset = s.iset;
-    registered_as = internal_for_containers::register_container( iset.size()==0? true : false);
-	if(iset.size() != 0)
-	    internal_for_containers::register_container_size_change(registered_as);
+    iset = s.iset;
+    registered_as = internal_for_containers::register_container( iset.empty() ? true : false);
+    if(iset.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
     return *this;
 }
 
@@ -201,7 +201,7 @@ typename set<key_type>::iterator  set<key_type>::begin       ()
     it.registered_owner = registered_as;
     it.i_end_iterator = iset.end();
 
-    if (iset.size()>0)
+    if (iset.empty()==false)
         it.last_updated_container = internal_for_containers::get_registered_container_last_size_change(registered_as);
     else
         it.last_updated_container = 0;        //  not valid value
@@ -327,7 +327,7 @@ typename set<key_type>::const_iterator  set<key_type>::cbegin       () const
     it.registered_owner = registered_as;
     it.i_end_iterator = iset.end();
 
-    if (iset.size()>0)
+    if (iset.empty() == false)
         it.last_updated_container = internal_for_containers::get_registered_container_last_size_change(registered_as);
     else
         it.last_updated_container = 0;        //  not valid value
@@ -617,7 +617,7 @@ typename set<key_type>::iterator  set<key_type>::erase  (iterator position)
 
     result.registered_owner = registered_as;
     result.i_end_iterator = iset.end();
-    if (iset.size()>0)
+    if (iset.empty() == false)
         result.last_updated_container = internal_for_containers::get_registered_container_last_size_change(registered_as);
     else
         result.last_updated_container = 0;        //  not valid value

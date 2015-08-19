@@ -87,7 +87,7 @@ std::ostream& operator<< (std::ostream& os, const ::jle::alarm& a)
 {
     os << static_cast<const jle::al::base_alarm&>(a);
 
-    if (a.stack_alarms.size()>0)
+    if (a.stack_alarms.empty()==false)
         os << " [" << a.alarm_id<< "]";
 
     std::list<jle::al::base_alarm>::const_iterator it = a.stack_alarms.cbegin();

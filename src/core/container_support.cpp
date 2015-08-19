@@ -9,17 +9,18 @@ namespace jle {
 
     namespace internal_for_containers
     {
+
         bool                                                     __cleaned__      = false;
         int*                                                     __preg_counter__ =0;
         std::map<int, int /*last registered modif on map*/ >*    __pmreg_counter__=0;
 
 
-		int& get_reg_counter(void) {
-			if (__preg_counter__ == 0)
-				__preg_counter__ = new int(0);
-			return *__preg_counter__;
-		}
-		std::map<int, int>&  get_map_reg_counter(void) {
+        int& get_reg_counter(void) {
+            if (__preg_counter__ == 0)
+                __preg_counter__ = new int(0);
+            return *__preg_counter__;
+        }
+        std::map<int, int>&  get_map_reg_counter(void) {
             if(__pmreg_counter__ == 0)
                 __pmreg_counter__ = new std::map<int, int>;
             return *__pmreg_counter__;
@@ -28,7 +29,7 @@ namespace jle {
 
         int      register_container(bool is_empty)
         {
-			int& regCounter = get_reg_counter();
+            int& regCounter = get_reg_counter();
             ++regCounter;
             get_map_reg_counter()[regCounter] = (is_empty ? 0 : 1);
             return regCounter;
@@ -74,8 +75,6 @@ namespace jle {
 
     void __internal_containersupport_nevercall_me____release_on_exit(void)
     {
-//        int*                                                     __preg_counter__ =0;
-//        std::map<int, int /*last registered modif on map*/ >*    __pmreg_counter__=0;
         internal_for_containers::__cleaned__ = true;
         delete internal_for_containers::__preg_counter__;
         delete internal_for_containers::__pmreg_counter__;

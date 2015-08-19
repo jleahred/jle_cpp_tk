@@ -171,8 +171,8 @@ public:
 
 
 
-	list()  : registered_as(internal_for_containers::register_container(true)) {};
-	~list()
+    list()  : registered_as(internal_for_containers::register_container(true)) {};
+    ~list()
     {
         try{
             internal_for_containers::unregister_container(registered_as);
@@ -242,7 +242,7 @@ public:
 
 
 private:
-	std::list<T>        ilist;
+    std::list<T>        ilist;
     int                 registered_as;
 
 };
@@ -253,26 +253,26 @@ private:
 
 
 //--------------------------------------------------------------------------------
-//		IMPLEMENTATION
+//        IMPLEMENTATION
 //--------------------------------------------------------------------------------
 
 
 template <typename T>
 list<T>::list(const list<T>& l)
-  : registered_as (internal_for_containers::register_container( ilist.size()==0? true : false))
+  : registered_as (internal_for_containers::register_container( ilist.empty() ? true : false))
 {
-	ilist = l.ilist;
+    ilist = l.ilist;
 
-    if (ilist.size() !=0)
+    if (ilist.empty() == false)
         internal_for_containers::register_container_size_change(registered_as);
 }
 
 template <typename T>
 list<T>& list<T>::operator=(const list<T>& l)
 {
-	ilist = l.ilist;
-    registered_as = internal_for_containers::register_container( ilist.size()==0? true : false);
-    if (ilist.size() !=0)
+    ilist = l.ilist;
+    registered_as = internal_for_containers::register_container( ilist.empty() ? true : false);
+    if (ilist.empty() == false)
         internal_for_containers::register_container_size_change(registered_as);
     return *this;
 }
@@ -867,8 +867,8 @@ void     list<T>::insert      ( const typename list<T>::iterator& position, unsi
         if (internal_for_containers::get_registered_container_last_size_change(position.registered_owner) != position.last_updated_container)
             throw jle::alarm(JLE_HERE, "list", "insert with invalid iterator", jle::al::priority::error);
 
-	internal_for_containers::register_container_size_change(registered_as);
-	ilist.insert(position.iiterator, n, x);
+    internal_for_containers::register_container_size_change(registered_as);
+    ilist.insert(position.iiterator, n, x);
 }
 
 template<typename T>
@@ -888,7 +888,7 @@ typename list<T>::iterator list<T>::erase       ( const typename list<T>::iterat
 
     result.registered_owner = registered_as;
     result.i_end_iterator = ilist.end();
-    if (ilist.size()>0)
+    if (ilist.empty() == false)
         result.last_updated_container = internal_for_containers::get_registered_container_last_size_change(registered_as);
     else
         result.last_updated_container = 0;        //  no valid value
@@ -930,7 +930,7 @@ typename list<T>::iterator list<T>::erase       ( const typename list<T>::iterat
             result.iiterator = ilist.erase(next.iiterator);
             result.registered_owner = registered_as;
             result.i_end_iterator = ilist.end();
-            if (ilist.size()>0)
+            if (ilist.empty() == false)
                 result.last_updated_container = internal_for_containers::get_registered_container_last_size_change(registered_as);
             else
                 result.last_updated_container = 0;        //  no valid value
