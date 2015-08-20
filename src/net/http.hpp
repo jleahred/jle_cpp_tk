@@ -5,6 +5,11 @@
 #include "core/signal_slot.hpp"
 #include "core/map.hpp"
 #include "core/string.h"
+#include "core/map.hpp"
+#include "core/tuple.hpp"
+#include "core/vector.hpp"
+#include "core/list.hpp"
+#include "core/optional.hpp"
 
 
 void jle::alarm_msg(const jle::alarm& al)
@@ -12,52 +17,6 @@ void jle::alarm_msg(const jle::alarm& al)
     std::cout << al << std::endl;
 }
 
-
-//static void handle_sum_call(struct ns_connection * /*nc*/, struct http_message * /*hm*/) {
-//  char n1[100], n2[100];
-//  double result;
-//
-//  /* Get form variables */
-//  ns_get_http_var(&hm->body, "n1", n1, sizeof(n1));
-//  ns_get_http_var(&hm->body, "n2", n2, sizeof(n2));
-//
-//  /* Send headers */
-//  ns_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-//
-//  /* Compute the result and send it back as a JSON object */
-//  result = strtod(n1, NULL) + strtod(n2, NULL);
-//  ns_printf_http_chunk(nc, "{ \"result\": %lf }", result);
-//  ns_send_http_chunk(nc, "", 0);  /* Send empty chunk, the end of response */
-//}
-
-
-//static void ev_handler(struct ns_connection *nc, int ev, void *ev_data) {
-//  struct http_message *hm = (struct http_message *) ev_data;
-//
-//  switch (ev) {
-//    case NS_HTTP_REQUEST:
-//      if (ns_vcmp(&hm->uri, "/api/v1/sum") == 0) {
-//        handle_sum_call(nc, hm);                    /* Handle RESTful call */
-//      } else if (ns_vcmp(&hm->uri, "/printcontent") == 0) {
-//        char buf[100] = {0};
-//        memcpy(buf, hm->body.p,
-//               sizeof(buf) - 1 < hm->body.len? sizeof(buf) - 1 : hm->body.len);
-//        printf("%s\n", buf);
-//      } else if (ns_vcmp(&hm->uri, "/hi") == 0) {
-//        ns_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-//          ns_printf_http_chunk(nc, "{ \"result\":  }%s", "aa");
-//          ns_send_http_chunk(nc, "", 0);  /* Send empty chunk, the end of response */
-//      } else {
-//          auto s_http_server_opts = ns_serve_http_opts();
-//          s_http_server_opts.document_root = ".";
-//          s_http_server_opts.enable_directory_listing = "yes";
-//        ns_serve_http(nc, hm, s_http_server_opts);  /* Serve static content */
-//      }
-//      break;
-//    default:
-//      break;
-//  }
-//}
 
 
 jle::signal<struct ns_connection&, int, struct http_message&>&  get_signal_http_msg()
@@ -118,28 +77,84 @@ std::string  ns_str2string(const struct ns_str& ns)
 //  /* Message body */
 //  struct ns_str body; /* Zero-length for requests with no body */
 
+jle::map<std::string, std::string>  get_headers(struct http_message& hm)
+{
+    auto result = jle::map<std::string, std::string>();
+    for(int i=0; hm.header_names[i].p != 0; ++i) {
+        result.insert(std::make_pair(
+                        ns_str2string(hm.header_names[i]),
+                        ns_str2string(hm.header_values[i])));
+    }
+    return result;
+}
+
+jle::tuple<std::string, jle::list<std::string> >
+get_cookies(const jle::map<std::string, std::string>& headers)
+{
+    auto it_find = headers.find("Cookie");
+    if(it_find == headers.cend())
+        return std::make_tuple("", jle::list<std::string>());
+
+    auto v_cookies = jle::s_split(it_find->second, "|");
+    auto l_cookies = jle::list<std::string>();
+    for(const auto& c : v_cookies) {
+        l_cookies.push_back(c);
+    }
+
+    return std::make_tuple(it_find->second, l_cookies);
+}
+
 
 struct  Map {
     std::string  full;
 
     jle::map<std::string, std::string>  map;
 };
+std::ostream& operator<<(std::ostream& out, const Map& m)
+{
+    out
+        << "full: " << m.full << std::endl;
+    for(auto it = m.map.cbegin(); it!= m.map.cend(); ++it) {
+        out << "  " << it->first << ": " << it->second << std::endl;
+    }
+    return out;
+}
 
+struct  List {
+    std::string  full;
 
-struct Query_string {
-    std::string     full;
-    Map             params;
+    jle::list<std::string>  list;
 };
+std::ostream& operator<<(std::ostream& out, const List& m)
+{
+    out
+        << "full: " << m.full << std::endl;
+    out << "  [";
+    for(auto it = m.list.cbegin(); it!= m.list.cend(); ++it) {
+        out << *it << ", ";
+    }
+    out << " ]" << std::endl;
+    return out;
+}
 
 struct  Req_resp_line {
     std::string     full;
 
     std::string     method;
     std::string     uri;
-    Query_string    query_string;
+    Map             query_string;
     std::string     proto;
 };
-
+std::ostream& operator<<(std::ostream& out, const Req_resp_line& line)
+{
+    out
+        << "full: " << line.full << std::endl
+        << "method: " << line.method << std::endl
+        << "uri: " << line.uri << std::endl
+        << "query_string: " << line.query_string << std::endl
+        << "proto: " << line.proto << std::endl;
+    return out;
+}
 
 
 struct Request {
@@ -148,9 +163,56 @@ struct Request {
     std::string     full;
     Req_resp_line   request_line;
     Map             headers;
-    Map             cookies;
+    List            cookies;
     std::string     body;
 };
+std::ostream& operator<<(std::ostream& out, const Request& rq)
+{
+    out
+        << "full: " << rq.full << std::endl
+        << "----------------------------------------" << std::endl
+        << "----------------------------------------" << std::endl
+        << "request line: " << rq.request_line << std::endl
+        << "----------------------------------------" << std::endl
+        << "headers: " << rq.headers << std::endl
+        << "----------------------------------------" << std::endl
+        << "cookies: " << rq.cookies << std::endl
+        << "----------------------------------------" << std::endl
+        << "body: " << rq.body << std::endl;
+    return out;
+}
+
+struct Response {
+    Response()=delete;
+
+    int code;
+    std::string phrase;
+    std::string type;
+    std::string date;
+    std::string body;
+};
+
+
+std::string get_current_time_response() {
+    char buffer[100];
+    time_t now = time(0);
+    struct tm tstruct = *gmtime(&now);
+    strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S %Z", &tstruct);
+
+    return std::string(buffer);
+}
+
+
+Response response_ok(const std::string& body) {
+    return Response {
+        200,
+        "OK",
+        "text/html",
+        get_current_time_response(),
+        body
+    };
+}
+
 
 class Http_server  :  public jle::signal_receptor  {
 
@@ -162,15 +224,12 @@ public:
         ns_mgr_init(&mgr, NULL);
         nc = ns_bind(&mgr, port.c_str(), ev_handler);
         if (nc == NULL) {
-            std::cerr << "Error starting server on port " << port << std::endl;
-            exit(1);
+            jle::alarm(JLE_HERE, "HttpServer::ctor", JLE_SS("Failed creating socket on port "<<_port), jle::al::priority::critic);
         }
+        nc->user_data = (void*)(&port);
         ns_set_protocol_http_websocket(nc);
 
         JLE_CONNECT_THIS(get_signal_http_msg(), on_request);
-
-        std::cout << "starting http server on port " << port << std::endl;
-        std::cout << "nc... " << nc->sock << std::endl;
     }
 
     ~Http_server()
@@ -188,34 +247,43 @@ private:
     struct ns_mgr   mgr;
     std::string     port;
 
-    void on_request(const Request& rq) {
-        std::cout << rq.message << std::endl;
+    void on_request(const Request& rq, jle::optional<Response>& res) {
+        std::cout << rq.full << std::endl;
 
         std::cout << std::endl << std::endl
-         << rq.method  << std::endl;
+         << rq  << std::endl;
+
+        res = response_ok("aaaaaaaaa");
     }
 
     void on_request(struct ns_connection& _nc, int /*ev*/, struct http_message& hm) {
-        if(_nc.mgr->ctl[0] != mgr.ctl[0]  ||  _nc.mgr->ctl[1] != mgr.ctl[1])
+        if(*((std::string*)_nc.user_data) != port)
             return;
 
-        Request rq = Request{
-            "", //  method
-            "", //  uri
-            "", //  params
-            jle::map<std::string, std::string>(),   // headers
-            jle::map<std::string, std::string>(),   // query
-            jle::map<std::string, std::string>(),   //  cookies
-            ns_str2string(hm.message)   //  full message
-        };
 
-        parse_rq(hm, rq);
+        Request rq = parse_rq(hm);
+        auto res = jle::optional<Response>();
+        on_request(rq, res);
 
-        on_request(rq);
+        if(res.has_value()==false)
+        {
+            throw jle::alarm(JLE_HERE, "Http_server::on_request", JLE_SS("missing reponse on rq... " << rq), jle::al::priority::critic);
+        }
 
         if (ns_vcmp(&hm.uri, "/hi") == 0) {
-            ns_printf(&_nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-            ns_printf_http_chunk(&_nc, "{ \"result\":  }%s", "aa");
+            //ns_printf(&_nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
+            ns_printf(&_nc, "HTTP/1.1 %s %s\r\nTransfer-Encoding: %s\r\n\r\n",
+                                        JLE_SS(res.value().code).c_str(),
+                                        res.value().phrase.c_str(),
+                                        "chunked");
+                //  alternative to chunked...
+                ////append headers
+                //sprintf(&header_buffer[strlen(header_buffer)], "Server: %s %s\r\n", SERVER_NAME, SERVER_VERSION);
+                //sprintf(&header_buffer[strlen(header_buffer)], "Date: %s\r\n", res.date.c_str());
+                //sprintf(&header_buffer[strlen(header_buffer)], "Content-Type: %s\r\n", res.type.c_str());
+                //sprintf(&header_buffer[strlen(header_buffer)], "Content-Length: %zd\r\n", body_len);
+                //                        value().type.c_str());
+            ns_printf_http_chunk(&_nc, "%s", res.value().body.c_str());
             ns_send_http_chunk(&_nc, "", 0);  /* Send empty chunk, the end of response */
         } else {
             auto s_http_server_opts = ns_serve_http_opts();
@@ -223,108 +291,38 @@ private:
             s_http_server_opts.enable_directory_listing = "yes";
             ns_serve_http(&_nc, &hm, s_http_server_opts);  /* Serve static content */
         }
-
-        /* Send headers */
-//        ns_printf(nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
-//        ns_printf_http_chunk(nc, "{ \"result\": %s }", "aaa");
-//        ns_send_http_chunk(nc, "", 0);  /* Send empty chunk, the end of response */
     }
 
 
-    void parse_rq(struct http_message& hm, Request& req)
+    Request parse_rq(struct http_message& hm)
     {
-        //struct http_message {
-        //  struct ns_str message; /* Whole message: request line + headers + body */
-        //
-        //  struct ns_str proto; /* "HTTP/1.1" -- for both request and response */
-        //  /* HTTP Request line (or HTTP response line) */
-        //  struct ns_str method; /* "GET" */
-        //  struct ns_str uri;    /* "/my_file.html" */
-        //  /* For responses, code and response status message are set */
-        //  int resp_code;
-        //  struct ns_str resp_status_msg;
-        //
-        //  /*
-        //   * Query-string part of the URI. For example, for HTTP request
-        //   *    GET /foo/bar?param1=val1&param2=val2
-        //   *    |    uri    |     query_string     |
-        //   *
-        //   * Note that question mark character doesn't belong neither to the uri,
-        //   * nor to the query_string
-        //   */
-        //  struct ns_str query_string;
-        //
-        //  /* Headers */
-        //  struct ns_str header_names[NS_MAX_HTTP_HEADERS];
-        //  struct ns_str header_values[NS_MAX_HTTP_HEADERS];
-        //
-        //  /* Message body */
-        //  struct ns_str body; /* Zero-length for requests with no body */
-        //};
+        auto headers = get_headers(hm);
+        auto cookies = get_cookies(headers);
+        Request result = {
+            ns_str2string(hm.message),
+            Req_resp_line {
+                "--pending--",
+                ns_str2string(hm.method),
+                ns_str2string(hm.uri),
+                Map{        //  query string
+                    ns_str2string(hm.query_string),
+                    jle::map<std::string, std::string>()
+                },
+                ns_str2string(hm.proto)
+            },
+            Map{    //  headers
+                "--pending--",
+                headers
+            },
+            List{    //  cookies
+                std::get<0>(cookies),
+                std::get<1>(cookies)
+            },
+            ns_str2string(hm.body)
+        };
 
-//        jle::vector<std::string> hl = jle::s_split(jle::s_trim(req.message, " \n\r"), "\n");
-//        req.method = hl[0];
+        return result;
 
-//            // Parse request headers
-//            int i = 0;
-//            char * pch;
-//            for (pch = strtok(headers.c_str(), "\n"); pch; pch = strtok(NULL, "\n" ))
-//            {
-//                if(i++ == 0)  {
-//                    vector<string> R;
-//                    string line(pch);
-//                    this->split(line, " ", 3, &R);
-//
-//        //            cout << R.size() << endl;
-//
-//                    if(R.size() != 3) {
-//        //                throw error
-//                    }
-//
-//                    req->method = R[0];
-//                    req->path = R[1];
-//
-//                    size_t pos = req->path.find('?');
-//
-//                    // We have GET params here
-//                    if(pos != string::npos)  {
-//                        vector<string> Q1;
-//                        this->split(req->path.substr(pos + 1), "&", -1, &Q1);
-//
-//                        for(vector<string>::size_type q = 0; q < Q1.size(); q++) {
-//                            vector<string> Q2;
-//                            this->split(Q1[q], "=", -1, &Q2);
-//
-//                            if(Q2.size() == 2) {
-//                                req->query[Q2[0]] = Q2[1];
-//                            }
-//                        }
-//
-//                        req->path = req->path.substr(0, pos);
-//                    }
-//                } else {
-//                    vector<string> R;
-//                    string line(pch);
-//                    this->split(line, ": ", 2, &R);
-//
-//                    if(R.size() == 2) {
-//                        req->headers[R[0]] = R[1];
-//
-//                        // Yeah, cookies!
-//                        if(R[0] == "Cookie") {
-//                            vector<string> C1;
-//                            this->split(R[1], "; ", -1, &C1);
-//
-//                            for(vector<string>::size_type c = 0; c < C1.size(); c++) {
-//                                vector<string> C2;
-//                                this->split(C1[c], "=", 2, &C2);
-//
-//                                req->cookies[C2[0]] = C2[1];
-//                            }
-//                        }
-//                    }
-//                }
-//            }
     }
 };
 
@@ -341,4 +339,3 @@ int main(int /*argc*/, char ** /*argv[]*/)
   return 0;
 }
 
- 
