@@ -69,15 +69,16 @@ class Server;
 
 class Request : public jle::signal_receptor {
 public:
-    void send_response(const Response_msg& resp) const;
+    void send_response(const Response_msg& resp);
+    const   Request_msg     request_msg;
+    const   std::string     listen_port;
 
 private:
-    Request(struct ns_connection *_nc, const Request_msg& _rq);
+    Request(struct ns_connection *_nc, const Request_msg& _rq, const std::string _listen_port);
 
 
 
     struct  ns_connection   *nc;
-    const   Request_msg     request;
     bool                    valid_server;
 
     void    invalidated_server();
@@ -95,7 +96,7 @@ public:
 
     void check_messages(void);
 
-    jle::signal<jle::shared_ptr<Request>>  signal_request_received;
+    jle::signal<const jle::shared_ptr<Request>&>  signal_request_received;
 
 
 private:

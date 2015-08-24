@@ -102,14 +102,9 @@ namespace {
 };
 
 
-namespace jle
-{
+namespace jle { namespace net { namespace http {
 
-namespace net
-{
 
-namespace http
-{
 
 
 std::ostream& operator<<(std::ostream& out, const Map& m)
@@ -175,16 +170,20 @@ Response_msg response_ok(const std::string& body) {
 }
 
 
-Request::Request(struct ns_connection *_nc, const Request_msg& _rq)
-:   nc(_nc),
-    request(_rq),
+Request::Request(struct ns_connection *_nc, const Request_msg& _rq, const std::string _listen_port)
+:   request_msg(_rq),
+    listen_port(_listen_port),
+    nc(_nc),
     valid_server(true)
 {}
 
-void Request::send_response(const Response_msg& resp) const
+void Request::send_response(const Response_msg& resp)
 {
     if(valid_server == false)
         throw  jle::alarm(JLE_HERE, "Connection::send_response", JLE_SS("invalid server sending response... " << resp.body), jle::al::priority::critic);
+
+    if(nc==0)
+        throw  jle::alarm(JLE_HERE, "Connection::send_response", JLE_SS("connection canceled... " << resp.body), jle::al::priority::critic);
 
     //ns_printf(&_nc, "%s", "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n");
     ns_printf(nc, "HTTP/1.1 %s %s\r\nTransfer-Encoding: %s\r\n\r\n",
@@ -200,6 +199,7 @@ void Request::send_response(const Response_msg& resp) const
         //                        value().type.c_str());
     ns_printf_http_chunk(nc, "%s", resp.body.c_str());
     ns_send_http_chunk(nc, "", 0);  /* Send empty chunk, the end of response */
+    nc = 0;
 }
 
 void    Request::invalidated_server()
@@ -242,7 +242,7 @@ void Server::on_fossa_request(struct ns_connection* _nc, int /*ev*/, struct http
         return;
 
     Request_msg rq = parse_rq(hm);
-    auto connection = jle::shared_ptr<Request>(new Request(_nc, rq));
+    auto connection = jle::shared_ptr<Request>(new Request(_nc, rq, port));
     signal_closing_server.connect(connection.get(), &Request::invalidated_server);
     signal_request_received.notify(connection);
 
@@ -307,9 +307,7 @@ Request_msg Server::parse_rq(struct http_message& hm)
 
 
 }   // namespace http
-
 }   // namespace  net
-
 }   // namespace jle
 
 
