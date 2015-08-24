@@ -2,7 +2,6 @@ net/Http_server
         remove on request (response parameter)
         instead it, it is better to add a method called  send_response
         or not, perhaps it's easier this way. Almost for start with
-    files,
     test,
     example,
     doc
