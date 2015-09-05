@@ -59,7 +59,7 @@ My aim is different from C++.
     - Easy to use API (the implementation could be complex)
     - I will introduce features as soon I will require
     - No thousands of options, better few options, easy to use and less verbose
-- Make dificult to write only code using this library. The code using this library...
+- Make dificult to produce *"write only code"* using this library. The code using this library...
     - could not be simple to write
     - has to be easy to read
 - Small
