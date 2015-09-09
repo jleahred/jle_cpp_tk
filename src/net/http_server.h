@@ -6,6 +6,11 @@
 #include "core/signal_slot.hpp"
 #include "core/list.hpp"
 
+
+//!  \example  ./net/ex_http_server.cpp
+
+
+
 struct ns_mgr;
 struct ns_connection;
 struct http_message;

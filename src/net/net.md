@@ -3,13 +3,18 @@
 \section http
 
 
-## Http_server
+## http_server
 
-Http_server for embedding.
+Http server for embedding.
 
-It can be used to work with REST
+It can be used for REST
+
+At the moment, it is a wrapper from fossa  (https://github.com/cesanta/fossa)
+
+
 
 links:
- - see: #jle::Http_server
- - example: @link /net/ex_http_server.cpp @endlink
+    - see: #jle::net::http::Server
+    - header: @link /net/http_server.h  @endlink
+    - example: @link /net/ex_http_server.cpp @endlink
 
