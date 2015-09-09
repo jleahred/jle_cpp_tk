@@ -11,6 +11,7 @@
 #include "core/basic_types.hpp"
 #include "core/shared_ptr.hpp"
 
+#include <iostream>  // todo: provisional. to suport cerr
 
 
 #define JLE_CONNECT_METHOD(__SIGNAL__, __INSTANCE__, __METHOD_NAME__)     \

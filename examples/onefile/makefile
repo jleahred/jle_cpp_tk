@@ -10,4 +10,5 @@ default:
 .PHONY : run
 run:
 	make -C core/ run
+	make -C net/ run
 

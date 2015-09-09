@@ -22,7 +22,7 @@
 
 C++ is not the safest programing language in the world. In fact, it's easy to produce *undefined behaviour* working with C++.
 In several cases, it would be interesting to work in a safe way (no body like crashes).
-Working in a team (generally diferent levels), it's also desirable to have safety in mind.
+Working in a team (generally different levels), it's also desirable to have safety in mind.
 
 
 Some years ago I wrote a C++ toolkit with regular expressions, tuples, class definition IDL, fsm IDL, config files. LL(n) parser, signal-slot, monotonic date time with adjustments...
@@ -35,14 +35,14 @@ Some of the tools I wrote or added to my library, are not necessary any more.
 The implementation and API can also be improved.
 
 For example... I wrote a smart_pointer called CountPtr. I also wrote code to manage tuples,
-I wrote a beautifull, platform independent, safe, and easy to use classes to deal with date_time and durations,
+I wrote a beautiful, platform independent, safe, and easy to use classes to deal with date_time and durations,
 I added a small wrapper library for PCRE regular expressions. These features have been added to C++
 
 Now, we also have type inference, lambdas, variadic templates, initializer lists...
 
 It's time to enjoy and write a new set of tools based on modern C++ (more reduced than previous one, but with a better language)
 
-Previously I wrote the documentation with **asciidoc**, muse over emacs and doxys. Now I'm going to do it with doxygen (I'm not a fan of these kind of tools, but it's a standard).
+Previously I wrote the documentation with **asciidoc**, muse over emacs and doxys. Now I'm going to do it with doxygen (I'm not a fan of these kind of tools, I prefer something like asciidoc or muse, but it's a standard).
 
 
 ### Directives
@@ -59,14 +59,14 @@ My aim is different from C++.
     - Easy to use API (the implementation could be complex)
     - I will introduce features as soon I will require
     - No thousands of options, better few options, easy to use and less verbose
-- Make dificult to write only code using this library. The code using this library...
+- Make difficult to produce *"write only code"* using this library. The code using this library...
     - could not be simple to write
     - has to be easy to read
 - Small
-    - This is to have basic features, not incredible posibilies. There are great C++ libraries for that.
+    - This is to have basic features, not incredible possibilities. There are great C++ libraries for that.
 - Portability (win/linux)
 - zero dependency
-    - C++ doesn't have a standard dependency tool. It is going to be a small library, complex dependencies not requiered
+    - C++ doesn't have a standard dependency tool. It is going to be a small library, complex dependencies not required
 - Easy to compile
 
 Performance is desired but not over safety, easy api...
@@ -84,10 +84,10 @@ Most of these undefined behaviours ends with a program crash.
 My aim is to reduce program crashes. I want my program keep running even after an error.
 
 I don't try to transform C++ in Erlang or Elixir.
-And yes, I know that Rust is the tool wich try to be efficient,
+And yes, I know that Rust is the tool which try to be efficient,
 close to metal and  with no undefined behaviour.
 
-I enjoy learning and practicing Erlang/elixir. I learnt several concepts with them.
+I enjoy learning and practicing Erlang/elixir. I learned several concepts with them.
 Rust looks quite interesting and promising, we will see what happens in the future, meanwhile,
 I'm learning and following it.
 
@@ -100,14 +100,14 @@ Non trapped exception  | reactive programming with main message loop trapping al
 Null pointer  | generate an exception is better to undefined behaviour (usually crash)
 Dangling pointers | smart pointers and signal slot. Please RAII everywhere <br> No arithmetic pointers
 Memory leaks | same as previous one
-Resource manament |  memory is not the only resource. RAII everywhere
+Resource management |  memory is not the only resource. RAII everywhere
 Invalid iterators | Exception is better than undefined behaviour (even for deterministic false positives, fail fast)
-Infinite loops | reduce loops ussage
+Infinite loops | reduce loops usage
 Consuming all resources | _
 Integer zero division | throw an exception
-Concurrency and paralelims | reduce or remove parallelism <br> do not share, message passing
+Concurrency and parallelism | reduce or remove parallelism <br> do not share, message passing
 Float comparison |  don't do it and request for help to the compiler
-Race conditions | Share nothing, send messages, high level concurrency tools... or reduce paralelism
+Race conditions | Share nothing, send messages, high level concurrency tools... or reduce parallelism
 
 
 ### Let the compiler help you
@@ -126,6 +126,7 @@ Folder  | Description
 ------------- | -------------
 src  |  source code
 src/core  |  Basic tools (signal-slot, strings...)
+src/net  |  net source
 src/xxx  |  pending
 bin  | generated bins
 doc  | generated doc
@@ -156,7 +157,7 @@ Next command are provided
 
 ## Roadmap
 
-I don't plan to use it daily. I will write it simultaneously with... web applications with dart, polymer, enjoing Elixir, learning from Go and Rust, following Scala...
+I don't plan to use it daily. I will write it simultaneously with... web applications with dart, polymer, enjoining Elixir, learning from Go and Rust, following Scala...
 
 In any case, I plan to follow next order (more or less)...
 
@@ -170,6 +171,7 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~safe containers~~
 - (done) ~~nullable type, it is a wrapper from std::experimental::optional~~
 - (done) ~~tuples ostream <<~~
+- (50%) Http REST support
 - integer div 0 protection
 - LL(n) parser
 - qt gui for LL(n)
@@ -187,7 +189,7 @@ In any case, I plan to follow next order (more or less)...
 - IDL fsm generation
 - async signals
 - soft-realtime facilities
-- paralelism helpers
+- parallelism helpers
 - factory template
 - ...
 
@@ -196,4 +198,3 @@ In any case, I plan to follow next order (more or less)...
 ## Todo
 
 - At this moment... almost all
-

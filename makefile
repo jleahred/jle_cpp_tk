@@ -76,14 +76,14 @@ clean: cleanlibs
 .PHONY : cleanlibs
 cleanlibs:
 	make -C src/core clean
+	make -C src/net clean
 	find . -name temp | xargs rm -rf
 
 
 
 
 .PHONY : libs
-libs: prepare clean   lib_jle_core
-	make -C src/core lib
+libs: prepare clean   lib_jle_core lib_jle_net
 
 
 .PHONY : lib_jle_core
@@ -91,8 +91,14 @@ lib_jle_core: prepare
 	make -C src/core lib
 
 
+.PHONY : lib_jle_net
+lib_jle_net: prepare
+	make -C src/net lib
+
+
+
 .PHONY : stats
-stats: 
+stats:
 	@echo "# STATS" > STATS.md
 	@echo  >> STATS.md
 	@echo  "_ | lines | files" >> STATS.md
@@ -100,8 +106,15 @@ stats:
 	@echo "/ | "  $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
 	@echo "src/ | "  $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
 	@echo "src/core/ | "  $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
+	@echo "src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | wc -l)  >> STATS.md
 	@echo "examples/ | "  $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
 	@echo "test/ | "  $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
+
+	@echo "" >> STATS.md
+	@echo "" >> STATS.md
+	@echo  "extern | lines | files" >> STATS.md
+	@echo  "------------- | -------------: | -------------:" >> STATS.md
+	@echo "src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep  fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep  fossa | wc -l)  >> STATS.md
 
 
 .PHONY : coverity
