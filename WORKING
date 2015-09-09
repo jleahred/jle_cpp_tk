@@ -1,10 +1,19 @@
+thread, synchr, timers, reactive
+    asynchr signaling
+
+
 net/Http_server
-        remove on request (response parameter)
-        instead it, it is better to add a method called  send_response
-        or not, perhaps it's easier this way. Almost for start with
+    register routes,
+    integrate with timers or working in his own thread,
     test,
     example,
     doc
+
+net/Http_client
+
+
+add ex_container.cpp file
+
 
 class Upper_case format???
 
