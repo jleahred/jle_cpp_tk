@@ -3,6 +3,11 @@
 
 
 
+/**
+ *     \example  ./core/ex_container.cpp
+ */
+
+
 namespace jle {
 
     namespace internal_for_containers
