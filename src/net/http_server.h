@@ -2,9 +2,9 @@
 #define JLE_NET_HTTP_SERVER_H
 
 #include <string>
-#include "core/map.hpp"
+#include "core/cont/map.hpp"
 #include "core/signal_slot.hpp"
-#include "core/list.hpp"
+#include "core/cont/list.hpp"
 
 
 //!  \example  ./net/ex_http_server.cpp

@@ -306,10 +306,10 @@ links:
     - jle::set
     - example: @link /core/ex_container.cpp @endlink
     - headers:
-        - @link /core/vector.hpp  @endlink
-        - @link /core/list.hpp  @endlink
-        - @link /core/map.hpp  @endlink
-        - @link /core/set.hpp  @endlink
+        - @link /core/cont/vector.hpp  @endlink
+        - @link /core/cont/list.hpp  @endlink
+        - @link /core/cont/map.hpp  @endlink
+        - @link /core/cont/set.hpp  @endlink
 
 
 

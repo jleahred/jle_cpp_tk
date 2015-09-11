@@ -5,7 +5,7 @@
 #include "core/alarm.h"
 #include "core/string.h"
 #include "core/tuple.hpp"
-#include "core/vector.hpp"
+#include "core/cont/vector.hpp"
 
 
 namespace {

@@ -1,6 +1,6 @@
 
 # Directories with source code
-DIR_SRC_CXX = .  ./hp
+DIR_SRC_CXX = .  ./hp ./cont
 DIR_SRC_C = .
 
 
