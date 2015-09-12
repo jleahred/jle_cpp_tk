@@ -4,9 +4,9 @@
 namespace jle {
     namespace synchr {
 
-    std::mutex&  get_sref_main_mutex(void)
+    std::recursive_mutex&  get_sref_main_mutex(void)
     {
-        static auto result = new std::mutex;
+        static auto result = new std::recursive_mutex;
         return *result;
     }
 

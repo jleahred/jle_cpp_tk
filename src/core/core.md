@@ -349,3 +349,14 @@ links:
  - see: core/tuple.hpp
  - example: @link /core/ex_tuple.cpp @endlink
 
+
+
+ \section timers
+
+ It is part or reactive programming.
+
+ Only one line is necessary to configure a timer, check the example.
+
+ links:
+  - see: core/timer.h
+  - example: @link /core/ex_timer.cpp @endlink

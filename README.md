@@ -107,7 +107,7 @@ Consuming all resources | _
 Integer zero division | throw an exception
 Concurrency and parallelism | reduce or remove parallelism <br> do not share, message passing
 Float comparison |  don't do it and request for help to the compiler
-Race conditions | Share nothing, send messages, high level concurrency tools... or reduce parallelism
+Race conditions | Share nothing, send messages, high level concurrency tools, or... reduce parallelism
 
 
 ### Let the compiler help you
@@ -117,6 +117,120 @@ I have next flags activated on gcc/g++
 
 jle will also provide a base exception class with stack. You will have to fill the stack manually (this is C++)
 
+
+## Concurrency
+
+Concurrency is great. Why?
+
+1. Several problems are easy to solve in a concurrent way
+2. Avoid active waiting
+3. Use all machine cores (better perfornce)
+4. Avoid full program stop waiting for a task
+
+I love concurrency and parallelism, but I love it with languages like Erlang and
+Elixir, designed to work great with this concept.
+
+ADA and Rust, would be interesting candidates.
+
+But Python, Ruby not due to GIL, GVL, to start with.
+
+C, C++, Java, C#... aren't good for concurrency. They lack of high level abstractions
+and they are not designed to avoid race conditions.
+
+You could use different strategies to avoid concurrency problems, like resources
+locking ordering. All these kind of strategies, reduce the concurrency and the code
+continues being difficult to maintain.
+
+You could have a great thread safe code working perfect. But some day, you could call a different function and your code, could not be thread safe anymore. This will be difficult to detect and very difficult to solve.
+
+> The majority of Chrome code is intended to be single-threaded, where this presents no problem.  When in multi-threaded code, however, the right answer is usually to use a base::LazyInstance.
+>
+> <cite>Chromim Guidelines
+> http://www.chromium.org/developers/coding-style/cpp-dos-and-donts </cite>
+
+
+The right way to deal with concurrency is... "share nothing, message passing" (actor model)
+
+Therefore, threads are not a good idea. In Rust, could be an option because the compiler will forbid you to share things between threads.
+
+
+
+### Solve easily some problems
+> Computer is a state machine. Threads are for people who can't program state machines
+>
+> <cite>Alan Cox</cite>
+
+Message passing in an ansynchronous way, also generates new problems. Many times we need a synchronous communication. Erlang/Elixir solves it.
+
+As Alan Cox said, you can develop state machines. In fact, all non trivial process, has to deal with states.
+
+I will create an external DSL to write declarative finite state machines.
+
+
+
+### Avoid active waiting
+
+For asynchronous task like reading a socket.
+
+OK, do it, wait for asynchronous events on a dedicated thread.
+
+You can even execute your code in a dedicated thread, but not simultaneously with
+other code of your own program.
+
+Doing it, will be as easy as adding a line   JLE_ASYNCHR
+
+
+### Using all machine cores
+
+Do it with processes. You can communicate them with pipes, rabbitmq, RESTful...
+
+This way, you can use all cores and even all available machines.
+
+Concurrency with processes... is share nothing communicate with messages. The right way.
+
+I will add support for RESTfull, rabbitmq, execute process and communicate with pipes.
+
+
+
+### Avoid program stop waiting for a task
+
+As before, send it to a specific process configured to work with heavy and slow tasks.
+
+
+## Small example
+
+    #include <iostream>
+
+    #include "core/alarm.h"
+    #include "core/signal_slot.hpp"
+    #include "core/timer.h"
+
+
+
+
+
+    //  Function to receive timer events
+    void test_timer(void)
+    {
+        std::cout << jle::chrono::now() << "  on_timer in fucntion" << std::endl;
+    }
+
+    int main()
+    {
+        std::cout << jle::chrono::now() << "  starting..." << std::endl;
+        //  configure timer for function
+        JLE_TIMER_FUNCT(1s, test_timer);
+
+        //  program stop after 10s
+        JLE_ONE_SHOOT_FUNCT(10s, [](){ std::cout << "CLOSING... ";  jle::timer::stop_main_loop();});
+        jle::timer::start_main_loop();
+    }
+
+
+    void jle::alarm_msg(const jle::alarm& al)
+    {
+        std::cout << al << std::endl;
+    }
 
 
 
