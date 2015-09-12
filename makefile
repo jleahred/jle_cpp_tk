@@ -114,7 +114,7 @@ stats:
 	@echo "" >> STATS.md
 	@echo  "extern | lines | files" >> STATS.md
 	@echo  "------------- | -------------: | -------------:" >> STATS.md
-	@echo "src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep  fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep  fossa | wc -l)  >> STATS.md
+	@echo "src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | wc -l)  >> STATS.md
 
 
 .PHONY : coverity
