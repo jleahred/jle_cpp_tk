@@ -1,18 +1,12 @@
-document synchr
+JSON
 
 
-
-
-thread, synchr, timers, reactive
-    asynchr signaling
+asynchr signaling
 
 
 net/Http_server
     register routes,
-    integrate with timers or working in his own thread,
-    test,
-    example,
-    doc
+    test
 
 net/Http_client
 
@@ -33,4 +27,3 @@ YAML
   · alarm -> YAML
   · YAML -> alarm
 
-JSON

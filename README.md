@@ -285,7 +285,7 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~safe containers~~
 - (done) ~~nullable type, it is a wrapper from std::experimental::optional~~
 - (done) ~~tuples ostream <<~~
-- (50%) Http REST support
+- (50%) Http REST support (pending routes and client)
 - integer div 0 protection
 - LL(n) parser
 - qt gui for LL(n)

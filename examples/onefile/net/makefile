@@ -3,7 +3,7 @@ INCLUDES = -I../../../src
 
 
 # library paths
-LIBS = -L../../../lib  -ljlenet -ljlecore
+LIBS = -L../../../lib  -ljlenet -ljlecore  -lpthread
 
 
 
