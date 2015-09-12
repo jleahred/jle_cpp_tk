@@ -21,11 +21,6 @@ namespace {
         return *result;
     }
 
-    bool&  get_sref_stopping(void)
-    {
-        static auto result = new bool(false);
-        return *result;
-    }
 
     struct Timer_container :  public jle::signal_receptor {
 
@@ -101,8 +96,19 @@ void start_main_loop()
 void stop_main_loop()
 {
     get_sref_stopping() = true;
+
+    jle::synchr::main_unlock();
+    std::this_thread::sleep_for(2s);
+    jle::synchr::main_lock();
 }
 
+
+
+bool&  get_sref_stopping(void)
+{
+    static auto result = new bool(false);
+    return *result;
+}
 
 
 

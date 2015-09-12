@@ -6,6 +6,7 @@
 #include "core/signal_slot.hpp"
 #include "core/cont/list.hpp"
 
+namespace std { class thread;  };
 
 //!  \example  ./net/ex_http_server.cpp
 
@@ -99,7 +100,6 @@ public:
 
     ~Server();
 
-    void check_messages(void);
 
     jle::signal<const jle::shared_ptr<Request>&>  signal_request_received;
 
@@ -112,6 +112,11 @@ private:
     Request_msg parse_rq(struct http_message& hm);
 
     jle::signal<>  signal_closing_server;
+
+    void loop_check_messages(void);
+
+    bool                          destroing=false;
+    jle::shared_ptr<std::thread>  thread_check_messages;
 };
 
 

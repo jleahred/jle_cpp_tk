@@ -1,4 +1,5 @@
 #include "net/http_server.h"
+#include "core/timer.h"
 
 
 void jle::alarm_msg(const jle::alarm& al)
@@ -24,13 +25,19 @@ int main(int /*argc*/, char ** /*argv[]*/)
         return server;
     };
 
+    //  run two servers
     auto server1 = start_server("8000");
     auto server2 = start_server("8001");
 
-    //for (;;) {
-        server1->check_messages();
-        server2->check_messages();
-    //}
+
+    //  stop the server after 10s
+    JLE_ONE_SHOOT_FUNCT(10s, []() {
+        std::cout << "STOPPING THE PROGRAM..." << std::endl;
+        jle::timer::stop_main_loop();
+    });
+
+    //  start jle main loop
+    jle::timer::start_main_loop();
 
   return 0;
 }

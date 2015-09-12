@@ -47,6 +47,9 @@ namespace jle {
         void stop_main_loop();
 
 
+        /// If you run a thread, you can check when to finish
+        bool&  get_sref_stopping(void);
+
 
 
         namespace internal {

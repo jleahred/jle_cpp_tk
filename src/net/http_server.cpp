@@ -6,6 +6,8 @@
 #include "core/string.h"
 #include "core/tuple.hpp"
 #include "core/cont/vector.hpp"
+#include "core/timer.h"
+#include "core/synchr.h"
 
 
 namespace {
@@ -223,17 +225,28 @@ Server::Server(const std::string& _port)
     ns_set_protocol_http_websocket(nc);
 
     JLE_CONNECT_THIS(get_signal_http_msg(), on_fossa_request);
+
+    thread_check_messages = jle::make_shared<std::thread>([this](){ this->loop_check_messages(); });
 }
 
 Server::~Server()
 {
     ns_mgr_free(mgr.get());
     signal_closing_server.notify();
+
+    destroing = true;
+    thread_check_messages->join();
 }
 
-void Server::check_messages(void)
+void Server::loop_check_messages(void)
 {
-    ns_mgr_poll(mgr.get(), 10);
+    jle::synchr::get_sref_main_mutex().lock();
+    while(jle::timer::get_sref_stopping()==false &&  destroing==false) {
+        jle::synchr::get_sref_main_mutex().unlock();
+        ns_mgr_poll(mgr.get(), 200);
+        jle::synchr::get_sref_main_mutex().lock();
+    }
+    jle::synchr::get_sref_main_mutex().unlock();
 }
 
 
