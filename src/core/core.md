@@ -360,3 +360,20 @@ links:
  links:
   - see: core/timer.h
   - example: @link /core/ex_timer.cpp @endlink
+
+
+ \section synchr
+
+I don't try to run several threads in a safe way in C++
+
+In fact, I do the opposite.
+
+With this library, you can run multiple threads sequentially.
+
+If you use a third party library with other thread callbacks, or if you want to run passive waiting (and you need a thread), you can call JLE_SYNCR to avoid having more than one thread running simultaneously.
+
+Also you have here the way to start and stop the jle mail loop.
+
+ links:
+  - see: core/synchr.h
+  - example: @link /core/ex_synchr.cpp @endlink
