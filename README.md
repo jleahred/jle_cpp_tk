@@ -75,6 +75,8 @@ Performance is desired but not over safety, easy api...
 
 ## Safety
 
+> Note: Important working on a team.
+
 C++ is focused on performance and low level abstractions.
 
 In C++ you can have *undefined behaviour* for several errors.
@@ -118,7 +120,14 @@ I have next flags activated on gcc/g++
 jle will also provide a base exception class with stack. You will have to fill the stack manually (this is C++)
 
 
+
+
+
+
 ## Concurrency
+
+> Note: Important working on a team.
+
 
 Concurrency is great. Why?
 
@@ -286,11 +295,12 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~nullable type, it is a wrapper from std::experimental::optional~~
 - (done) ~~tuples ostream <<~~
 - (50%) Http REST support (pending routes and client)
-- integer div 0 protection
+- (done) ~~integer div 0 protection~~
+- (90%) Reactive message oriented: synchr, timers
+- (done) ~~parallelism control helper~~
 - LL(n) parser
 - qt gui for LL(n)
 - .ini and .cfg parsing files
-- Reactive message oriented: synchr, timers
 - ashared_ptr. Destroy it ansynchronous way to avoid destroy when using it
 - IDL class generation
     - stream
@@ -303,7 +313,6 @@ In any case, I plan to follow next order (more or less)...
 - IDL fsm generation
 - async signals
 - soft-realtime facilities
-- parallelism helpers
 - factory template
 - ...
 

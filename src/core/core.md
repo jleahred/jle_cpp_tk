@@ -377,3 +377,20 @@ Also you have here the way to start and stop the jle mail loop.
  links:
   - see: core/synchr.h
   - example: @link /core/ex_synchr.cpp @endlink
+
+
+  \section int_div0
+
+  In most hardware platforms, dividing by 0 two integers is a big problem.
+
+  On x86, it stops the program without exception or any warning.
+
+  To avoid this "undefined behaviour" with bad result, you can use
+
+  JLE_HANDLE_INTDIV0 macros. See the example.
+
+
+
+  links:
+   - see: core/int_div0.h
+   - example: @link /core/ex_int_div0.cpp @endlink

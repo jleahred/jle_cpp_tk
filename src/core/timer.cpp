@@ -3,6 +3,7 @@
 #include "core/synchr.h"
 #include "core/cont/list.hpp"
 #include "core/exec_max_frec.hpp"
+#include "core/int_div0.h"
 
 
 
@@ -69,23 +70,27 @@ void start_main_loop()
     get_sref_stopping() = false;
     while(get_sref_stopping()==false) {
         jle::synchr::main_unlock();
-        std::this_thread::sleep_for(9ms);
+        try {
+            JLE_HANDLE_DIV0_INIT
+                std::this_thread::sleep_for(9ms);
 
-        get_sref_signal_timer_10ms().emit();
-
-
-        JLE_EXEC_MAX_FREC_STATIC(90ms)
-            get_sref_signal_timer_100ms().emit();
-        JLE_END_EXEC_MAX_FREC
+                get_sref_signal_timer_10ms().emit();
 
 
-        JLE_EXEC_MAX_FREC_STATIC(990ms)
-            get_sref_signal_timer_1s().emit();
-        JLE_END_EXEC_MAX_FREC
+                JLE_EXEC_MAX_FREC_STATIC(90ms)
+                    get_sref_signal_timer_100ms().emit();
+                JLE_END_EXEC_MAX_FREC
 
-        JLE_EXEC_MAX_FREC_STATIC(10s)
-            get_sref_signal_timer_1s().emit();
-        JLE_END_EXEC_MAX_FREC
+
+                JLE_EXEC_MAX_FREC_STATIC(990ms)
+                    get_sref_signal_timer_1s().emit();
+                JLE_END_EXEC_MAX_FREC
+
+                JLE_EXEC_MAX_FREC_STATIC(10s)
+                    get_sref_signal_timer_1s().emit();
+                JLE_END_EXEC_MAX_FREC
+            JLE_HANDLE_DIV0_END
+        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "jle_main_loop", "Exception captured on main loop");
 
 
         jle::synchr::main_lock();

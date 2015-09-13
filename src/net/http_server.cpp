@@ -8,6 +8,7 @@
 #include "core/cont/vector.hpp"
 #include "core/timer.h"
 #include "core/synchr.h"
+#include "core/int_div0.h"
 
 
 namespace {
@@ -243,7 +244,12 @@ void Server::loop_check_messages(void)
     jle::synchr::get_sref_main_mutex().lock();
     while(jle::timer::get_sref_stopping()==false &&  destroing==false) {
         jle::synchr::get_sref_main_mutex().unlock();
-        ns_mgr_poll(mgr.get(), 200);
+        try {
+            JLE_HANDLE_DIV0_INIT
+
+            ns_mgr_poll(mgr.get(), 200);
+            JLE_HANDLE_DIV0_END
+        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "jle_main_loop", "Exception captured on main loop");
         jle::synchr::get_sref_main_mutex().lock();
     }
     jle::synchr::get_sref_main_mutex().unlock();
