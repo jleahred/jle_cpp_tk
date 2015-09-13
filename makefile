@@ -117,14 +117,14 @@ stats:
 	@echo "src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | wc -l)  >> STATS.md
 
 
+coverity_path := /home/maiquel/inet.prj/cov-analysis-linux64-7.7.0/bin
 .PHONY : coverity
 coverity:
-	export PATH=$PATH:/home/maiquel/inet.prj/cov-analysis-linux64-7.6.0/bin/
-	cov-build --dir cov-int make libs
+	$(coverity_path)/cov-build --dir cov-int make libs
 	tar czvf jle_cpp_tk.tgz cov-int
 	curl --form token=Umtbp4HSV3PFODRaQHSKyw \
 		--form email=jleahred@gmail.com \
 		--form file=@jle_cpp_tk.tgz \
-		--form version="Version" \
-		--form description="Description" \
+		--form version="0.0" \
+		--form description="Developing" \
 		https://scan.coverity.com/builds?project=jleahred%2Fjle_cpp_tk

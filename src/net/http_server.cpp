@@ -219,7 +219,7 @@ Server::Server(const std::string& _port)
     ns_mgr_init(mgr.get(), NULL);
     nc = ns_bind(mgr.get(), port.c_str(), ev_handler);
     if (nc == NULL) {
-        jle::alarm(JLE_HERE, "HttpServer::ctor", JLE_SS("Failed creating socket on port "<<_port), jle::al::priority::critic);
+        throw jle::alarm(JLE_HERE, "HttpServer::ctor", JLE_SS("Failed creating socket on port "<<_port), jle::al::priority::critic);
     }
     nc->user_data = (void*)(&port);
     ns_set_protocol_http_websocket(nc);
