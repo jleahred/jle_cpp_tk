@@ -1,0 +1,825 @@
+#include "humbleparser.h"
+
+#include <regex.h>
+#include "core/string.h"
+
+
+#include <iostream>  // I/O
+#include <fstream>   // file I/O
+#include <iomanip>   // format manipulation
+
+
+
+
+
+
+
+namespace jle {
+
+
+
+
+Humble_parser::Humble_parser()
+    :       string2parse                    (),
+            non_terminal_rules              (),
+            terminal_rules                  (),
+            errors_in_rules                 (false),
+            deeper_error_parsing_pos        (-1),
+            deeper_error_expected_symbols   (),
+            ast_root_debug                  (0),
+            adding_rule_multi_line          (false)
+{
+}
+
+Humble_parser::~Humble_parser()
+{
+}
+
+
+
+bool Humble_parser::is_terminal(const std::string& str) const
+{
+    if (str[0]>='A' && str[0]<='Z')
+        return false;
+    else
+        return true;
+
+    /*  checking performance
+    if (str=="_")       return true;
+
+    jle::RegExp re ("^([A-Z][A-Z|0-9|_|']*)$");      //  checking if is a non terminal
+
+    if (re.Match(str))
+        return false;
+    else
+        return true;
+    */
+}
+
+
+#define PREPARE_NODE                    \
+    if (current_ast_node.expired())                \
+    {                                                                   \
+        current_ast_node = jle::make_shared<AST_node_item>(node_name);       \
+        ast_node.down = current_ast_node;                                  \
+    }                                                                   \
+    else                                                                \
+    {                                                                   \
+        current_ast_node->next = jle::make_shared<AST_node_item>(node_name);       \
+        current_ast_node = current_ast_node->next;                          \
+    }                                                                   \
+
+#define CHECK_ERRORS   \
+    if (deeper_error_parsing_pos < remaining_str2_parse_pos  ||   deeper_error_parsing_pos==-1)   \
+    {   \
+        deeper_error_parsing_pos = remaining_str2_parse_pos;   \
+        deeper_error_expected_symbols.clear();   \
+        deeper_error_expected_symbols.insert(*it1);   \
+    }   \
+    else if (remaining_str2_parse_pos == deeper_error_parsing_pos  ||   deeper_error_parsing_pos==-1)   \
+    {   \
+        deeper_error_parsing_pos = remaining_str2_parse_pos;   \
+        deeper_error_expected_symbols.insert(*it1);   \
+    }
+
+
+
+jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, const std::string& non_terminal_code, AST_node_item& ast_node) const
+{
+    Container_rules::const_iterator it_non_terminal = non_terminal_rules.find(non_terminal_code);
+    if (it_non_terminal == non_terminal_rules.end())
+        throw JLE_SS("non terminal symbol [" << non_terminal_code <<  "] has no expansion rule");
+
+    std::list< jle::tuple <std::list<std::string>, std::string> >::const_iterator it0 = non_terminal_rules.find(non_terminal_code)->second.begin();
+
+    bool result=false;
+    int str_pos_rule = str2parse_pos;
+
+    //  checking all rules with non terminal code on left
+    while (it0!=non_terminal_rules.find(non_terminal_code)->second.end())
+    {
+        const std::list<std::string>& right_symbols = std::get<0>(*it0);
+
+        str_pos_rule = str2parse_pos;
+        ast_node.rule4replace = std::get<1>(*it0);
+
+        //  testing all symbols on right
+        jle::shared_ptr<AST_node_item> current_ast_node;
+        for(auto it1 = right_symbols.begin(); it1 != right_symbols.end(); ++it1)
+        {
+            int remaining_str2_parse_pos = str_pos_rule;
+            result = false;
+
+            std::string node_name(*it1);
+            PREPARE_NODE
+            CHECK_ERRORS
+
+            if (is_terminal(*it1))
+            {
+                if (it1->substr(it1->size()-1) == "*")
+                    std::tie(result, remaining_str2_parse_pos/*, current_ast_node*/) =
+                            execute_terminal_klein(remaining_str2_parse_pos, it1->substr(0, it1->size()-1), *current_ast_node);
+                else
+                    std::tie(result, remaining_str2_parse_pos) =
+                            execute_terminal(remaining_str2_parse_pos, *it1, *current_ast_node);
+            }
+            else
+            {
+                //  it is a klein start symbol?
+                if (it1->substr(it1->size()-1) == "*")
+                    std::tie(result, remaining_str2_parse_pos/*, current_ast_node*/) =
+                            execute_non_terminal_klein(remaining_str2_parse_pos, it1->substr(0, it1->size()-1), *current_ast_node);
+                else
+                    std::tie(result, remaining_str2_parse_pos) =
+                            execute_non_terminal(remaining_str2_parse_pos, *it1, *current_ast_node);
+            }
+            if (result == false)
+                break;
+            else
+                str_pos_rule = remaining_str2_parse_pos;
+            //  for tail recursion, it has to be empty
+            //  if it's the last element on list, is equivalent to empty
+        }
+
+        if (result)
+            break;
+        ++it0;
+        //  for tail recursion, it has to be empty
+        //  if it's the last element on list, is equivalent to empty
+    }
+    //  for tail recursion, it has to be empty
+    if (result==false)
+        return std::make_tuple(result, str2parse_pos);
+    else
+        return std::make_tuple(result, str_pos_rule);
+}
+
+
+jle::tuple<bool, int/*, jle::shared_ptr<AST_node_item> */> Humble_parser::execute_non_terminal_klein( int str2parse_pos, const std::string& non_terminal_code, AST_node_item& ast_node) const
+{
+    int added_items = -1;
+    bool result=true;
+    int remaining_str2_parse_pos=str2parse_pos;
+    jle::shared_ptr<AST_node_item> ast_node_before_fail;
+    jle::shared_ptr<AST_node_item> current_ast_node;
+    std::string node_name(non_terminal_code);
+    //CHECK_ERRORS
+    while (result)
+    {
+        ++added_items;
+        ast_node_before_fail = current_ast_node;
+        PREPARE_NODE
+        std::tie(result, remaining_str2_parse_pos) = execute_non_terminal(remaining_str2_parse_pos, non_terminal_code, *current_ast_node);
+    }
+    if (result==false)
+    {
+        if (added_items!=0)
+            ast_node_before_fail->next = jle::shared_ptr<AST_node_item>();
+        else
+            ast_node.down = jle::shared_ptr<AST_node_item>();
+    }
+
+
+    return std::make_tuple(true, remaining_str2_parse_pos/*, ast_node_before_fail*/);
+}
+
+jle::tuple<bool, int/*, jle::shared_ptr<AST_node_item> */> Humble_parser::execute_terminal_klein( int str2parse_pos, const std::string& non_terminal_code, AST_node_item& ast_node) const
+{
+    int added_items = -1;
+    bool result=true;
+    int remaining_str2_parse_pos=str2parse_pos;
+    jle::shared_ptr<AST_node_item> ast_node_before_fail;
+    jle::shared_ptr<AST_node_item> current_ast_node;
+    std::string node_name(non_terminal_code);
+
+    while (result)
+    {
+        ++added_items;
+        ast_node_before_fail = current_ast_node;
+        PREPARE_NODE
+        std::tie(result, remaining_str2_parse_pos) = execute_terminal(remaining_str2_parse_pos, non_terminal_code, *current_ast_node);
+    }
+    if (result==false)
+    {
+        if (added_items!=0)
+            ast_node_before_fail->next = jle::shared_ptr<AST_node_item>();
+        else
+            ast_node.down = jle::shared_ptr<AST_node_item>();
+    }
+    return std::make_tuple(true, remaining_str2_parse_pos/*, ast_node_before_fail*/);
+}
+
+
+
+/*
+    Esta versión es interesante
+    Acumula todos los caracteres en el código no terminal* reduciendo significativamente el tamaño del árbol AST
+    Lo malo es que no permitiría hacer transformaciones individuales
+    Sería aplicable si no se hacen transformaciones
+    Otra opción es poner la estrella de klein en el lado derecho de la definición de una regla terminal
+jle::tuple<bool, int, jle::shared_ptr<AST_node_item> > HumbleParser::ExecuteTerminalKlein( int str2parse_pos, const std::string& non_terminal_code, shared_ptr<AST_node_item> _ast_node) const
+{
+    int added_items = -1;
+    bool result=true;
+    int remaining_str2_parse_pos=str2parse_pos;
+    std::string finalValue;
+
+    while (result)
+    {
+        ++added_items;
+        ExecuteTerminal(remaining_str2_parse_pos, non_terminal_code, *_ast_node).assign(result, remaining_str2_parse_pos);
+        if (result)
+            finalValue += _ast_node->value;
+    }
+   _ast_node->value = finalValue;
+   return std::make_tuple(true, remaining_str2_parse_pos, _ast_node);
+}
+*/
+
+
+
+
+
+
+jle::tuple<bool, int> Humble_parser::execute_terminal(const int str2parse_pos, const std::string& terminal_code, AST_node_item& ast_node) const
+{
+    Container_rules::const_iterator it_terminal = terminal_rules.find(terminal_code);
+    if (it_terminal == terminal_rules.end())
+        throw JLE_SS("terminal symbol [" << terminal_code <<  "] has no expansion rule");
+
+
+
+    int remaining_str2_parse_pos = str2parse_pos;
+    bool result = false;
+    std::list< jle::tuple <std::list<std::string> , std::string> >::const_iterator it = terminal_rules.find(terminal_code)->second.begin();
+    while (it!=terminal_rules.find(terminal_code)->second.end())
+    {
+        //  predefined consts     ------------------------------------------------------------
+        if ((*(it->_0.begin())).substr(0, 2) == "__")
+            execute_predefined_var(str2parse_pos,  (*(it->_0.begin())),  ast_node, it->_1).assign(result, remaining_str2_parse_pos);
+        //  regular expresions      ------------------------------------------------------------
+        else if ((*(it->_0.begin())).substr(0, 2) == "^("  ||  (*(it->_0.begin())).substr(0, 3) == "!^(")
+            execute_regular_expresion(str2parse_pos,  (*(it->_0.begin())),  ast_node, it->_1).assign(result, remaining_str2_parse_pos);
+        //  literals
+        else if ((*(it->_0.begin())).substr(0, 1) == "\'"  ||  (*(it->_0.begin())).substr(0, 2) == "!\'")
+            execute_literal(str2parse_pos,  (*(it->_0.begin())),  ast_node, it->_1).assign(result, remaining_str2_parse_pos);
+
+        else
+            throw JLE_SS("terminal symbol [" << terminal_code <<  "] invalid format " <<  (*(it->_0.begin())));
+
+
+
+        if (result)
+            return std::make_tuple(true, remaining_str2_parse_pos);
+
+        ++it;
+    }
+    return std::make_tuple(false, str2parse_pos);
+}
+
+
+
+
+jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_t2)
+{
+    std::string rule;
+    std::string transform2;
+    {
+        jle::RegExp re_rt (" *(.*) *##transf2-> *(.*) *");
+
+        if (re_rt.Match(rule_t2))
+        {
+            rule = jle::s_trim(re_rt[0], ' ');
+            transform2 = jle::s_trim(re_rt[1], ' ');
+        }
+        else
+        {
+            rule = rule_t2;
+        }
+    }
+
+
+
+    //  separate rule sides
+
+    jle::RegExp re ("^ *([^ \t]*) *::= *(.*)$");
+    if (re.Match(rule))
+    {
+        if (is_terminal(re[0]) == false)
+        {
+            //  insert rules in lists
+            jle::vector<std::string> right_symbols = jle::s_split(re[1], " ");
+            std::list<std::string>  lright_symbols;
+            for(unsigned i=0; i<right_symbols.size(); ++i)
+            {
+                std::string termRule = jle::s_trim(right_symbols[i], ' ');
+                if (termRule != "")
+                    lright_symbols.push_back(termRule);
+            }
+            non_terminal_rules[re[0]].push_back(
+                                        std::make_tuple(lright_symbols, transform2));
+        }
+        else
+        {
+            std::string toadd = jle::s_trim(re[1], ' ');
+            std::list<std::string> lterminal;
+            if (toadd[0] == '(' ||  toadd.substr(0,2) == "!(")
+            {
+            //  TERMINAL:  "regular expresion"
+                if (toadd[0] != '!')
+                    lterminal.push_back(JLE_SS("^" << toadd/* << ".*"*/));
+                else
+                    lterminal.push_back(JLE_SS("!^" << toadd.substr(1)/* << ".*"*/));
+                terminal_rules[re[0]].push_back ( std::make_tuple(lterminal, transform2));
+            }
+            else if (toadd.substr(0,2) == "__"  &&   toadd.substr(toadd.size()-2,2) == "__")
+            {
+                //  TERMINAL:  predefined consts
+                lterminal.push_back(jle::s_trim(toadd, ' '));
+                terminal_rules[re[0]].push_back ( std::make_tuple(lterminal, transform2));
+            }
+            else if ( (toadd[0] == '\''  || toadd.substr(0,2) == "!\'")  &&   toadd[toadd.size()-1] == '\'')
+            {
+                //  TERMINAL:  literals without scapes
+                lterminal.push_back(jle::s_trim(toadd, ' '));
+                terminal_rules[re[0]].push_back ( std::make_tuple(lterminal, transform2));
+            }
+//            else if (toadd[0] == '['  &&   toadd.substr(toadd.size()-1,1) == "]")
+//            {
+//                //  //  TERMINAL:  char lists
+//                lterminal.push_back(jle::s_trim(toadd));
+//                terminal_rules[re[0]].push_back ( std::make_tuple(lterminal, transform2));
+//            }
+            else
+            {
+                exist_errors_in_rules = true;
+                return std::make_tuple(false, JLE_SS("Error adding rule. TerminalFormat {" << rule << "}   "<<  rule_t2));
+            }
+
+
+        }
+    }
+    else
+    {
+        exist_errors_in_rules = true;
+        return std::make_tuple(false, JLE_SS("Error adding rule. Incorrect rule format {" << rule << "}   "<<  rule_t2));
+    }
+    return std::make_tuple(true, JLE_SS("ok"));
+}
+
+
+
+
+jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istream& stream)
+{
+    clear();
+    jle::tuple<bool, std::string> result = make_tuple(true, std::string());
+    char buffer[4096];
+
+    stream.getline(buffer, 4096);
+
+    //  The first rule indicates the gramar starting rule
+    default_init_symbol = jle::s_trim(buffer, ' ');
+
+    while (stream.getline(buffer, 4096))
+    {
+        if (buffer[0] == '/'  &&  buffer[1]=='/')
+            continue;
+        if (jle::s_trim(buffer, ' ') != "")
+        {
+            //result = add_rule(buffer);
+            result = add_line(buffer);
+            if (result._0 == false)
+                return result;
+        }
+    }
+
+    return result;
+}
+
+
+jle::tuple<bool, std::string> Humble_parser::load_rules_from_string (std::string rules)
+{
+    jle::tuple<bool, std::string> result = make_tuple(true, std::string());
+
+    std::istringstream iss(rules);
+    result = load_rules_from_stream(iss);
+
+    return result;
+
+}
+
+
+jle::tuple<bool, std::string> Humble_parser::load_rules_from_file(const std::string& file_rules)
+{
+    jle::tuple<bool, std::string> result = make_tuple(true, std::string());
+    std::ifstream frules(file_rules.c_str(), std::ios::in);
+    result = load_rules_from_stream(frules);
+    frules.close();
+
+    return result;
+}
+
+
+
+jle::tuple<bool, std::string>
+Humble_parser::add_line (std::string line)
+{
+    line = jle::s_trim(line, ' ');
+    if (adding_rule_multi_line)
+    {
+        if (line != "")
+        {
+            if (line == "__endrule__")
+            {
+                adding_rule_multi_line = false;
+                return add_rule(building_rule);
+            }
+            else
+            {
+                building_rule.push_back(' ');      //  it's necessary because we get lines without nont valid codes
+                for (unsigned i=0; i<line.size(); ++i)
+                {
+                    char char2add = line[i];
+                    if (char2add == '\r'  ||  char2add == '\n'  ||  char2add=='\t')  // it's not necessary. It can be removed
+                        char2add = ' ';
+
+                    building_rule.push_back(char2add);
+                }
+                return make_tuple(true, JLE_SS("ok"));
+            }
+        }
+        else
+            return make_tuple(true, JLE_SS("ok"));
+    }
+    else
+    {
+    if (line == "__beginrule__")
+    {
+        adding_rule_multi_line = true;
+        building_rule = "";
+        return make_tuple(true, JLE_SS("ok"));
+    }
+    else
+        return add_rule(line);
+    }
+}
+
+
+
+
+
+jle::tuple<bool, std::string/*remaining*/, AST_node_item>
+Humble_parser::parse(const std::string& input, const std::string& init) const
+{
+    AST_node_item ast_root(init, "");
+    ast_root_debug = &ast_root;    //  debug
+    try
+    {
+        deeper_error_parsing_pos = -1;
+        deeper_error_expected_symbols.clear();
+
+        if (exist_errors_in_rules())
+            return std::make_tuple(false, JLE_SS("CANNOT PARSE  there are errors in rules "), ast_root);
+
+        bool result = false;
+
+        int remaining_str2_parse_pos;
+        string2parse = input;
+        execute_non_terminal(0, init, ast_root).assign(result, remaining_str2_parse_pos);
+
+        std::string remaining_input = string2parse.substr(remaining_str2_parse_pos);
+
+        if (result==false  ||  remaining_input!= "")
+        {
+            std::ostringstream expected_symbols;
+            if (deeper_error_expected_symbols.size() > 0)
+            {
+                expected_symbols  <<  "   expected:  ";
+                for(auto it = deeper_error_expected_symbols.begin(); it != deeper_error_expected_symbols.end(); ++it)
+                    expected_symbols << " " << *it;
+            }
+            return std::make_tuple(false, JLE_SS("ERROR parsing... " << string2parse.substr(deeper_error_parsing_pos, 50) << "." << expected_symbols.str()), ast_root);
+        }
+        else
+            return std::make_tuple(true, JLE_SS("ok"), ast_root);
+    }
+    catch(const std::string& error)
+    {
+            return std::make_tuple(false, error, ast_root);
+    }
+}
+
+
+jle::tuple<bool, std::string/*remaining*/, AST_node_item>
+Humble_parser::multi_parse(const std::string& input, std::string minit) const
+{
+
+    if (minit == "")
+        minit = default_init_symbol;
+    if (minit == "")
+        return std::make_tuple(false, JLE_SS("CANNOT PARSE  missing init symbol"), AST_node_item("<none>"));
+
+
+    //  splitting elements
+
+    deeper_error_parsing_pos = -1;
+    deeper_error_expected_symbols.clear();
+
+    if (exist_errors_in_rules())
+        return std::make_tuple(false, JLE_SS("CANNOT PARSE  there are errors in rules "), AST_node_item("<none>"));
+
+    std::string new_input = input;
+    AST_node_item ast_result("<pending>");
+    jle::RegExp re ("([^,]+)");
+    while (re.GlobalMatch(minit))
+    {
+        bool result = false;
+        std::string remaining_input;
+        parse(new_input, re[0]).assign(result, remaining_input, ast_result);
+        if (result==false  ||  remaining_input!= "ok")
+            return std::make_tuple(result, remaining_input, ast_result);
+        ast_result.exec_replace();
+        new_input =  ast_result.value;
+    }
+
+    return std::make_tuple(true, JLE_SS("ok"), ast_result);
+}
+
+
+void Humble_parser::clear(void)
+{
+    string2parse = "";
+    non_terminal_rules.clear();
+    terminal_rules.clear();
+    exist_errors_in_rules = false;
+    deeper_error_parsing_pos = -1;
+    deeper_error_expected_symbols.clear();
+    default_init_symbol = "";
+}
+
+
+
+
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------------------------------------
+jle::tuple<bool, int> Humble_parser::execute_predefined_var(int str2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const
+{
+    //  predefined constants     ------------------------------------------------------------
+
+//    if (str2parse_pos >= int(string2parse.size()))
+//        return std::make_tuple(false, str2parse_pos);
+
+    if (terminal_rule  == "__any__")
+    {
+        if (str2parse_pos >= int(string2parse.size()))
+            return std::make_tuple(false, str2parse_pos);
+        ast_node.value        = string2parse.substr(str2parse_pos, 1);
+        ast_node.rule4replace = rule2replace;
+        return std::make_tuple(true, str2parse_pos+1);
+    }
+
+    else if (terminal_rule  == "__isalpha__")
+    {
+        char char2check = string2parse[str2parse_pos];
+        if ( isalpha(char2check) )
+        {
+            ast_node.value        = char2check;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, str2parse_pos+1);
+        }
+    }
+    else if (terminal_rule  == "__islower__")
+    {
+        char char2check = string2parse[str2parse_pos];
+        if ( islower(char2check) )
+        {
+            ast_node.value        = char2check;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, str2parse_pos+1);
+        }
+    }
+    else if (terminal_rule  == "__isupper__")
+    {
+        char char2check = string2parse[str2parse_pos];
+        if ( isupper(char2check) )
+        {
+            ast_node.value        = char2check;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, str2parse_pos+1);
+        }
+    }
+    else if (terminal_rule  == "__isdigit__")
+    {
+        char char2check = string2parse[str2parse_pos];
+        if ( isdigit(char2check) )
+        {
+            ast_node.value        = char2check;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, str2parse_pos+1);
+        }
+    }
+    else if (terminal_rule  == "__isalnum__")
+    {
+        char char2check = string2parse[str2parse_pos];
+        if ( isalnum(char2check) )
+        {
+            ast_node.value        = char2check;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, str2parse_pos+1);
+        }
+    }
+
+    else if (terminal_rule  == "__endl__")
+    {
+        char char2check = string2parse[str2parse_pos];
+        if ( char2check == '\n'  ||  char2check == '\r')
+        {
+            ast_node.value        = char2check;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, str2parse_pos+1);
+        }
+    }
+    else if (terminal_rule  == "__isspace__")
+    {
+        char char2check = string2parse[str2parse_pos];
+        if (isspace(char2check))
+        {
+            ast_node.value        = char2check;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, str2parse_pos+1);
+        }
+    }
+    else if (terminal_rule  == "__isspace*__")
+    {
+        int counter=0;
+        char char2check = string2parse[str2parse_pos+counter];
+        while (isspace(char2check))     //  it's not necessary to verify the string end (\0 no es igual)
+        {
+            if (counter == 0)
+                ast_node.rule4replace  = rule2replace;
+            ast_node.value        += char2check;
+            counter++;
+            char2check = string2parse[str2parse_pos+counter];
+        }
+        return std::make_tuple(true, str2parse_pos+counter);
+    }
+    else if (terminal_rule  == "__isspace+__")
+    {
+        int counter=0;
+        char char2check = string2parse[str2parse_pos+counter];
+        while (isspace(char2check))     //  it's not necessary to verify the string end (\0 no es igual)
+        {
+            if (counter == 0)
+                ast_node.rule4replace  = rule2replace;
+            ast_node.value        += char2check;
+            counter++;
+            char2check = string2parse[str2parse_pos+counter];
+        }
+        if (counter == 0)
+            return std::make_tuple(false, str2parse_pos+counter);
+        else
+            return std::make_tuple(true, str2parse_pos+counter);
+    }
+    else if (terminal_rule  == "__space_tab__")
+    {
+        char char2check = string2parse[str2parse_pos];
+        if (char2check== '\t'  ||  char2check== ' ')
+        {
+            ast_node.value        = char2check;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, str2parse_pos+1);
+        }
+    }
+    else
+        throw  JLE_SS("unknown constant [" << terminal_rule  << "]"  <<  std::endl);
+
+
+    return std::make_tuple(false, str2parse_pos);
+}
+
+
+jle::tuple<bool, int> Humble_parser::execute_regular_expresion(int str2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const
+{
+    int  remaining_str2_parse_pos = str2parse_pos;
+    std::string re2eval;
+    bool positiv_eval = true;
+    if ( terminal_rule[0] != '!')
+    {
+        re2eval = terminal_rule;
+        positiv_eval = true;
+    }
+    else
+    {
+        re2eval = terminal_rule.substr(1);
+        positiv_eval = false;
+    }
+
+    jle::RegExp re_terminal (re2eval);
+    if (remaining_str2_parse_pos > int(string2parse.size()))
+        std::cerr << "ERROR... " << std::endl;
+
+
+    if (positiv_eval)
+    {
+        if (re_terminal.Match( string2parse.substr(remaining_str2_parse_pos) ))
+        {
+            ast_node.value        = re_terminal[0];
+            remaining_str2_parse_pos += int(ast_node.value.size());
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, remaining_str2_parse_pos);
+        }
+    }
+    else
+    {
+        if (remaining_str2_parse_pos >= int(string2parse.size()))
+            return std::make_tuple(false, remaining_str2_parse_pos);
+        if (re_terminal.Match( string2parse.substr(remaining_str2_parse_pos) )== false)
+        {
+            ast_node.value        = string2parse.substr(remaining_str2_parse_pos, 1);
+            remaining_str2_parse_pos += 1;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, remaining_str2_parse_pos);
+        }
+    }
+    return std::make_tuple(false, str2parse_pos);
+}
+
+
+
+jle::tuple<bool, int> Humble_parser::execute_literal(int str2parse_pos, const std::string& _terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const
+{
+    if (str2parse_pos > int(string2parse.size()))
+        std::cerr << "ERROR... " << std::endl;
+    int  remaining_str2_parse_pos = str2parse_pos;
+    std::string terminal_rule;
+    bool positiv_eval = true;
+    if ( _terminal_rule[0] != '!')
+    {
+        terminal_rule = _terminal_rule.substr(1, _terminal_rule.size()-2);
+        positiv_eval = true;
+    }
+    else
+    {
+        terminal_rule = _terminal_rule.substr(2, _terminal_rule.size()-3);
+        positiv_eval = false;
+    }
+    if (str2parse_pos+int(terminal_rule.size()) > int(string2parse.size()))
+        return std::make_tuple(false, str2parse_pos);
+
+
+
+    std::string substring2parse =  string2parse.substr(remaining_str2_parse_pos, terminal_rule.size());
+    if (positiv_eval)
+    {
+        if (terminal_rule ==  substring2parse)
+        {
+            ast_node.value        = substring2parse;
+            remaining_str2_parse_pos += int(ast_node.value.size());
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, remaining_str2_parse_pos);
+        }
+    }
+    else
+    {
+        if (remaining_str2_parse_pos >= int(string2parse.size()))
+            return std::make_tuple(false, remaining_str2_parse_pos);
+        if (terminal_rule !=  substring2parse)
+        {
+            ast_node.value        = string2parse.substr(remaining_str2_parse_pos, 1);
+            remaining_str2_parse_pos += 1;
+            ast_node.rule4replace = rule2replace;
+            return std::make_tuple(true, remaining_str2_parse_pos);
+        }
+    }
+    return std::make_tuple(false, str2parse_pos);
+}
+
+
+std::list<std::string>   Humble_parser::get_terminal_rules(void)const
+{
+    std::list<std::string> result;
+    for(auto it = terminal_rules.begin(); it != terminal_rules.end(); ++it)
+    {
+        result.push_back(it->first);
+    }
+    return result;
+}
+
+std::list<std::string>   Humble_parser::get_non_terminal_rules(void)const
+{
+    std::list<std::string> result;
+    for(auto it = non_terminal_rules.begin(); it != non_terminal_rules.end(); ++it)
+    {
+        result.push_back(it->first);
+    }
+    return result;
+}
+
+
+
+};  //  namespace jle {

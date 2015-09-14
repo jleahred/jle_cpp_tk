@@ -20,10 +20,10 @@ void receptor_do_nothing (void)
 }
 
 
-int contador = 0;
+int counter = 0;
 void count (void)
 {
-    ++contador;
+    ++counter;
 }
 
 
@@ -115,8 +115,8 @@ int main (int /*argc*/, char** /*argv*/)
 
         auto end = std::chrono::high_resolution_clock::now();
 
-        std::cout << contador << std::endl;
-        contador = 0;
+        std::cout << counter << std::endl;
+        counter = 0;
 
         std::chrono::duration<double> time = end - start;
         std::cout << "time: " << time.count() << std::endl;
@@ -139,8 +139,8 @@ int main (int /*argc*/, char** /*argv*/)
 
         auto end = std::chrono::high_resolution_clock::now();
 
-        std::cout << contador << std::endl;
-        contador = 0;
+        std::cout << counter << std::endl;
+        counter = 0;
 
         std::chrono::duration<double> time = end-start;
         std::cout << "time: " << time.count() << std::endl;
