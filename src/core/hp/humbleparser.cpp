@@ -7,6 +7,7 @@
 #include <iostream>  // I/O
 #include <fstream>   // file I/O
 #include <iomanip>   // format manipulation
+#include <regex>
 
 
 
@@ -116,9 +117,9 @@ jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, co
 
             if (is_terminal(*it1))
             {
-                if (it1->substr(it1->size()-1) == "*")
+                if (it1->substr(it1->size()) == "*")
                     std::tie(result, remaining_str2_parse_pos/*, current_ast_node*/) =
-                            execute_terminal_klein(remaining_str2_parse_pos, it1->substr(0, it1->size()-1), *current_ast_node);
+                            execute_terminal_klein(remaining_str2_parse_pos, it1->substr(0, it1->size()), *current_ast_node);
                 else
                     std::tie(result, remaining_str2_parse_pos) =
                             execute_terminal(remaining_str2_parse_pos, *it1, *current_ast_node);
@@ -126,9 +127,9 @@ jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, co
             else
             {
                 //  it is a klein start symbol?
-                if (it1->substr(it1->size()-1) == "*")
+                if (it1->substr(it1->size()) == "*")
                     std::tie(result, remaining_str2_parse_pos/*, current_ast_node*/) =
-                            execute_non_terminal_klein(remaining_str2_parse_pos, it1->substr(0, it1->size()-1), *current_ast_node);
+                            execute_non_terminal_klein(remaining_str2_parse_pos, it1->substr(0, it1->size()), *current_ast_node);
                 else
                     std::tie(result, remaining_str2_parse_pos) =
                             execute_non_terminal(remaining_str2_parse_pos, *it1, *current_ast_node);
@@ -255,17 +256,23 @@ jle::tuple<bool, int> Humble_parser::execute_terminal(const int str2parse_pos, c
     while (it!=terminal_rules.find(terminal_code)->second.end())
     {
         //  predefined consts     ------------------------------------------------------------
-        if ((*(it->_0.begin())).substr(0, 2) == "__")
-            execute_predefined_var(str2parse_pos,  (*(it->_0.begin())),  ast_node, it->_1).assign(result, remaining_str2_parse_pos);
+        if ((*(std::get<0>(*it).begin())).substr(0, 2) == "__") {
+            std::tie(result, remaining_str2_parse_pos) =
+                    execute_predefined_var(str2parse_pos,  (*(std::get<0>(*it).begin())),  ast_node, std::get<1>(*it));
+        }
         //  regular expresions      ------------------------------------------------------------
-        else if ((*(it->_0.begin())).substr(0, 2) == "^("  ||  (*(it->_0.begin())).substr(0, 3) == "!^(")
-            execute_regular_expresion(str2parse_pos,  (*(it->_0.begin())),  ast_node, it->_1).assign(result, remaining_str2_parse_pos);
+        else if ((*(std::get<0>(*it).begin())).substr(0, 2) == "^("  ||  (*(std::get<0>(*it).begin())).substr(0, 3) == "!^(")
+        {
+            std::tie(result, remaining_str2_parse_pos) =
+                    execute_regular_expresion(str2parse_pos,  (*(std::get<0>(*it).begin())),  ast_node, std::get<1>(*it));
+        }
         //  literals
-        else if ((*(it->_0.begin())).substr(0, 1) == "\'"  ||  (*(it->_0.begin())).substr(0, 2) == "!\'")
-            execute_literal(str2parse_pos,  (*(it->_0.begin())),  ast_node, it->_1).assign(result, remaining_str2_parse_pos);
-
+        else if ((*(std::get<0>(*it).begin())).substr(0, 1) == "\'"  ||  (*(std::get<0>(*it).begin())).substr(0, 2) == "!\'") {
+            std::tie(result, remaining_str2_parse_pos) =
+                    execute_literal(str2parse_pos,  (*(std::get<0>(*it).begin())),  ast_node, std::get<1>(*it));
+        }
         else
-            throw JLE_SS("terminal symbol [" << terminal_code <<  "] invalid format " <<  (*(it->_0.begin())));
+            throw JLE_SS("terminal symbol [" << terminal_code <<  "] invalid format " <<  (*(std::get<0>(*it).begin())));
 
 
 
@@ -285,12 +292,13 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
     std::string rule;
     std::string transform2;
     {
-        jle::RegExp re_rt (" *(.*) *##transf2-> *(.*) *");
+        std::regex  re_rt(" *(.*) *##transf2-> *(.*) *");
+        std::smatch re_result;
 
-        if (re_rt.Match(rule_t2))
+        if (std::regex_match(rule_t2, re_result, re_rt))
         {
-            rule = jle::s_trim(re_rt[0], ' ');
-            transform2 = jle::s_trim(re_rt[1], ' ');
+            rule = jle::s_trim(re_result[1], ' ');
+            transform2 = jle::s_trim(re_result[2], ' ');
         }
         else
         {
@@ -301,14 +309,14 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
 
 
     //  separate rule sides
-
-    jle::RegExp re ("^ *([^ \t]*) *::= *(.*)$");
-    if (re.Match(rule))
+    std::regex re ("^ *([^ \t]*) *::= *(.*)$");
+    std::smatch re_result;
+    if (std::regex_match(rule, re_result, re))
     {
-        if (is_terminal(re[0]) == false)
+        if (is_terminal(re_result[1]) == false)
         {
             //  insert rules in lists
-            jle::vector<std::string> right_symbols = jle::s_split(re[1], " ");
+            jle::vector<std::string> right_symbols = jle::s_split(re_result[2], " ");
             std::list<std::string>  lright_symbols;
             for(unsigned i=0; i<right_symbols.size(); ++i)
             {
@@ -316,12 +324,12 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
                 if (termRule != "")
                     lright_symbols.push_back(termRule);
             }
-            non_terminal_rules[re[0]].push_back(
+            non_terminal_rules[re_result[1]].push_back(
                                         std::make_tuple(lright_symbols, transform2));
         }
         else
         {
-            std::string toadd = jle::s_trim(re[1], ' ');
+            std::string toadd = jle::s_trim(re_result[2], ' ');
             std::list<std::string> lterminal;
             if (toadd[0] == '(' ||  toadd.substr(0,2) == "!(")
             {
@@ -330,29 +338,29 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
                     lterminal.push_back(JLE_SS("^" << toadd/* << ".*"*/));
                 else
                     lterminal.push_back(JLE_SS("!^" << toadd.substr(1)/* << ".*"*/));
-                terminal_rules[re[0]].push_back ( std::make_tuple(lterminal, transform2));
+                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
             }
             else if (toadd.substr(0,2) == "__"  &&   toadd.substr(toadd.size()-2,2) == "__")
             {
                 //  TERMINAL:  predefined consts
                 lterminal.push_back(jle::s_trim(toadd, ' '));
-                terminal_rules[re[0]].push_back ( std::make_tuple(lterminal, transform2));
+                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
             }
-            else if ( (toadd[0] == '\''  || toadd.substr(0,2) == "!\'")  &&   toadd[toadd.size()-1] == '\'')
+            else if ( (toadd[0] == '\''  || toadd.substr(0,2) == "!\'")  &&   toadd[toadd.size()] == '\'')
             {
                 //  TERMINAL:  literals without scapes
                 lterminal.push_back(jle::s_trim(toadd, ' '));
-                terminal_rules[re[0]].push_back ( std::make_tuple(lterminal, transform2));
+                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
             }
-//            else if (toadd[0] == '['  &&   toadd.substr(toadd.size()-1,1) == "]")
+//            else if (toadd[0] == '['  &&   toadd.substr(toadd.size(),1) == "]")
 //            {
 //                //  //  TERMINAL:  char lists
 //                lterminal.push_back(jle::s_trim(toadd));
-//                terminal_rules[re[0]].push_back ( std::make_tuple(lterminal, transform2));
+//                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
 //            }
             else
             {
-                exist_errors_in_rules = true;
+                errors_in_rules = true;
                 return std::make_tuple(false, JLE_SS("Error adding rule. TerminalFormat {" << rule << "}   "<<  rule_t2));
             }
 
@@ -361,7 +369,7 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
     }
     else
     {
-        exist_errors_in_rules = true;
+        errors_in_rules = true;
         return std::make_tuple(false, JLE_SS("Error adding rule. Incorrect rule format {" << rule << "}   "<<  rule_t2));
     }
     return std::make_tuple(true, JLE_SS("ok"));
@@ -389,7 +397,7 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istrea
         {
             //result = add_rule(buffer);
             result = add_line(buffer);
-            if (result._0 == false)
+            if (std::get<0>(result) == false)
                 return result;
         }
     }
@@ -486,7 +494,7 @@ Humble_parser::parse(const std::string& input, const std::string& init) const
 
         int remaining_str2_parse_pos;
         string2parse = input;
-        execute_non_terminal(0, init, ast_root).assign(result, remaining_str2_parse_pos);
+        std::tie(result, remaining_str2_parse_pos) = execute_non_terminal(0, init, ast_root);
 
         std::string remaining_input = string2parse.substr(remaining_str2_parse_pos);
 
@@ -531,12 +539,16 @@ Humble_parser::multi_parse(const std::string& input, std::string minit) const
 
     std::string new_input = input;
     AST_node_item ast_result("<pending>");
-    jle::RegExp re ("([^,]+)");
-    while (re.GlobalMatch(minit))
-    {
+    std::regex re("([^,]+)");
+
+    auto re_begin =
+        std::sregex_iterator(minit.begin(), minit.end(), re);
+    auto re_end = std::sregex_iterator();
+
+    for (std::sregex_iterator i = re_begin; i != re_end; ++i) {
         bool result = false;
         std::string remaining_input;
-        parse(new_input, re[0]).assign(result, remaining_input, ast_result);
+        std::tie(result, remaining_input, ast_result) =  parse(new_input, i->str());
         if (result==false  ||  remaining_input!= "ok")
             return std::make_tuple(result, remaining_input, ast_result);
         ast_result.exec_replace();
@@ -552,7 +564,7 @@ void Humble_parser::clear(void)
     string2parse = "";
     non_terminal_rules.clear();
     terminal_rules.clear();
-    exist_errors_in_rules = false;
+    errors_in_rules = false;
     deeper_error_parsing_pos = -1;
     deeper_error_expected_symbols.clear();
     default_init_symbol = "";
@@ -710,25 +722,28 @@ jle::tuple<bool, int> Humble_parser::execute_regular_expresion(int str2parse_pos
     bool positiv_eval = true;
     if ( terminal_rule[0] != '!')
     {
-        re2eval = terminal_rule;
+        re2eval = JLE_SS(terminal_rule << ".*");
         positiv_eval = true;
     }
     else
     {
-        re2eval = terminal_rule.substr(1);
+        re2eval = JLE_SS(terminal_rule.substr(1) << ".*");
         positiv_eval = false;
     }
 
-    jle::RegExp re_terminal (re2eval);
+    std::regex re_terminal{re2eval};
     if (remaining_str2_parse_pos > int(string2parse.size()))
         std::cerr << "ERROR... " << std::endl;
 
 
     if (positiv_eval)
     {
-        if (re_terminal.Match( string2parse.substr(remaining_str2_parse_pos) ))
+        std::smatch re_result;
+        //  http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#2329
+        std::string re_bug = string2parse.substr(remaining_str2_parse_pos);
+        if(std::regex_match(re_bug, re_result, re_terminal))
         {
-            ast_node.value        = re_terminal[0];
+            ast_node.value        = re_result[1];
             remaining_str2_parse_pos += int(ast_node.value.size());
             ast_node.rule4replace = rule2replace;
             return std::make_tuple(true, remaining_str2_parse_pos);
@@ -738,7 +753,10 @@ jle::tuple<bool, int> Humble_parser::execute_regular_expresion(int str2parse_pos
     {
         if (remaining_str2_parse_pos >= int(string2parse.size()))
             return std::make_tuple(false, remaining_str2_parse_pos);
-        if (re_terminal.Match( string2parse.substr(remaining_str2_parse_pos) )== false)
+        std::smatch re_result;
+        //  http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#2329
+        const std::string re_bug = string2parse.substr(remaining_str2_parse_pos);
+        if(std::regex_match(re_bug, re_result, re_terminal) == false)
         {
             ast_node.value        = string2parse.substr(remaining_str2_parse_pos, 1);
             remaining_str2_parse_pos += 1;
