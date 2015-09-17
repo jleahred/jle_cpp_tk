@@ -119,7 +119,7 @@ jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, co
             {
                 if (it1->substr(it1->size()) == "*")
                     std::tie(result, remaining_str2_parse_pos/*, current_ast_node*/) =
-                            execute_terminal_klein(remaining_str2_parse_pos, it1->substr(0, it1->size()), *current_ast_node);
+                            execute_terminal_klein(remaining_str2_parse_pos, *it1, *current_ast_node);
                 else
                     std::tie(result, remaining_str2_parse_pos) =
                             execute_terminal(remaining_str2_parse_pos, *it1, *current_ast_node);
@@ -129,7 +129,7 @@ jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, co
                 //  it is a klein start symbol?
                 if (it1->substr(it1->size()) == "*")
                     std::tie(result, remaining_str2_parse_pos/*, current_ast_node*/) =
-                            execute_non_terminal_klein(remaining_str2_parse_pos, it1->substr(0, it1->size()), *current_ast_node);
+                            execute_non_terminal_klein(remaining_str2_parse_pos, *it1, *current_ast_node);
                 else
                     std::tie(result, remaining_str2_parse_pos) =
                             execute_non_terminal(remaining_str2_parse_pos, *it1, *current_ast_node);
@@ -406,7 +406,7 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istrea
 }
 
 
-jle::tuple<bool, std::string> Humble_parser::load_rules_from_string (std::string rules)
+jle::tuple<bool, std::string> Humble_parser::load_rules_from_string (const std::string& rules)
 {
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
 

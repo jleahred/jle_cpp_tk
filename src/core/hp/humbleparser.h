@@ -59,7 +59,7 @@ public:
     load_rules_from_file(const std::string& file_rules);
 
     jle::tuple<bool, std::string>
-    load_rules_from_string (std::string rules);
+    load_rules_from_string (const std::string& rules);
 
 
 
