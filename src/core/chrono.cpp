@@ -153,16 +153,22 @@ std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp)
     static auto init_monotonic_time = std::get<1>(ref_times);
 
     int correct_sign = tp.tp < init_monotonic_time  ?  1  :  0;
-    std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp.tp - init_monotonic_time) /*- std::chrono::seconds(correct_sign)*/);
-    struct tm * ptm;
-    ptm = gmtime ( &time_t );
 
     int milliseconds {static_cast<int>(
                         std::chrono::duration_cast<std::chrono::milliseconds>
                                     (tp.tp.time_since_epoch())
                                     .count() % 1000)
                      };
-    if(milliseconds<0)  milliseconds = correct_sign*1000 +milliseconds;
+    auto correct_second = 0s;
+    if(milliseconds<0)  {
+        milliseconds = correct_sign*1000 +milliseconds;
+        correct_second = 1s;
+    }
+
+    std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp.tp-correct_second - init_monotonic_time) /*- std::chrono::seconds(correct_sign)*/);
+    struct tm * ptm;
+    ptm = gmtime ( &time_t );
+
     return std::make_tuple(*ptm, milliseconds);
 }
 
@@ -184,6 +190,7 @@ std::ostream& operator<<(std::ostream& out, const ::jle::chrono::time_point &tp)
 
     out << _tm.tm_year+1900         << "-";
     out.width(2); out.fill('0');
+
     out << _tm.tm_mon +1            << "-";
     out.width(2); out.fill('0');
     out << _tm.tm_mday              << " ";
@@ -191,8 +198,10 @@ std::ostream& operator<<(std::ostream& out, const ::jle::chrono::time_point &tp)
     out.width(2); out.fill('0');
     out << _tm.tm_hour              << ":";
     out.width(2); out.fill('0');
+
     out << _tm.tm_min               << ":";
     out.width(2); out.fill('0');
+
     out << _tm.tm_sec               << ".";
     out.width(3); out.fill('0');
     out << milliseconds;
