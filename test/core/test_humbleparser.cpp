@@ -99,7 +99,7 @@ void test_expresion_error(void)
                         );
 
 
-    JLE_TEST_ASSERT(result = false);
+    JLE_TEST_ASSERT(result == false);
 }
 
 
@@ -113,4 +113,9 @@ int main(void)
         test_expresion_error();
 
     JLE_TEST_REPORT
+}
+
+
+void jle::alarm_msg(const jle::alarm& al) {
+    std::cout << al << std::endl;
 }
