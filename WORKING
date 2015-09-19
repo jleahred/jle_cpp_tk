@@ -1,5 +1,14 @@
+hp/ide
+doc
+
+
+sdl/idl
+
+
 JSON
 
+
+string codec
 
 asynchr signaling
 

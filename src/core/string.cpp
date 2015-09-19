@@ -288,9 +288,9 @@ std::string s_normalize_utf8(const std::string& source_string)
     std::string destination_string;
     unsigned char aux_char;
 
-    for (unsigned int contador=0; contador < source_string.size(); contador++)
+    for (unsigned int counter=0; counter < source_string.size(); counter++)
     {
-        aux_char=source_string[contador];
+        aux_char=source_string[counter];
 
         if (aux_char>127)
         {
@@ -357,7 +357,7 @@ std::string s_normalize_utf8(const std::string& source_string)
             }
         }
         else
-            destination_string+=source_string[contador];
+            destination_string+=source_string[counter];
     }
     return destination_string;
 }
