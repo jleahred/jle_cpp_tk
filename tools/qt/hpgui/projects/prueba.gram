@@ -1,0 +1,52 @@
+MAIN
+
+MAIN     ::=  SECTION*  
+
+
+SECTION  ::=  sep NAME sep { sep  INFO_SECTION*  sep }  sep       ##transf2->  $(NAME)
+
+
+INFO_SECTION ::=  PROPERTY    endl
+INFO_SECTION ::=  PROPERTY    endl
+INFO_SECTION ::=  COMMENT     endl
+INFO_SECTION ::=  BLANK_LINE  endl
+INFO_SECTION ::=  SECTION       
+
+
+PROPERTY ::= _ NAME _ : _ VALUE  COMMENT
+
+PROPERTY ::= _ NAME _ : _ VALUE _  
+
+
+VALUE  ::= !endl_or_#*  
+
+
+BLANK_LINE  ::=  _  
+
+
+NAME ::= id  
+id        ::=  ([a-zA-Z0-9\-_]+)  
+
+
+
+COMMENT   ::=   _ # TILL_ENDL
+
+
+
+TILL_ENDL ::=  !endl*  
+TILL_ENDL ::=  !endl*  
+
+
+
+{   ::= '{'  
+}   ::= '}'  
+:   ::= ':'  
+#   ::= '#'  
+_   ::= ([ \t]*)  
+sep ::= __isspace*__  
+
+
+space           ::= __isspace__  
+!endl_or_#       ::=  !([\n\r#])  
+endl            ::=  __endl__  
+!endl            ::=  !([\n\r])  

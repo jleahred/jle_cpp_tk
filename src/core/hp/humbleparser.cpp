@@ -346,7 +346,7 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
                 lterminal.push_back(jle::s_trim(toadd, ' '));
                 terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
             }
-            else if ( (toadd[0] == '\''  || toadd.substr(0,2) == "!\'")  &&   toadd[toadd.size()] == '\'')
+            else if ( (toadd[0] == '\''  || toadd.substr(0,2) == "!\'")  &&   toadd[toadd.size()-1] == '\'')
             {
                 //  TERMINAL:  literals without scapes
                 lterminal.push_back(jle::s_trim(toadd, ' '));

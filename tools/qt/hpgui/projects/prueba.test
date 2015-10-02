@@ -1,0 +1,37 @@
+ADMIN
+{
+    IdReloj:1234
+    ProcessName:TEST_FBINSERT
+    ProcessPriority:High
+
+    # pueden leerse de global (comunes)
+    Production:No
+    Market:~
+    Server:128.2.254.100:7500
+    Network:~
+
+
+    Services
+    {
+        Client:03
+        Server:02
+        Service:01
+        Other:07
+        Pepe:09
+    }
+}
+
+DBPR
+{
+    SERVER: 128.2.8.44
+    NAME: MABE
+    USER: SYSDBA
+}
+
+DBLOCALPR
+{
+    SERVER: 128.2.7.188
+    NAME: testfbinsert
+    USER: SYSDBA
+}
+

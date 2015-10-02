@@ -5,3 +5,5 @@ temp/
 lib/
 cov-int/
 jle_cpp_tk.tgz
+tools/qt/hpgui/build*
+*.pro.user
