@@ -40,7 +40,7 @@ Humble_parser::~Humble_parser()
 
 bool Humble_parser::is_terminal(const std::string& str) const
 {
-    if (str[0]>='A' && str[0]<='Z')
+    if ( (str[0]>='A' && str[0]<='Z')  ||  (str[0]=='.'  &&  str[str.length()-1]=='.'))
         return false;
     else
         return true;
@@ -117,9 +117,12 @@ jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, co
 
             if (is_terminal(*it1))
             {
-                if (it1->substr(it1->size()) == "*")
+                if (it1->substr(it1->size()-1) == "*")
+                {
+                    std::string symbol = it1->substr(0, it1->size()-1);     //  remove klein star
                     std::tie(result, remaining_str2_parse_pos/*, current_ast_node*/) =
-                            execute_terminal_klein(remaining_str2_parse_pos, *it1, *current_ast_node);
+                            execute_terminal_klein(remaining_str2_parse_pos, symbol, *current_ast_node);
+                }
                 else
                     std::tie(result, remaining_str2_parse_pos) =
                             execute_terminal(remaining_str2_parse_pos, *it1, *current_ast_node);
@@ -127,9 +130,12 @@ jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, co
             else
             {
                 //  it is a klein start symbol?
-                if (it1->substr(it1->size()) == "*")
+                if (it1->substr(it1->size()-1) == "*")
+                {
+                    std::string symbol = it1->substr(0, it1->size()-1);     //  remove klein star
                     std::tie(result, remaining_str2_parse_pos/*, current_ast_node*/) =
-                            execute_non_terminal_klein(remaining_str2_parse_pos, *it1, *current_ast_node);
+                            execute_non_terminal_klein(remaining_str2_parse_pos, symbol, *current_ast_node);
+                }
                 else
                     std::tie(result, remaining_str2_parse_pos) =
                             execute_non_terminal(remaining_str2_parse_pos, *it1, *current_ast_node);
@@ -256,7 +262,7 @@ jle::tuple<bool, int> Humble_parser::execute_terminal(const int str2parse_pos, c
     while (it!=terminal_rules.find(terminal_code)->second.end())
     {
         //  predefined consts     ------------------------------------------------------------
-        if ((*(std::get<0>(*it).begin())).substr(0, 2) == "__") {
+        if ((*(std::get<0>(*it).begin())).substr(0, 2) == "__"  ||  (*(std::get<0>(*it).begin())).substr(0, 3) == "!__") {
             std::tie(result, remaining_str2_parse_pos) =
                     execute_predefined_var(str2parse_pos,  (*(std::get<0>(*it).begin())),  ast_node, std::get<1>(*it));
         }
@@ -340,7 +346,8 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
                     lterminal.push_back(JLE_SS("!^" << toadd.substr(1)/* << ".*"*/));
                 terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
             }
-            else if (toadd.substr(0,2) == "__"  &&   toadd.substr(toadd.size()-2,2) == "__")
+            else if ((toadd.substr(0,2) == "__"  ||  toadd.substr(0,3) == "!__")
+                            &&   toadd.substr(toadd.size()-2,2) == "__")
             {
                 //  TERMINAL:  predefined consts
                 lterminal.push_back(jle::s_trim(toadd, ' '));
@@ -579,98 +586,88 @@ void Humble_parser::clear(void)
 
 
 // ----------------------------------------------------------------------------------------------------------------------------
-jle::tuple<bool, int> Humble_parser::execute_predefined_var(int str2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const
+jle::tuple<bool, int>  Humble_parser::execute_predefined_var(int str2parse_pos, const std::string& _terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const
 {
     //  predefined constants     ------------------------------------------------------------
 
 //    if (str2parse_pos >= int(string2parse.size()))
 //        return std::make_tuple(false, str2parse_pos);
 
-    if (terminal_rule  == "__any__")
+    auto result = std::make_tuple(false, str2parse_pos);
+
+
+    std::string  terminal_rule;
+    bool positive = true;
+    if(_terminal_rule[0] != '!')
     {
-        if (str2parse_pos >= int(string2parse.size()))
-            return std::make_tuple(false, str2parse_pos);
-        ast_node.value        = string2parse.substr(str2parse_pos, 1);
-        ast_node.rule4replace = rule2replace;
-        return std::make_tuple(true, str2parse_pos+1);
+        terminal_rule = _terminal_rule;
+        positive = true;
+    }
+    else
+    {
+        terminal_rule = _terminal_rule.substr(1);
+        positive = false;
     }
 
-    else if (terminal_rule  == "__isalpha__")
-    {
+    auto check_funct_positive = [positive=positive](bool check_result) {
+        if(check_result  &&  positive)
+            return true;
+        else if(!check_result  &&  !positive)
+            return true;
+        else
+            return false;
+    };
+
+    auto check_char = [&](std::function<bool (char)> f) {
         char char2check = string2parse[str2parse_pos];
-        if ( isalpha(char2check) )
+        if(check_funct_positive(f(char2check)))
         {
             ast_node.value        = char2check;
             ast_node.rule4replace = rule2replace;
-            return std::make_tuple(true, str2parse_pos+1);
+            result = std::make_tuple(true, str2parse_pos+1);
         }
+    };
+
+
+    if (terminal_rule  == "__any__") {
+        auto local_check = [&](char) { return str2parse_pos >= int(string2parse.size()); };
+        check_char(local_check);
+    }
+    else if (terminal_rule  == "__isalpha__")
+    {
+        check_char(isalpha);
     }
     else if (terminal_rule  == "__islower__")
     {
-        char char2check = string2parse[str2parse_pos];
-        if ( islower(char2check) )
-        {
-            ast_node.value        = char2check;
-            ast_node.rule4replace = rule2replace;
-            return std::make_tuple(true, str2parse_pos+1);
-        }
+        check_char(islower);
     }
     else if (terminal_rule  == "__isupper__")
     {
-        char char2check = string2parse[str2parse_pos];
-        if ( isupper(char2check) )
-        {
-            ast_node.value        = char2check;
-            ast_node.rule4replace = rule2replace;
-            return std::make_tuple(true, str2parse_pos+1);
-        }
+        check_char(isupper);
     }
     else if (terminal_rule  == "__isdigit__")
     {
-        char char2check = string2parse[str2parse_pos];
-        if ( isdigit(char2check) )
-        {
-            ast_node.value        = char2check;
-            ast_node.rule4replace = rule2replace;
-            return std::make_tuple(true, str2parse_pos+1);
-        }
+        check_char(isdigit);
     }
     else if (terminal_rule  == "__isalnum__")
     {
-        char char2check = string2parse[str2parse_pos];
-        if ( isalnum(char2check) )
-        {
-            ast_node.value        = char2check;
-            ast_node.rule4replace = rule2replace;
-            return std::make_tuple(true, str2parse_pos+1);
-        }
+        check_char(isalnum);
     }
 
     else if (terminal_rule  == "__endl__")
     {
-        char char2check = string2parse[str2parse_pos];
-        if ( char2check == '\n'  ||  char2check == '\r')
-        {
-            ast_node.value        = char2check;
-            ast_node.rule4replace = rule2replace;
-            return std::make_tuple(true, str2parse_pos+1);
-        }
+        auto local_check = [&](char) { return string2parse[str2parse_pos] == '\n'  ||  string2parse[str2parse_pos] == '\r'; };
+        check_char(local_check);
     }
     else if (terminal_rule  == "__isspace__")
     {
-        char char2check = string2parse[str2parse_pos];
-        if (isspace(char2check))
-        {
-            ast_node.value        = char2check;
-            ast_node.rule4replace = rule2replace;
-            return std::make_tuple(true, str2parse_pos+1);
-        }
+        check_char(isspace);
     }
     else if (terminal_rule  == "__isspace*__")
     {
         int counter=0;
         char char2check = string2parse[str2parse_pos+counter];
-        while (isspace(char2check))     //  it's not necessary to verify the string end (\0 no es igual)
+        while (check_funct_positive(isspace(char2check)))     //  it's not necessary to verify the string end (\0 no es igual)
         {
             if (counter == 0)
                 ast_node.rule4replace  = rule2replace;
@@ -684,7 +681,7 @@ jle::tuple<bool, int> Humble_parser::execute_predefined_var(int str2parse_pos, c
     {
         int counter=0;
         char char2check = string2parse[str2parse_pos+counter];
-        while (isspace(char2check))     //  it's not necessary to verify the string end (\0 no es igual)
+        while (check_funct_positive(isspace(char2check)))     //  it's not necessary to verify the string end (\0 no es igual)
         {
             if (counter == 0)
                 ast_node.rule4replace  = rule2replace;
@@ -699,19 +696,14 @@ jle::tuple<bool, int> Humble_parser::execute_predefined_var(int str2parse_pos, c
     }
     else if (terminal_rule  == "__space_tab__")
     {
-        char char2check = string2parse[str2parse_pos];
-        if (char2check== '\t'  ||  char2check== ' ')
-        {
-            ast_node.value        = char2check;
-            ast_node.rule4replace = rule2replace;
-            return std::make_tuple(true, str2parse_pos+1);
-        }
+        auto local_check = [&](char) { return string2parse[str2parse_pos]== '\t'  ||  string2parse[str2parse_pos]== ' '; };
+        check_char(local_check);
     }
     else
         throw  JLE_SS("unknown constant [" << terminal_rule  << "]"  <<  std::endl);
 
 
-    return std::make_tuple(false, str2parse_pos);
+    return result;
 }
 
 
@@ -722,12 +714,12 @@ jle::tuple<bool, int> Humble_parser::execute_regular_expresion(int str2parse_pos
     bool positiv_eval = true;
     if ( terminal_rule[0] != '!')
     {
-        re2eval = JLE_SS(terminal_rule << ".*");
+        re2eval = JLE_SS(terminal_rule << R"((.|\r|\n)*)");
         positiv_eval = true;
     }
     else
     {
-        re2eval = JLE_SS(terminal_rule.substr(1) << ".*");
+        re2eval = JLE_SS(terminal_rule.substr(1) << R"((.|\r|\n)*)");
         positiv_eval = false;
     }
 

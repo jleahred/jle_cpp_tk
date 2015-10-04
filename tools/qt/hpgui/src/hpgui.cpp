@@ -2,6 +2,7 @@
 #include "ui_hpgui.h"
 #include <QPlainTextEdit>
 #include <QDir>
+#include <regex>
 
 #include "core/string.h"
 
@@ -281,7 +282,7 @@ void Widget::on_pbProjectsReload_clicked()
 
 //-------------------------------------------------------------------------------------------------
 
-void Widget::on_cbProjects_currentIndexChanged(int index)
+void Widget::on_cbProjects_currentIndexChanged(int /*index*/)
 {
     //  leer de ficheros input test
     if(ui->cbProjects->currentText()!="")
@@ -324,17 +325,20 @@ void Widget::on_cbProjects_currentIndexChanged(int index)
 void Widget::on_actionRun_Regular_Expresion_triggered()
 {
     ui->pteReOut->clear();
-/*
-    mtk::RegExp re (ui->pteRe->toPlainText().toStdString());
 
-    if (re.Match(ui->pteReInput->toPlainText().toStdString()))
+    std::regex  re(ui->pteRe->toPlainText().toStdString());
+    std::smatch re_result;
+
+    std::string  text = ui->pteReInput->toPlainText().toStdString();
+    if (std::regex_match(text, re_result, re))
     {
         ui->pteReOut->appendPlainText("Match ok.\n");
-        ui->pteReOut->appendPlainText(QString("Number of groups... ").append(QString::number(re.GetCount())));
-        for (int i=0; i< re.GetCount(); ++i)
-            ui->pteReOut->appendPlainText( QString("Group ").append(QString::number(i)).append("  ").append(re.GetString(i).c_str()));
+        ui->pteReOut->appendPlainText(QString("Number of groups... ").append(QString::number(re_result.size())));
+        for (size_t i=0; i< re_result.size(); ++i)
+            ui->pteReOut->appendPlainText( QString("Group ").append(QString::number(i)).append("  ").append(JLE_SS(re_result[i]).c_str()));
     }
     else
+    {
         ui->pteReOut->appendPlainText("it doesn't macth  ;-(");
-*/
+    }
 }

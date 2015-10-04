@@ -1,0 +1,126 @@
+MAIN
+
+MAIN   ::=  FRAME*
+
+
+FRAME  ::= .__. STRUCT .__.
+
+STRUCT ::= id .__. {  FIELDS  }
+
+
+FIELDS ::=  NAMED  PROP
+FIELDS ::=  NAMED
+FIELDS ::=  TUPLE
+FIELDS ::=  UNION
+FIELDS ::=  ENUMERATION
+
+
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   NAMED
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   NAMED
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.
+NAMED ::=  NAMED_SUB
+NAMED ::=  NAMED_IMPL_SUB
+
+NAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.   NAMED
+NAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.
+NAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.   NAMED
+NAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.
+ANON_STRUCT        ::= .__. {  FIELDS   }
+
+
+TUPLE ::=  .__.   id   ._.   endl    .__.  TUPLE
+TUPLE ::=  .__.   id   ._.   ,       .__.  TUPLE
+TUPLE ::=  .__.   id   .__.
+
+UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   endl    .__.  UNION
+UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   ,       .__.  UNION
+UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   .__.
+
+ENUMERATION ::=  .__.   | ._.  id   ._.   endl    .__.  ENUMERATION
+ENUMERATION ::=  .__.   | ._.  id   ._.   ,       .__.  ENUMERATION
+ENUMERATION ::=  .__.   | ._.  id   .__.
+
+
+FULL_TYPE  ::=  TYPE_LIST
+FULL_TYPE  ::=  TYPE_OPTIONAL
+FULL_TYPE  ::=  TYPE_RECOMENDED
+FULL_TYPE  ::=  TYPE_WITH_DEFAULT_DATE
+FULL_TYPE  ::=  TYPE_WITH_DEFAULT
+FULL_TYPE  ::=  BASIC_TYPE
+
+
+B_L_TYPE  ::=  BASIC_TYPE
+B_L_TYPE  ::=  TYPE_LIST
+
+BASIC_TYPE  ::= string
+BASIC_TYPE  ::= double
+BASIC_TYPE  ::= int32
+BASIC_TYPE  ::= int64
+
+TYPE_LIST  ::= BASIC_TYPE [ ]
+
+TYPE_OPTIONAL   ::= BASIC_TYPE ?
+TYPE_RECOMENDED ::= BASIC_TYPE !
+
+TYPE_WITH_DEFAULT_DATE  ::= BASIC_TYPE [< !>]* >] [<   # # # # - # # - # #   >]
+TYPE_WITH_DEFAULT       ::= BASIC_TYPE [< !>]* >]
+
+PROP  ::=  .__.  prop : _ endl  PROP_LINE*
+PROP_LINE ::=  !} !endl* endl
+prop ::= 'prop'
+
+
+
+
+
+
+string ::= 'string'
+double ::= 'double'
+int32  ::= 'int32'
+int64  ::= 'int64'
+
+
+
+
+.__.  ::=  __  MULTILINE_COMMENT  .__.    ##transf2-> $(__nothing__)
+.__.  ::=  __  SINGLELINE_COMMENT .__.    ##transf2-> $(__nothing__)
+.__.  ::=  __                             ##transf2-> $(__nothing__)
+._.   ::=  _   MULTILINE_COMMENT  ._.     ##transf2-> $(__nothing__)
+._.   ::=  _   SINGLELINE_COMMENT         ##transf2-> $(__nothing__)
+._.   ::=  _                              ##transf2-> $(__nothing__)
+
+SINGLELINE_COMMENT   ::=  _  /_/  !endl*              ##transf2-> $(__nothing__)
+MULTILINE_COMMENT    ::=  /*_  IN_ML_COMMENT*  _*/    ##transf2-> $(__nothing__)
+IN_ML_COMMENT        ::=  u__                         ##transf2-> $(__nothing__)
+IN_ML_COMMENT        ::=  !_*/                        ##transf2-> $(__nothing__)
+
+
+/*_   ::=  '/*'
+_*/   ::=  '*/'
+!_*/  ::=  !'*/'
+/_/   ::=  '//'
+
+
+_      ::=  ([ \t]*)  
+__     ::=  __isspace*__
+u__    ::=  __isspace__
+endl   ::=  __endl__
+!endl  ::= !__endl__
+
+
+id  ::=  ([_A-Za-z][A-Za-z0-9_]*)
+{   ::=  '{'
+}   ::=  '}'
+!}  ::=  !'}'
+:   ::=  ':'
+,   ::=  ','
+|   ::=  '|'
+[   ::=  '['
+]   ::=  ']'
+?   ::=  '?'
+!   ::=  '!'
+[<  ::=  '[<'
+>]  ::=  '>]'
+!>] ::=  !'>]'
+#   ::=  ([0-9])
+-   ::=  '-'
