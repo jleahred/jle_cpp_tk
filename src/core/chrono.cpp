@@ -162,7 +162,7 @@ std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp)
     auto correct_second = 0s;
     if(milliseconds<0)  {
         milliseconds = correct_sign*1000 +milliseconds;
-        correct_second = 1s;
+        //correct_second = 1s;      //  pending to fix  -616ms are not requiring to fix second???
     }
 
     std::time_t time_t =  std::chrono::system_clock::to_time_t(init_machine_time + (tp.tp-correct_second - init_monotonic_time) /*- std::chrono::seconds(correct_sign)*/);
