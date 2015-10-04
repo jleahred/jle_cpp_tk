@@ -109,6 +109,7 @@ stats:
 	@echo "src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | wc -l)  >> STATS.md
 	@echo "examples/ | "  $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
 	@echo "test/ | "  $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
+	@echo "tools/ | "  $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
 
 	@echo "" >> STATS.md
 	@echo "" >> STATS.md
