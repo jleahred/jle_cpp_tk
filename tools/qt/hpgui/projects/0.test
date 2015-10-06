@@ -22,10 +22,10 @@ s_inline {
    s: string  
 }
 
-
 s_tuple {  int32,  string  }
 
 
+/****
 s_union 
 {
     |  s : string
@@ -98,3 +98,4 @@ s_composed
     }
 
 }
+***/

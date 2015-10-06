@@ -173,8 +173,24 @@ std::string replace(const std::string& founded, const std::string& rule4replace)
 }
 
 
+namespace {
+    std::string replace_string(const std::string& subject,
+                               const std::string& search,
+                               const std::string& replace) {
+        auto result = subject;
+        size_t pos = 0;
+        while((pos = result.find(search, pos)) != std::string::npos) {
+             result.replace(pos, search.length(), replace);
+             pos += replace.length();
+             JLE_COUT_TRACE(result);
+        }
+        return result;
+    }
+}
+
 std::string replace(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace)
 {
+    static auto ident = std::string("");
     static int replace_counter = 0;
     ++replace_counter;
 
@@ -183,7 +199,7 @@ std::string replace(const std::map<std::string, std::string>& map_items_found, c
     if (map_predefined_vars.size() == 0)
     {
         map_predefined_vars["__nothing__"] = "";
-        map_predefined_vars["__endl__"] = "\n";   //JLE_SS(std::endl);
+        map_predefined_vars["__endl__"] =  JLE_SS("\n");  //JLE_SS(std::endl);
         map_predefined_vars["__space__"] = " ";
         map_predefined_vars["__dollar_open_par__"] = "$(";
         map_predefined_vars["__close_par__"] = ")";
@@ -201,10 +217,11 @@ std::string replace(const std::map<std::string, std::string>& map_items_found, c
     std::string::size_type previus = 0;
     for (std::string::size_type i=0; i<rule4replace.size()-1; ++i)
     {
+        std::string add;
         if (rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
         {
             //  eureka
-            result += rule4replace.substr(previus, i-previus);
+            add += rule4replace.substr(previus, i-previus);
             i+=2;
             std::string::size_type initVar = i;
             while (i<rule4replace.size()  &&  rule4replace[i] != ')')
@@ -213,13 +230,23 @@ std::string replace(const std::map<std::string, std::string>& map_items_found, c
             std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
             std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
             if (it != map_items_found.end())
-                result += it->second;
+                add += it->second;
             else if (itPredefined != map_predefined_vars.end())
-                result += itPredefined->second;
+                add += itPredefined->second;
+            else if(var_name == "__ident+__") {
+                ident = JLE_SS(ident << "  ");
+                add += JLE_SS("\n");
+            }
+            else if(var_name == "__ident-__"  &&  ident.length()>=2) {
+                ident = ident.substr(0, ident.length()-2);
+                add += JLE_SS("\n");
+            }
             else
-                result += JLE_SS("$(" << var_name << ")");
+                add += JLE_SS("$(" << var_name << ")");
             previus = i+1;
         }
+        add  = replace_string(add, "\n", JLE_SS("\n" << JLE_SS(ident)));
+        result = JLE_SS(result << add);
     }
     result += rule4replace.substr(previus);
 

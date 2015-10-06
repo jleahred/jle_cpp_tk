@@ -67,6 +67,7 @@
          QStringList keywordPatterns;
          keywordPatterns << "\\$\\(__endl__\\)" << "\\$\\(__nothing__\\)"
                          << "\\$\\(__space__\\)" << "\\$\\(__counter__\\)"
+                         << "\\$\\(__ident\\+__\\)"  << "\\$\\(__ident-__\\)"
                          ;
          foreach (const QString &pattern, keywordPatterns) {
              rule.pattern = QRegExp(pattern);

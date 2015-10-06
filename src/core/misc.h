@@ -2,6 +2,7 @@
 #define JLECPPTK_MISC_H
 
 
+#include<iostream>
 
 #define  JLE_SS(__EXPR__) ((dynamic_cast<std::ostringstream &>(std::ostringstream().seekp(0, std::ios_base::cur) << __EXPR__ )).str())
 
