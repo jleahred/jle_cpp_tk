@@ -1,3 +1,22 @@
+    mutable std::string   string2parse;
+
+    typedef std::map<   std::string,                                        //  rule left
+                        std::list<  jle::tuple<
+                                                std::list<std::string>,     //  right symbols
+                                                std::string> > >            //  transformation2   or template
+            Container_rules  ;
+    Container_rules      non_terminal_rules ;
+    Container_rules      terminal_rules    ;
+
+
+
+
+
+
+
+
+
+
 hp/ide
 doc
 

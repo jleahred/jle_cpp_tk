@@ -2,47 +2,10 @@ MAIN
 
 MAIN   ::=  FRAME*
 
-__BEGIN_TEMPLATE__:: MAIN
-//  this is a test
-//  on editor, I have to remove tabs
-//  and inprove the highlight
 
-int main(void)
-{
-    __RUN__::
-    __INSERT__::$(FRAME*)
-    return -1;
-};
-__END_TEMPLATE__:: MAIN
+FRAME  ::= .__. STRUCT .__.            ##transf2-> $(__endl__)$(STRUCT)$(__endl__)
 
-
-
-FRAME  ::= .__. STRUCT .__.            
-
-STRUCT ::= id .__. {  FIELDS  }        ##templ->STRUCT
-
-__BEGIN_TEMPLATE__:: STRUCT
-//  this is a test
-//  on editor, I have to remove tabs
-//  and inprove the highlight
-
-class __INSERT__::$(id) {
-__RENAME__:: FIELDS FIELDS_CTOR_PARAMS  __RUN__::
-
-    __INSERT__::$(id) (
-           __INSERT__:: FIELDS
-    ) :
-__RENAME__:: FIELDS FIELDS_CTOR_ASSIGN  __RUN__::
-           __INSERT__:: FIELDS
-
-
-__RENAME__:: FIELDS FIELDS_CLASS_H   __RUN__::
-    __INSERT__:: FIELDS
-
-};
-
-__END_TEMPLATE__:: STRUCT
-
+STRUCT ::= id .__. {  FIELDS  }        ##transf2-> $(id) {$(__ident+__)$(FIELDS)$(__ident-__)}
 
 
 FIELDS ::=  NAMED  PROP                ##transf2-> "type": "struct",$(__endl__)"fields" : { $(__ident+__)$(NAMED)$(__ident-__)},$(__endl__) "prop" : $(PROP)$(__endl__)
@@ -163,9 +126,3 @@ id  ::=  ([_A-Za-z][A-Za-z0-9_]*)
 !>] ::=  !'>]'
 #   ::=  ([0-9])
 -   ::=  '-'
-
-
-
-
-
-

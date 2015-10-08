@@ -1,0 +1,101 @@
+/* multiline 
+    comment
+*/
+
+
+
+s_simple {
+    i : int32
+    s : string
+
+/* multiline 
+    comment
+*/
+}
+
+
+s_inline {  i: int32,  s: string  }
+
+
+s_inline {  
+   i: int32,   i64: int64
+   s: string  
+}
+
+s_tuple {  int32,  string  }
+
+
+/****
+s_union 
+{
+    |  s : string
+    |  i : int32
+}
+
+
+s_color   //  enumeration
+{
+    |  red
+    |  blue
+    |  green
+    |  orange
+    |  pink
+    |  white
+    |  black
+}
+
+
+
+//  type modifiers
+s_example
+{
+    //  comentary
+
+    int_field       :   int32       //  mandatory
+    string_field    :   string
+
+    opt_string      :   string?     //  optional
+    rec_float       :   double!     //  recomended
+
+    def_string0     :   string[<"hi">]                      //  default value
+    def_string1     :   string[<"there">][<2015-10-23>]     //  new mandatory since...
+
+
+    string_list     :   string[]    
+    int_list        :   int32[]    
+
+prop:
+    less
+    AMQP: EX/A.B
+}
+
+
+s_composed
+{
+    i : int32
+    s : string
+
+    composed_field : sub_struct_type_name
+    {
+        i   :   int32
+        s   :   string
+
+        composed_field2 : sub_struct_type_name
+        {
+            i   :   int32
+            s   :   string
+        }
+    }
+
+    i2 : int32
+    s2 : string
+
+
+    composed_field2 :    //  anonymous struct, implicit name
+    {
+        i   :   int32
+        s   :   string
+    }
+
+}
+***/

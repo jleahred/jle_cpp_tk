@@ -182,7 +182,6 @@ namespace {
         while((pos = result.find(search, pos)) != std::string::npos) {
              result.replace(pos, search.length(), replace);
              pos += replace.length();
-             JLE_COUT_TRACE(result);
         }
         return result;
     }

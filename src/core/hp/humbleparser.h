@@ -10,7 +10,7 @@
 
 #include "ast.h"
 #include "core/tuple.hpp"
-
+#include "core/cont/map.hpp"
 
 
 
@@ -78,7 +78,7 @@ private:
     typedef std::map<   std::string,                                        //  rule left
                         std::list<  jle::tuple<
                                                 std::list<std::string>,     //  right symbols
-                                                std::string> > >            //  transformation2
+                                                std::string> > >            //  transformation2   or template
             Container_rules  ;
     Container_rules      non_terminal_rules ;
     Container_rules      terminal_rules    ;
@@ -121,6 +121,16 @@ private:
 
     bool adding_rule_multi_line;
     std::string building_rule;
+
+    bool adding_template;
+    std::string template_name;
+    std::string building_template;
+    jle::map<std::string, std::string>  templates;
+
+
+
+    jle::tuple<bool, std::string>  _adding_rule_multi_line(const std::string& line);
+    jle::tuple<bool, std::string>  _adding_template(const std::string& line);
 };
 
 

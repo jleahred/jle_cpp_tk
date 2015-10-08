@@ -296,22 +296,27 @@ jle::tuple<bool, int> Humble_parser::execute_terminal(const int str2parse_pos, c
 jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_t2)
 {
     std::string rule;
+
+
     std::string transform2;
+    std::string templ_name;
     {
-        std::regex  re_rt(" *(.*) *##transf2-> *(.*) *");
+        std::regex  re_rt(" *(.*) *##(transf2|templ)-> *(.*) *");
         std::smatch re_result;
 
         if (std::regex_match(rule_t2, re_result, re_rt))
         {
             rule = jle::s_trim(re_result[1], ' ');
-            transform2 = jle::s_trim(re_result[2], ' ');
+            if(re_result[2] == "transf2")
+                transform2 = jle::s_trim(re_result[3], ' ');
+            else
+                templ_name = jle::s_trim(re_result[3], ' ');
         }
         else
         {
             rule = rule_t2;
         }
     }
-
 
 
     //  separate rule sides
@@ -436,6 +441,62 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_file(const std::str
 }
 
 
+jle::tuple<bool, std::string>  Humble_parser::_adding_rule_multi_line(const std::string& line)
+{
+    if (line != "")
+    {
+        if (line == "__endrule__")
+        {
+            adding_rule_multi_line = false;
+            building_rule = "";
+            return add_rule(building_rule);
+        }
+        else
+        {
+            building_rule.push_back(' ');      //  it's necessary because we get lines without nont valid codes
+            for (unsigned i=0; i<line.size(); ++i)
+            {
+                char char2add = line[i];
+                if (char2add == '\r'  ||  char2add == '\n'  ||  char2add=='\t')  // it's not necessary. It can be removed
+                    char2add = ' ';
+
+                building_rule.push_back(char2add);
+            }
+            return make_tuple(true, JLE_SS("ok"));
+        }
+    }
+    else
+        return make_tuple(true, JLE_SS("ok"));
+}
+
+
+
+jle::tuple<bool, std::string>  Humble_parser::_adding_template(const std::string& line)
+{
+    std::regex  re(R"(^__END_TEMPLATE__:: *([A-Z][A-Z0-9_]*)$)");
+    std::smatch re_result;
+
+    if (std::regex_match(line, re_result, re))
+    {
+        if(template_name == re_result[1])
+        {
+            templates[template_name] = building_template;
+            adding_template = false;
+            template_name = "";
+            building_template = "";
+            return make_tuple(true, JLE_SS("ok"));
+        }
+        else
+            return make_tuple(false, JLE_SS("invalid template name on  " << line  << ". "));
+    }
+    else
+    {
+        building_template = JLE_SS(building_template << std::endl << line);
+        return make_tuple(true, JLE_SS("ok"));
+    }
+}
+
+
 
 jle::tuple<bool, std::string>
 Humble_parser::add_line (std::string line)
@@ -443,40 +504,41 @@ Humble_parser::add_line (std::string line)
     line = jle::s_trim(line, ' ');
     if (adding_rule_multi_line)
     {
-        if (line != "")
+        return _adding_rule_multi_line(line);
+    }
+    else if (adding_template)
+    {
+        return _adding_template(line);
+    }
+    else
+    {
+        if (line == "__beginrule__")
         {
-            if (line == "__endrule__")
-            {
-                adding_rule_multi_line = false;
-                return add_rule(building_rule);
-            }
-            else
-            {
-                building_rule.push_back(' ');      //  it's necessary because we get lines without nont valid codes
-                for (unsigned i=0; i<line.size(); ++i)
-                {
-                    char char2add = line[i];
-                    if (char2add == '\r'  ||  char2add == '\n'  ||  char2add=='\t')  // it's not necessary. It can be removed
-                        char2add = ' ';
+            adding_rule_multi_line = true;
+            building_rule = "";
+            return make_tuple(true, JLE_SS("ok"));
+        }
+        else if (line.find("__BEGIN_TEMPLATE__::")==0)
+        {
+            adding_template = true;
+            building_template = "";
 
-                    building_rule.push_back(char2add);
-                }
+            std::regex  re(R"(__BEGIN_TEMPLATE__:: *([A-Z][A-Z0-9_]*))");
+            std::smatch re_result;
+
+            if (std::regex_match(line, re_result, re)== false)
+                return make_tuple(false, JLE_SS("invalid template name on   " << line << ". "));
+
+            template_name = re_result[1];
+            if(template_name.empty())
+                return make_tuple(false, JLE_SS("missing template name " << line << ". "));
+            else {
+                template_name = re_result[1];
                 return make_tuple(true, JLE_SS("ok"));
             }
         }
         else
-            return make_tuple(true, JLE_SS("ok"));
-    }
-    else
-    {
-    if (line == "__beginrule__")
-    {
-        adding_rule_multi_line = true;
-        building_rule = "";
-        return make_tuple(true, JLE_SS("ok"));
-    }
-    else
-        return add_rule(line);
+            return add_rule(line);
     }
 }
 
