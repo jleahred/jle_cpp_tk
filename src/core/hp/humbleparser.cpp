@@ -319,7 +319,7 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
     }
 
     Rule4replace  r4r;
-    if(transform2.empty() == false)
+    if(templ_name.empty())
         r4r = Rule4replace{rule4replace_type::transf2, transform2};
     else
         r4r = Rule4replace{rule4replace_type::templ, templ_name};

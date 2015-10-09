@@ -36,7 +36,7 @@ public:
 
 
     AST_node_item(const std::string& _name, const std::string& _value="", const Rule4replace& _rule4replace={})
-        :   name(_name),  value(_value), rule4replace(_rule4replace) {};
+        :   name(_name),  value(_value), rule4replace(_rule4replace) {}
 
 
     jle::shared_ptr<AST_node_item> add_next (const std::string& _name, const std::string& _value, const Rule4replace& _rule4replace);
@@ -48,7 +48,8 @@ public:
 
 
 private:
-    void exec_replace_current(void);
+    void exec_replace_current_transf2(void);
+    void exec_replace_current_templ(void);
 };
 
 

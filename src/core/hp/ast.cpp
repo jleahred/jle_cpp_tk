@@ -112,10 +112,30 @@ std::string AST_get_string_nodes(const jle::shared_ptr<AST_node_item>& node)
     Replace methods
 */
 
+std::string replace_transf2(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace);
+std::string replace_transf2(const std::string& founded, const std::string& rule4replace);
+
 
 void AST_node_item::exec_replace(void)
 {
+    switch (this->rule4replace.type) {
+    case rule4replace_type::none:
+        exec_replace_current_transf2();
+        break;
+    case rule4replace_type::transf2:
+        exec_replace_current_transf2();
+        break;
+    case rule4replace_type::templ:
+        exec_replace_current_templ();
+        break;
+    }
+}
 
+
+
+
+void AST_node_item::exec_replace_current_transf2(void)
+{
     //  first we look down and later to right (same level)
     if (this->down.expired()==false)
     {
@@ -129,74 +149,43 @@ void AST_node_item::exec_replace(void)
         //this->value += this->next->value;
     }
 
-    exec_replace_current();
-
-
-}
-
-
-
-
-std::string replace_transf2(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace);
-std::string replace_transf2(const std::string& founded, const std::string& rule4replace);
-std::string replace_templ(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace);
-std::string replace_templ(const std::string& founded, const std::string& rule4replace);
-template<typename T>
-std::string replace(const T& t, const Rule4replace& rule4replace)
-{
-    std::string result;
-    switch (rule4replace.type) {
-    case rule4replace_type::none:
-        result = "error not defined rule for replace???";
-        break;
-    case rule4replace_type::transf2:
-        result = replace_transf2(t, rule4replace.data);
-        break;
-    case rule4replace_type::templ:
-        result = replace_templ(t, rule4replace.data);
-        break;
-    };
-    return result;
-}
-
-
-void AST_node_item::exec_replace_current(void)
-{
-    if (this->down.expired())
+    //  check childs
     {
-        if (rule4replace.data!="")
-            value = replace(value, rule4replace);
-        return;
-    }
-
-    shared_ptr<AST_node_item> current_node = this->down;
-    std::map<std::string, std::string>  map_found;
-    std::ostringstream os;
-
-    while (current_node.expired()==false)
-    {
-        if (jle::s_trim(rule4replace.data, ' ') !="")
+        if (this->down.expired())
         {
-            int counter = 0;
-            std::string symbol = current_node->name;
-            while (map_found.find(symbol) != map_found.end())
-            {
-                ++counter;
-                symbol = JLE_SS(current_node->name << "#" << counter);
-            }
-            map_found[symbol] = current_node->value;
-
+            if (rule4replace.data!="")
+                value = replace_transf2(value, rule4replace.data);
+            return;
         }
+        shared_ptr<AST_node_item> current_node = this->down;
+        std::map<std::string, std::string>  map_found;
+        std::ostringstream os;
+
+        while (current_node.expired()==false)
+        {
+            if (jle::s_trim(rule4replace.data, ' ') !="")
+            {
+                int counter = 0;
+                std::string symbol = current_node->name;
+                while (map_found.find(symbol) != map_found.end())
+                {
+                    ++counter;
+                    symbol = JLE_SS(current_node->name << "#" << counter);
+                }
+                map_found[symbol] = current_node->value;
+
+            }
+            else
+                os << current_node->value;
+            current_node = current_node->next;
+        }
+
+
+        if (rule4replace.data !="")
+            this->value = replace_transf2(map_found, rule4replace.data);
         else
-            os << current_node->value;
-        current_node = current_node->next;
+            this->value = os.str();
     }
-
-
-    if (rule4replace.data !="")
-        this->value = replace(map_found, rule4replace);
-    else
-        this->value = os.str();
 }
 
 std::string replace_transf2(const std::string& founded, const std::string& rule4replace)
@@ -211,17 +200,6 @@ std::string replace_transf2(const std::string& founded, const std::string& rule4
         return founded;
 }
 
-std::string replace_templ(const std::string& founded, const std::string& rule4replace)
-{
-    if (jle::s_trim(rule4replace, ' ') !="")
-    {
-        std::map<std::string, std::string> map_found;
-        map_found["t"] = founded;
-        return replace_templ(map_found, rule4replace);
-    }
-    else
-        return founded;
-}
 
 
 namespace {
@@ -305,15 +283,29 @@ std::string replace_transf2(const std::map<std::string, std::string>& map_items_
 }
 
 
-
-std::string replace_templ(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace)
+void AST_node_item::AST_node_item::exec_replace_current_templ(void)
 {
-    // TODO
-    std::string  result;
+    //  find template  (first, look for alias)
 
-    return result;
+    //  while find template command
+        //  write text on value till first command
+        //  execute command
+    //  write text till end
 
+
+    auto templ_running_status = find_template(this->rule4replace.data);
+    while(find_template_command(template_text, templ_running_status))
+    {
+
+    }
+
+
+
+    this->value = JLE_SS("pending... " << this->rule4replace.data << std::endl);
 }
+
+
+
 
 
 bool  in_list   (const jle::list<std::string>& lmodes2mantein, const std::string& value)
