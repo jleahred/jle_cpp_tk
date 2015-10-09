@@ -22,7 +22,7 @@ std::ostream& operator<< (std::ostream& os, const Rule4replace& r4r)
         os << "transf2";
         break;
     case rule4replace_type::templ:
-        os << "transf2";
+        os << "template";
         break;
     }
     os << "}";
@@ -137,8 +137,28 @@ void AST_node_item::exec_replace(void)
 
 
 
-std::string replace(const std::map<std::string, std::string>& map_items_found, const Rule4replace& rule4replace);
-std::string replace(const std::string& founded, const Rule4replace& rule4replace);
+std::string replace_transf2(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace);
+std::string replace_transf2(const std::string& founded, const std::string& rule4replace);
+std::string replace_templ(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace);
+std::string replace_templ(const std::string& founded, const std::string& rule4replace);
+template<typename T>
+std::string replace(const T& t, const Rule4replace& rule4replace)
+{
+    std::string result;
+    switch (rule4replace.type) {
+    case rule4replace_type::none:
+        result = "error not defined rule for replace???";
+        break;
+    case rule4replace_type::transf2:
+        result = replace_transf2(t, rule4replace.data);
+        break;
+    case rule4replace_type::templ:
+        result = replace_templ(t, rule4replace.data);
+        break;
+    };
+    return result;
+}
+
 
 void AST_node_item::exec_replace_current(void)
 {
@@ -179,13 +199,25 @@ void AST_node_item::exec_replace_current(void)
         this->value = os.str();
 }
 
-std::string replace(const std::string& founded, const Rule4replace& rule4replace)
+std::string replace_transf2(const std::string& founded, const std::string& rule4replace)
 {
-    if (jle::s_trim(rule4replace.data, ' ') !="")
+    if (jle::s_trim(rule4replace, ' ') !="")
     {
         std::map<std::string, std::string> map_found;
         map_found["t"] = founded;
-        return replace(map_found, rule4replace);
+        return replace_transf2(map_found, rule4replace);
+    }
+    else
+        return founded;
+}
+
+std::string replace_templ(const std::string& founded, const std::string& rule4replace)
+{
+    if (jle::s_trim(rule4replace, ' ') !="")
+    {
+        std::map<std::string, std::string> map_found;
+        map_found["t"] = founded;
+        return replace_templ(map_found, rule4replace);
     }
     else
         return founded;
@@ -206,7 +238,7 @@ namespace {
     }
 }
 
-std::string replace(const std::map<std::string, std::string>& map_items_found, const Rule4replace& rule4replace)
+std::string replace_transf2(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace)
 {
     static auto ident = std::string("");
     static int replace_counter = 0;
@@ -233,18 +265,18 @@ std::string replace(const std::map<std::string, std::string>& map_items_found, c
     std::string result;
     //  look for starting of variable
     std::string::size_type previus = 0;
-    for (std::string::size_type i=0; i<rule4replace.data.size()-1; ++i)
+    for (std::string::size_type i=0; i<rule4replace.size()-1; ++i)
     {
         std::string add;
-        if (rule4replace.data[i] == '$'  &&  rule4replace.data[i+1] == '(')
+        if (rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
         {
             //  eureka
-            add += rule4replace.data.substr(previus, i-previus);
+            add += rule4replace.substr(previus, i-previus);
             i+=2;
             std::string::size_type initVar = i;
-            while (i<rule4replace.data.size()  &&  rule4replace.data[i] != ')')
+            while (i<rule4replace.size()  &&  rule4replace[i] != ')')
                 ++i;
-            std::string var_name = rule4replace.data.substr(initVar, i-initVar);
+            std::string var_name = rule4replace.substr(initVar, i-initVar);
             std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
             std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
             if (it != map_items_found.end())
@@ -266,7 +298,18 @@ std::string replace(const std::map<std::string, std::string>& map_items_found, c
         add  = replace_string(add, "\n", JLE_SS("\n" << JLE_SS(ident)));
         result = JLE_SS(result << add);
     }
-    result += rule4replace.data.substr(previus);
+    result += rule4replace.substr(previus);
+
+    return result;
+
+}
+
+
+
+std::string replace_templ(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace)
+{
+    // TODO
+    std::string  result;
 
     return result;
 
