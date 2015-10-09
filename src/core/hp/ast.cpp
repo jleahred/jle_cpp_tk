@@ -8,14 +8,33 @@
 
 
 
-namespace jle {
+namespace jle {   namespace hp  {
+
+
+std::ostream& operator<< (std::ostream& os, const Rule4replace& r4r)
+{
+    os << "{";
+    switch (r4r.type) {
+    case rule4replace_type::none:
+        os << "none";
+        break;
+    case rule4replace_type::transf2:
+        os << "transf2";
+        break;
+    case rule4replace_type::templ:
+        os << "transf2";
+        break;
+    }
+    os << "}";
+    return os;
+}
 
 
 
 /**
     Adds in brother
 */
-jle::shared_ptr<AST_node_item> AST_node_item::add_next(const std::string& _name, const std::string& _value, const std::string& _rule4replace)
+jle::shared_ptr<AST_node_item> AST_node_item::add_next(const std::string& _name, const std::string& _value, const Rule4replace& _rule4replace)
 {
     next = jle::shared_ptr<AST_node_item>(new AST_node_item(_name, _value, _rule4replace));
     return next;
@@ -24,7 +43,7 @@ jle::shared_ptr<AST_node_item> AST_node_item::add_next(const std::string& _name,
 /**
     Adds in child
 */
-jle::shared_ptr<AST_node_item> AST_node_item::add_child(const std::string& _name, const std::string& _value, const std::string& _rule4replace)
+jle::shared_ptr<AST_node_item> AST_node_item::add_child(const std::string& _name, const std::string& _value, const Rule4replace& _rule4replace)
 {
     down = jle::shared_ptr<AST_node_item>(new AST_node_item(_name, _value, _rule4replace));
     return down;
@@ -118,14 +137,14 @@ void AST_node_item::exec_replace(void)
 
 
 
-std::string replace(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace);
-std::string replace(const std::string& founded, const std::string& rule4replace);
+std::string replace(const std::map<std::string, std::string>& map_items_found, const Rule4replace& rule4replace);
+std::string replace(const std::string& founded, const Rule4replace& rule4replace);
 
 void AST_node_item::exec_replace_current(void)
 {
     if (this->down.expired())
     {
-        if (rule4replace!="")
+        if (rule4replace.data!="")
             value = replace(value, rule4replace);
         return;
     }
@@ -136,7 +155,7 @@ void AST_node_item::exec_replace_current(void)
 
     while (current_node.expired()==false)
     {
-        if (jle::s_trim(rule4replace, ' ') !="")
+        if (jle::s_trim(rule4replace.data, ' ') !="")
         {
             int counter = 0;
             std::string symbol = current_node->name;
@@ -154,15 +173,15 @@ void AST_node_item::exec_replace_current(void)
     }
 
 
-    if (rule4replace !="")
+    if (rule4replace.data !="")
         this->value = replace(map_found, rule4replace);
     else
         this->value = os.str();
 }
 
-std::string replace(const std::string& founded, const std::string& rule4replace)
+std::string replace(const std::string& founded, const Rule4replace& rule4replace)
 {
-    if (jle::s_trim(rule4replace, ' ') !="")
+    if (jle::s_trim(rule4replace.data, ' ') !="")
     {
         std::map<std::string, std::string> map_found;
         map_found["t"] = founded;
@@ -187,7 +206,7 @@ namespace {
     }
 }
 
-std::string replace(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace)
+std::string replace(const std::map<std::string, std::string>& map_items_found, const Rule4replace& rule4replace)
 {
     static auto ident = std::string("");
     static int replace_counter = 0;
@@ -214,18 +233,18 @@ std::string replace(const std::map<std::string, std::string>& map_items_found, c
     std::string result;
     //  look for starting of variable
     std::string::size_type previus = 0;
-    for (std::string::size_type i=0; i<rule4replace.size()-1; ++i)
+    for (std::string::size_type i=0; i<rule4replace.data.size()-1; ++i)
     {
         std::string add;
-        if (rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
+        if (rule4replace.data[i] == '$'  &&  rule4replace.data[i+1] == '(')
         {
             //  eureka
-            add += rule4replace.substr(previus, i-previus);
+            add += rule4replace.data.substr(previus, i-previus);
             i+=2;
             std::string::size_type initVar = i;
-            while (i<rule4replace.size()  &&  rule4replace[i] != ')')
+            while (i<rule4replace.data.size()  &&  rule4replace.data[i] != ')')
                 ++i;
-            std::string var_name = rule4replace.substr(initVar, i-initVar);
+            std::string var_name = rule4replace.data.substr(initVar, i-initVar);
             std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
             std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
             if (it != map_items_found.end())
@@ -247,7 +266,7 @@ std::string replace(const std::map<std::string, std::string>& map_items_found, c
         add  = replace_string(add, "\n", JLE_SS("\n" << JLE_SS(ident)));
         result = JLE_SS(result << add);
     }
-    result += rule4replace.substr(previus);
+    result += rule4replace.data.substr(previus);
 
     return result;
 
@@ -330,4 +349,4 @@ void  AST_node_item::remove_nodes_manteining   (const jle::list<std::string>& lm
 
 
 
-};  //  namespace jle {
+}; };  //  namespace jle {  namespace hp  {

@@ -15,7 +15,7 @@
 
 
 
-namespace jle {
+namespace jle {  namespace hp  {
 
 
 
@@ -91,7 +91,7 @@ jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, co
     if (it_non_terminal == non_terminal_rules.end())
         throw JLE_SS("non terminal symbol [" << non_terminal_code <<  "] has no expansion rule");
 
-    std::list< jle::tuple <std::list<std::string>, std::string> >::const_iterator it0 = non_terminal_rules.find(non_terminal_code)->second.begin();
+    auto  it0 = non_terminal_rules.find(non_terminal_code)->second.cbegin();
 
     bool result=false;
     int str_pos_rule = str2parse_pos;
@@ -258,8 +258,8 @@ jle::tuple<bool, int> Humble_parser::execute_terminal(const int str2parse_pos, c
 
     int remaining_str2_parse_pos = str2parse_pos;
     bool result = false;
-    std::list< jle::tuple <std::list<std::string> , std::string> >::const_iterator it = terminal_rules.find(terminal_code)->second.begin();
-    while (it!=terminal_rules.find(terminal_code)->second.end())
+    auto  it = terminal_rules.find(terminal_code)->second.cbegin();
+    while (it!=terminal_rules.find(terminal_code)->second.cend())
     {
         //  predefined consts     ------------------------------------------------------------
         if ((*(std::get<0>(*it).begin())).substr(0, 2) == "__"  ||  (*(std::get<0>(*it).begin())).substr(0, 3) == "!__") {
@@ -318,6 +318,11 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
         }
     }
 
+    Rule4replace  r4r;
+    if(transform2.empty() == false)
+        r4r = Rule4replace{rule4replace_type::transf2, transform2};
+    else
+        r4r = Rule4replace{rule4replace_type::templ, templ_name};
 
     //  separate rule sides
     std::regex re ("^ *([^ \t]*) *::= *(.*)$");
@@ -336,7 +341,7 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
                     lright_symbols.push_back(termRule);
             }
             non_terminal_rules[re_result[1]].push_back(
-                                        std::make_tuple(lright_symbols, transform2));
+                                        std::make_tuple(lright_symbols, r4r));
         }
         else
         {
@@ -349,20 +354,20 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
                     lterminal.push_back(JLE_SS("^" << toadd/* << ".*"*/));
                 else
                     lterminal.push_back(JLE_SS("!^" << toadd.substr(1)/* << ".*"*/));
-                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
+                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, r4r));
             }
             else if ((toadd.substr(0,2) == "__"  ||  toadd.substr(0,3) == "!__")
                             &&   toadd.substr(toadd.size()-2,2) == "__")
             {
                 //  TERMINAL:  predefined consts
                 lterminal.push_back(jle::s_trim(toadd, ' '));
-                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
+                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, r4r));
             }
             else if ( (toadd[0] == '\''  || toadd.substr(0,2) == "!\'")  &&   toadd[toadd.size()-1] == '\'')
             {
                 //  TERMINAL:  literals without scapes
                 lterminal.push_back(jle::s_trim(toadd, ' '));
-                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, transform2));
+                terminal_rules[re_result[1]].push_back ( std::make_tuple(lterminal, r4r));
             }
 //            else if (toadd[0] == '['  &&   toadd.substr(toadd.size(),1) == "]")
 //            {
@@ -648,7 +653,7 @@ void Humble_parser::clear(void)
 
 
 // ----------------------------------------------------------------------------------------------------------------------------
-jle::tuple<bool, int>  Humble_parser::execute_predefined_var(int str2parse_pos, const std::string& _terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const
+jle::tuple<bool, int>  Humble_parser::execute_predefined_var(int str2parse_pos, const std::string& _terminal_rule, AST_node_item& ast_node, const Rule4replace& rule2replace) const
 {
     //  predefined constants     ------------------------------------------------------------
 
@@ -769,7 +774,7 @@ jle::tuple<bool, int>  Humble_parser::execute_predefined_var(int str2parse_pos, 
 }
 
 
-jle::tuple<bool, int> Humble_parser::execute_regular_expresion(int str2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const
+jle::tuple<bool, int> Humble_parser::execute_regular_expresion(int str2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const Rule4replace& rule2replace) const
 {
     int  remaining_str2_parse_pos = str2parse_pos;
     std::string re2eval;
@@ -823,7 +828,7 @@ jle::tuple<bool, int> Humble_parser::execute_regular_expresion(int str2parse_pos
 
 
 
-jle::tuple<bool, int> Humble_parser::execute_literal(int str2parse_pos, const std::string& _terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const
+jle::tuple<bool, int> Humble_parser::execute_literal(int str2parse_pos, const std::string& _terminal_rule, AST_node_item& ast_node, const Rule4replace& rule2replace) const
 {
     if (str2parse_pos > int(string2parse.size()))
         std::cerr << "ERROR... " << std::endl;
@@ -894,4 +899,4 @@ std::list<std::string>   Humble_parser::get_non_terminal_rules(void)const
 
 
 
-};  //  namespace jle {
+}; };  //  namespace jle {   namespace hp  {

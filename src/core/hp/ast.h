@@ -9,7 +9,18 @@
 
 
 
-namespace jle {
+namespace jle {    namespace hp  {
+
+
+enum class rule4replace_type { none, transf2, templ };
+
+struct Rule4replace {
+    rule4replace_type   type = rule4replace_type::none;
+    std::string         data;
+};
+
+std::ostream& operator<< (std::ostream& os, const Rule4replace& r4r);
+
 
 
 class AST_node_item
@@ -17,19 +28,19 @@ class AST_node_item
 public:
     std::string                     name        ;
     std::string                     value       ;
-    std::string                     rule4replace;
+    Rule4replace                    rule4replace;
 
     jle::shared_ptr<AST_node_item>    down        ;
     jle::shared_ptr<AST_node_item>    next        ;
 
 
 
-    AST_node_item(const std::string& _name, const std::string& _value="", const std::string& _rule4replace="")
+    AST_node_item(const std::string& _name, const std::string& _value="", const Rule4replace& _rule4replace={})
         :   name(_name),  value(_value), rule4replace(_rule4replace) {};
 
 
-    jle::shared_ptr<AST_node_item> add_next (const std::string& _name, const std::string& _value, const std::string& _rule4replace);
-    jle::shared_ptr<AST_node_item> add_child(const std::string& _name, const std::string& _value, const std::string& _rule4replace);
+    jle::shared_ptr<AST_node_item> add_next (const std::string& _name, const std::string& _value, const Rule4replace& _rule4replace);
+    jle::shared_ptr<AST_node_item> add_child(const std::string& _name, const std::string& _value, const Rule4replace& _rule4replace);
 
 
     void exec_replace               (void);
@@ -45,7 +56,7 @@ std::string AST_get_string_nodes(const jle::shared_ptr<AST_node_item>& node);
 
 
 
-};  //  namespace jle {
+};  };  //  namespace jle {    namespace hp  {
 
 
 

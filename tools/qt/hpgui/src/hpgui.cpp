@@ -53,7 +53,7 @@ Widget::~Widget()
 //      COMPILE GRAMAR
 
 
-QString sup_compile_gramar(jle::Humble_parser&  h_parser, const QString& gramar_source)
+QString sup_compile_gramar(jle::hp::Humble_parser&  h_parser, const QString& gramar_source)
 {
     QString result = "Compiling...\n";
 
@@ -146,7 +146,7 @@ QString sup_save_parse_input(const QString& gramar_name, const QString& input_te
 }
 
 
-QString  sup_parse (const QString text2parse, jle::Humble_parser& h_parser, jle::AST_node_item& ast_root)
+QString  sup_parse (const QString text2parse, jle::hp::Humble_parser& h_parser, jle::hp::AST_node_item& ast_root)
 {
     QString result;
 
@@ -158,7 +158,7 @@ QString  sup_parse (const QString text2parse, jle::Humble_parser& h_parser, jle:
     return result.append(result_string.c_str());
 }
 
-QString sup_mantein_nodes_ast(const QList<QListWidgetItem *>& selectedNodes, jle::AST_node_item& ast_root)
+QString sup_mantein_nodes_ast(const QList<QListWidgetItem *>& selectedNodes, jle::hp::AST_node_item& ast_root)
 {
     QString result;
 
@@ -174,7 +174,7 @@ QString sup_mantein_nodes_ast(const QList<QListWidgetItem *>& selectedNodes, jle
 }
 
 
-void sup_FillAST_listTree(const jle::AST_node_item& node, QTreeWidgetItem* parent_item)
+void sup_FillAST_listTree(const jle::hp::AST_node_item& node, QTreeWidgetItem* parent_item)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem(parent_item);
     item->setText(0, node.name.c_str());
@@ -187,7 +187,7 @@ void sup_FillAST_listTree(const jle::AST_node_item& node, QTreeWidgetItem* paren
 }
 
 
-QString sup_fill_ast_nodes (QTreeWidget* tw, const jle::AST_node_item& ast_root)
+QString sup_fill_ast_nodes (QTreeWidget* tw, const jle::hp::AST_node_item& ast_root)
 {
     QString result;
 
