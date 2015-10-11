@@ -116,17 +116,17 @@ std::string replace_transf2(const std::map<std::string, std::string>& map_items_
 std::string replace_transf2(const std::string& founded, const std::string& rule4replace);
 
 
-void AST_node_item::exec_replace(void)
+void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::string>& templates)
 {
     switch (this->rule4replace.type) {
     case rule4replace_type::none:
-        exec_replace_current_transf2();
+        exec_replace_current_transf2(templates);
         break;
     case rule4replace_type::transf2:
-        exec_replace_current_transf2();
+        exec_replace_current_transf2(templates);
         break;
     case rule4replace_type::templ:
-        exec_replace_current_templ();
+        exec_replace_current_templ(templates);
         break;
     }
 }
@@ -134,18 +134,18 @@ void AST_node_item::exec_replace(void)
 
 
 
-void AST_node_item::exec_replace_current_transf2(void)
+void AST_node_item::exec_replace_current_transf2(const jle::map<std::string /*name*/, std::string>& templates)
 {
     //  first we look down and later to right (same level)
     if (this->down.expired()==false)
     {
-        this->down->exec_replace();
+        this->down->exec_replace(templates);
         //this->value = this->down->value;
     }
 
     if (this->next.expired()==false)
     {
-        this->next->exec_replace();
+        this->next->exec_replace(templates);
         //this->value += this->next->value;
     }
 
@@ -283,7 +283,44 @@ std::string replace_transf2(const std::map<std::string, std::string>& map_items_
 }
 
 
-void AST_node_item::AST_node_item::exec_replace_current_templ(void)
+namespace  {
+
+    struct Templ_running_status {
+        std::string  generated_text;
+        std::string  command;
+        std::string  text_pending;
+    };
+
+    std::string   get_template_content(const std::string& templ,
+                                         const jle::map<std::string /*name*/, std::string>& templates,
+                                         const jle::map<std::string /*name*/, std::string>& templ_aliases)
+    {
+        auto effective_tmpl_name = templ;
+
+        auto fta = templ_aliases.find(effective_tmpl_name);
+        if(fta!=templ_aliases.cend())
+        {
+            effective_tmpl_name = fta->second;
+        }
+
+        auto ft = templates.find(effective_tmpl_name);
+        if(ft != templates.cend())
+            return ft->second;
+        else
+            return "TEMPLATE NOT FOUND";
+    }
+
+}
+
+bool find_template_command(Templ_running_status& templ_run_status)
+{
+    templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
+    templ_run_status.text_pending = "";
+    templ_run_status.command = "";
+    return false;
+}
+
+void AST_node_item::AST_node_item::exec_replace_current_templ(const jle::map<std::string /*name*/, std::string>& templates)
 {
     //  find template  (first, look for alias)
 
@@ -293,15 +330,16 @@ void AST_node_item::AST_node_item::exec_replace_current_templ(void)
     //  write text till end
 
 
-    auto templ_running_status = find_template(this->rule4replace.data);
-    while(find_template_command(template_text, templ_running_status))
+    auto templ_running_status = Templ_running_status{};
+    templ_running_status.text_pending = get_template_content(this->rule4replace.data, templates, {});
+    while(find_template_command(templ_running_status))
     {
 
     }
 
+    this->value = templ_running_status.generated_text;
 
-
-    this->value = JLE_SS("pending... " << this->rule4replace.data << std::endl);
+    //this->value = JLE_SS("pending... " << this->rule4replace.data << std::endl);
 }
 
 

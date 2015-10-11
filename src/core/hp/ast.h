@@ -5,6 +5,7 @@
 #include <string>
 #include "core/shared_ptr.hpp"
 #include "core/cont/list.hpp"
+#include "core/cont/map.hpp"
 
 
 
@@ -43,13 +44,13 @@ public:
     jle::shared_ptr<AST_node_item> add_child(const std::string& _name, const std::string& _value, const Rule4replace& _rule4replace);
 
 
-    void exec_replace               (void);
+    void exec_replace               (const jle::map<std::string /*name*/, std::string>& templates);
     void remove_nodes_manteining    (const jle::list<std::string>& lmodes2mantein);
 
 
 private:
-    void exec_replace_current_transf2(void);
-    void exec_replace_current_templ(void);
+    void exec_replace_current_transf2(const jle::map<std::string /*name*/, std::string>& templates);
+    void exec_replace_current_templ(const jle::map<std::string /*name*/, std::string>& templates);
 };
 
 

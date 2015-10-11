@@ -506,9 +506,9 @@ jle::tuple<bool, std::string>  Humble_parser::_adding_template(const std::string
 jle::tuple<bool, std::string>
 Humble_parser::add_line (std::string line)
 {
-    line = jle::s_trim(line, ' ');
     if (adding_rule_multi_line)
     {
+        line = jle::s_trim(line, ' ');
         return _adding_rule_multi_line(line);
     }
     else if (adding_template)
@@ -625,7 +625,7 @@ Humble_parser::multi_parse(const std::string& input, std::string minit) const
         std::tie(result, remaining_input, ast_result) =  parse(new_input, i->str());
         if (result==false  ||  remaining_input!= "ok")
             return std::make_tuple(result, remaining_input, ast_result);
-        ast_result.exec_replace();
+        ast_result.exec_replace(templates);
         new_input =  ast_result.value;
     }
 
