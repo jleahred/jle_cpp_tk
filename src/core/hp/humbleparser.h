@@ -122,7 +122,7 @@ private:
     bool adding_rule_multi_line;
     std::string building_rule;
 
-    bool adding_template;
+    bool adding_template = false;
     std::string template_name;
     std::string building_template;
     jle::map<std::string, std::string>  templates;

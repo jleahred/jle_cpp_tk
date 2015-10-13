@@ -1,6 +1,6 @@
 #include "humbleparser.h"
 
-#include <regex.h>
+#include <regex>
 #include "core/string.h"
 
 
@@ -492,7 +492,7 @@ jle::tuple<bool, std::string>  Humble_parser::_adding_template(const std::string
             return make_tuple(true, JLE_SS("ok"));
         }
         else
-            return make_tuple(false, JLE_SS("invalid template name on  " << line  << ". "));
+            return make_tuple(false, JLE_SS("invalid template name on  " << line  << "  expected:"  << template_name << "."));
     }
     else
     {
@@ -528,7 +528,7 @@ Humble_parser::add_line (std::string line)
             adding_template = true;
             building_template = "";
 
-            std::regex  re(R"(__BEGIN_TEMPLATE__:: *([A-Z][A-Z0-9_]*))");
+            std::regex  re{R"(__BEGIN_TEMPLATE__:: *([A-Z][A-Z0-9_]*))"};
             std::smatch re_result;
 
             if (std::regex_match(line, re_result, re)== false)

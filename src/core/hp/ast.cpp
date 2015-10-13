@@ -1,6 +1,6 @@
 #include "ast.h"
 
-#include <regex.h>
+#include <regex>
 #include <map>
 #include "core/string.h"
 
@@ -132,6 +132,38 @@ void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::strin
 }
 
 
+namespace {
+
+    std::string  exec_replace_no_vars(shared_ptr<AST_node_item> current_node, const std::string&  rule4replace)
+    {
+        std::ostringstream os;
+
+        while (current_node.expired()==false)
+        {
+            if (jle::s_trim(rule4replace, ' ') =="")
+                os << current_node->value;
+            current_node = current_node->next;
+        }
+        return os.str();
+    }
+
+    std::map<std::string, std::string>  get_map_found(shared_ptr<AST_node_item> current_node)
+    {
+        std::map<std::string, std::string>  map_found;
+
+        while (current_node.expired()==false)
+        {
+            std::string symbol = current_node->name;
+            map_found[symbol] = current_node->value;
+
+            current_node = current_node->next;
+        }
+
+        return map_found;
+    }
+
+}
+
 
 
 void AST_node_item::exec_replace_current_transf2(const jle::map<std::string /*name*/, std::string>& templates)
@@ -157,34 +189,11 @@ void AST_node_item::exec_replace_current_transf2(const jle::map<std::string /*na
                 value = replace_transf2(value, rule4replace.data);
             return;
         }
-        shared_ptr<AST_node_item> current_node = this->down;
-        std::map<std::string, std::string>  map_found;
-        std::ostringstream os;
-
-        while (current_node.expired()==false)
-        {
-            if (jle::s_trim(rule4replace.data, ' ') !="")
-            {
-                int counter = 0;
-                std::string symbol = current_node->name;
-                while (map_found.find(symbol) != map_found.end())
-                {
-                    ++counter;
-                    symbol = JLE_SS(current_node->name << "#" << counter);
-                }
-                map_found[symbol] = current_node->value;
-
-            }
-            else
-                os << current_node->value;
-            current_node = current_node->next;
-        }
-
 
         if (rule4replace.data !="")
-            this->value = replace_transf2(map_found, rule4replace.data);
+            this->value = replace_transf2(get_map_found(this->down), rule4replace.data);
         else
-            this->value = os.str();
+            this->value = exec_replace_no_vars(this->down, rule4replace.data);
     }
 }
 
@@ -309,16 +318,40 @@ namespace  {
         else
             return "TEMPLATE NOT FOUND";
     }
+    bool find_template_command(Templ_running_status& templ_run_status)
+    {
+//        templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
+//        templ_run_status.text_pending = "";
+//        templ_run_status.command = "";
+//        return false;
+
+        std::regex  re{R"(((.|\n|\r)*?)__(RUN|INSERT|RENAME)__::((.|\n|\r)*))"};
+        std::smatch re_result;
+
+        if (std::regex_match(templ_run_status.text_pending, re_result, re)==false)
+        {
+            templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
+            templ_run_status.text_pending = "";
+            templ_run_status.command = "";
+
+            return false;
+        }
+        else
+        {
+            auto text_pending = JLE_SS(re_result[4]);
+            auto command      = JLE_SS(re_result[3]);
+            auto generated_text = JLE_SS(re_result[1]);
+
+            templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << generated_text);
+            templ_run_status.text_pending = JLE_SS(text_pending);
+            templ_run_status.command = JLE_SS(command);
+
+            return true;
+        }
+    }
 
 }
 
-bool find_template_command(Templ_running_status& templ_run_status)
-{
-    templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
-    templ_run_status.text_pending = "";
-    templ_run_status.command = "";
-    return false;
-}
 
 void AST_node_item::AST_node_item::exec_replace_current_templ(const jle::map<std::string /*name*/, std::string>& templates)
 {
@@ -330,11 +363,21 @@ void AST_node_item::AST_node_item::exec_replace_current_templ(const jle::map<std
     //  write text till end
 
 
+    std::map<std::string, std::string>  map_found = get_map_found(this->down);
     auto templ_running_status = Templ_running_status{};
     templ_running_status.text_pending = get_template_content(this->rule4replace.data, templates, {});
     while(find_template_command(templ_running_status))
     {
-
+        if(templ_running_status.command == "INSERT")
+        {
+            auto found_var_content = map_found.find("id");
+            if(found_var_content != map_found.end())
+                templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << found_var_content->second);
+            else
+                templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << "UNKNOWN VAR $$" << "id" << "$$" );
+        }
+        else
+            templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << "UNKNOWN COMMAND $$" << templ_running_status.command<< "$$" );
     }
 
     this->value = templ_running_status.generated_text;
