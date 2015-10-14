@@ -15,9 +15,9 @@ FIELDS ::=  UNION
 FIELDS ::=  ENUMERATION
 
 
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   NAMED    ##transf2-> $(__template__ FIELDS_NOEND)
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   NAMED    ##transf2-> $(__template__ FIELDS_NOEND)
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                          ##transf2-> $(__template__ FIELDS_END)
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   NAMED    ##transf2-> $(__template__ NAMED_NOEND)
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   NAMED    ##transf2-> $(__template__ NAMED_NOEND)
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                          ##transf2-> $(__template__ NAMED_END)
 NAMED ::=  NAMED_SUB
 NAMED ::=  NAMED_IMPL_SUB
 

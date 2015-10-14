@@ -34,7 +34,7 @@ public:
     jle::shared_ptr<AST_node_item> add_child(const std::string& _name, const std::string& _value, const std::string& _rule4replace);
 
 
-    void exec_replace               (const jle::map<std::string /*name*/, std::string>& templates);
+    void exec_replace               (const jle::map<std::string /*name*/, std::string>& templates, jle::map<std::string, std::string> ren_templ);
     void remove_nodes_manteining    (const jle::list<std::string>& lmodes2mantein);
 
 };

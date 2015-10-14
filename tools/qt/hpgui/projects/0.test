@@ -18,7 +18,7 @@ s_simple {
 s_inline {  i: int32,  s: string  }
 
 
-s_inline {  
+s_inline2 {  
    i: int32,   i64: int64
    s: string  
 }

@@ -619,7 +619,7 @@ Humble_parser::multi_parse(const std::string& input, std::string minit) const
         std::tie(result, remaining_input, ast_result) =  parse(new_input, i->str());
         if (result==false  ||  remaining_input!= "ok")
             return std::make_tuple(result, remaining_input, ast_result);
-        ast_result.exec_replace(templates);
+        ast_result.exec_replace(templates, {});
         new_input =  ast_result.value;
     }
 
