@@ -33,7 +33,6 @@ private slots:
     void on_actionRun_Regular_Expresion_triggered();
     void on_cbProjects_currentIndexChanged(int index);
     void on_pbProjectsReload_clicked();
-    void on_pteGramarSource_selectionChanged();
     void on_pbSelectAllRules_clicked();
     void on_pbLoadSymbols_clicked();
     void on_actionParse_triggered();

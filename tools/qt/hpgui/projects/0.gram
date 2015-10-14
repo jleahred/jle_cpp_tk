@@ -2,62 +2,25 @@ MAIN
 
 MAIN   ::=  FRAME*               ##transf2->$(__template__ MAIN)
 
-__BEGIN_TEMPLATE__:: MAIN
-//  this is a test
-//  on editor, I have to remove tabs
-//  and inprove the highlight
-
-int main(void)
-{
-    $(__run__)
-    $(__ident+__)
-    $(FRAME*)
-    $(__ident-__)
-    return -1;
-};
-__END_TEMPLATE__:: MAIN
-
-
 
 FRAME  ::= .__. STRUCT .__.            
 
 STRUCT ::= id .__. {  FIELDS  }        ##transf2->$(__template__ STRUCT)
 
-__BEGIN_TEMPLATE__:: STRUCT
-//  this is a test
-//  on editor, I have to remove tabs
-//  and inprove the highlight
 
-class $(id) {
-$(__rename__ FIELDS FIELDS_CTOR_PARAMS)  $(__RUN__)
-    $(id) (
-           $(FIELDS)
-    ) :
-$(__rename__ FIELDS FIELDS_CTOR_PARAMS)  $(__RUN__)
-           $(FIELDS)
-
-
-$(__rename__ FIELDS FIELDS_CTOR_PARAMS)  $(__RUN__)
-    $(FIELDS)
-
-};
-
-__END_TEMPLATE__:: STRUCT
-
-
-
-FIELDS ::=  NAMED  PROP                ##transf2-> "type": "struct",$(__endl__)"fields" : { $(__ident+__)$(NAMED)$(__ident-__)},$(__endl__) "prop" : $(PROP)$(__endl__)
-FIELDS ::=  NAMED                      ##transf2-> "type": "struct",$(__endl__)"fields" : { $(__ident+__)$(NAMED)$(__ident-__)}
-FIELDS ::=  TUPLE                      ##transf2-> "type": "tuple",$(__endl__)"fields" : { $(__ident+__)$(TUPLE)$(__ident-__)}
+FIELDS ::=  NAMED  PROP                
+FIELDS ::=  NAMED                      
+FIELDS ::=  TUPLE                      
 FIELDS ::=  UNION
 FIELDS ::=  ENUMERATION
 
 
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   NAMED    ##transf2-> name: "$(id)", $(FULL_TYPE),$(__endl__)$(NAMED)
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   NAMED    ##transf2-> name: "$(id)", $(FULL_TYPE),$(__endl__)$(NAMED)
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                          ##transf2-> name: "$(id)", $(FULL_TYPE)
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   NAMED    ##transf2-> $(__template__ FIELDS_NOEND)
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   NAMED    ##transf2-> $(__template__ FIELDS_NOEND)
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                          ##transf2-> $(__template__ FIELDS_END)
 NAMED ::=  NAMED_SUB
 NAMED ::=  NAMED_IMPL_SUB
+
 
 NAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.   NAMED
 NAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.
@@ -70,7 +33,7 @@ TUPLE ::=  .__.   TUPLE_TYPE   ._.   endl    .__.  TUPLE                        
 TUPLE ::=  .__.   TUPLE_TYPE   ._.   ,       .__.  TUPLE                         ##transf2-> "" : $(TUPLE_TYPE),$(__endl__)$(TUPLE)
 TUPLE ::=  .__.   TUPLE_TYPE   .__.                                              ##transf2-> "" : $(TUPLE_TYPE)
 
-TUPLE_TYPE  ::=  BASIC_TYPE                                                      ##transf2-> "type_info": { "basic_type": $(BASIC_TYPE), "modif": "none", "default": "none" }
+TUPLE_TYPE  ::=  BASIC_TYPE                                                      
 
 UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   endl    .__.  UNION
 UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   ,       .__.  UNION
@@ -86,16 +49,16 @@ FULL_TYPE  ::=  TYPE_OPTIONAL
 FULL_TYPE  ::=  TYPE_RECOMENDED
 FULL_TYPE  ::=  TYPE_WITH_DEFAULT_DATE
 FULL_TYPE  ::=  TYPE_WITH_DEFAULT
-FULL_TYPE  ::=  BASIC_TYPE                    ##transf2-> "type_info": { "basic_type": $(BASIC_TYPE), "modif": "none", "default": "none" }
+FULL_TYPE  ::=  BASIC_TYPE                    
 
 
 B_L_TYPE  ::=  BASIC_TYPE
 B_L_TYPE  ::=  TYPE_LIST
 
-BASIC_TYPE  ::= string  ##transf2-> "string"
-BASIC_TYPE  ::= double  ##transf2-> "double"
-BASIC_TYPE  ::= int32   ##transf2-> "int32"
-BASIC_TYPE  ::= int64   ##transf2-> "int64"
+BASIC_TYPE  ::= string  ##transf2-> string
+BASIC_TYPE  ::= double  ##transf2-> double
+BASIC_TYPE  ::= int32   ##transf2-> int32
+BASIC_TYPE  ::= int64   ##transf2-> int64
 
 TYPE_LIST  ::= BASIC_TYPE [ ]
 

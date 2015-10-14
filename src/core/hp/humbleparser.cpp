@@ -398,9 +398,9 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istrea
 
     while (stream.getline(buffer, 4096))
     {
-        if (buffer[0] == '/'  &&  buffer[1]=='/')
+        if (adding_template==false  &&  buffer[0] == '/'  &&  buffer[1]=='/')
             continue;
-        if (jle::s_trim(buffer, ' ') != "")
+        if (adding_template  ||  jle::s_trim(buffer, ' ') != "")
         {
             //result = add_rule(buffer);
             result = add_line(buffer);
@@ -486,7 +486,11 @@ jle::tuple<bool, std::string>  Humble_parser::_adding_template(const std::string
     }
     else
     {
-        building_template = JLE_SS(building_template << std::endl << line);
+        if(building_template.empty()  ||  false)
+            building_template = line;
+        else
+            building_template = JLE_SS(building_template << std::endl << line);
+        //JLE_COUT_TRACE(building_template)
         return make_tuple(true, JLE_SS("ok"));
     }
 }

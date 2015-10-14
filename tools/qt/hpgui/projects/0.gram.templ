@@ -1,0 +1,58 @@
+__BEGIN_TEMPLATE__:: MAIN
+//  generated on $(__date_time__)
+//  this is a test
+//  on editor, I have to remove tabs
+//  and inprove the highlight
+
+
+
+$(FRAME*)
+
+__END_TEMPLATE__:: MAIN
+
+
+
+
+__BEGIN_TEMPLATE__:: STRUCT
+
+class $(id) {
+$(__template__ RUN_FIELDS_CTOR_PARAMS)
+    $(id) (
+           $(FIELDS)
+    ) :
+           $(FIELDS)
+
+
+    $(FIELDS)
+
+};
+
+__END_TEMPLATE__:: STRUCT
+
+
+__BEGIN_TEMPLATE__:: RUN_FIELDS_CTOR_PARAMS
+$(__rename__ FIELDS_NOEND FIELDS_PARAM_CTOR_NOEND)
+$(__rename__ FIELDS_END FIELDS_END)
+$(__run__)
+__END_TEMPLATE__:: RUN_FIELDS_CTOR_PARAMS
+
+
+__BEGIN_TEMPLATE__:: FIELDS_NOEND
+$(__template__ FIELDS_PARAM_CTOR_NOEND)
+__END_TEMPLATE__:: FIELDS_NOEND
+
+__BEGIN_TEMPLATE__:: FIELDS_END
+$(__template__ FIELDS_PARAM_CTOR_END)
+__END_TEMPLATE__:: FIELDS_END
+
+
+
+
+__BEGIN_TEMPLATE__:: FIELDS_PARAM_CTOR_NOEND
+$(FULL_TYPE) _$(id),
+$(NAMED)
+__END_TEMPLATE__:: FIELDS_PARAM_CTOR_NOEND
+
+__BEGIN_TEMPLATE__:: FIELDS_PARAM_CTOR_END
+$(FULL_TYPE) _$(id)
+__END_TEMPLATE__:: FIELDS_PARAM_CTOR_END

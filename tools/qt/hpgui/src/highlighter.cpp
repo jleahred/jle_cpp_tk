@@ -69,6 +69,7 @@
          keywordPatterns << "\\$\\(__endl__\\)" << "\\$\\(__nothing__\\)"
                          << "\\$\\(__space__\\)" << "\\$\\(__counter__\\)"
                          << "\\$\\(__ident\\+__\\)"  << "\\$\\(__ident-__\\)"
+                         <<  R"(\$\(__date_time__\))"
                          ;
          foreach (const QString &pattern, keywordPatterns) {
              rule.pattern = QRegExp(pattern);

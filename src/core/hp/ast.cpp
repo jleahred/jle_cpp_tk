@@ -224,7 +224,6 @@ std::string replace_transf2(    const std::map<std::string, std::string>& map_it
                                 const std::string& rule4replace,
                                 const jle::map<std::string /*name*/, std::string>& templates)
 {
-    static auto ident = std::string("");
     static int replace_counter = 0;
     ++replace_counter;
 
@@ -247,12 +246,26 @@ std::string replace_transf2(    const std::map<std::string, std::string>& map_it
 
 
     std::string result;
+    auto ident = std::string("");
+    std::string add;
+    auto add2result = [&add, &result, ident=ident](size_t col) {
+            //if(add.empty()  ||  (add.find('\r') == std::string::npos  &&  add.find('\n') == std::string::npos))
+        if(add.empty())
+            return;
+//        if(col>0)
+//        JLE_COUT_TRACE(col)
+        auto full_ident = JLE_SS(ident << std::string(col, ' '));
+        add  = replace_string(add, "\n", JLE_SS("\n" << full_ident));
+        result = JLE_SS(result << add);
+        add  = "";
+    };
+
     //  look for starting of variable
     std::string::size_type previus = 0;
+    size_t  col = 0;
     for (std::string::size_type i=0; i<rule4replace.size()-1; ++i)
     {
-        std::string add;
-        if (rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
+        if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
         {
             //  eureka
             add += rule4replace.substr(previus, i-previus);
@@ -269,8 +282,12 @@ std::string replace_transf2(    const std::map<std::string, std::string>& map_it
             {
                 std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
                 std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
-                if (it != map_items_found.end())
+                if (it != map_items_found.end())        //  add var
+                {
+                    add2result(0);
                     add += it->second;
+                    add2result(col);
+                }
                 else if (itPredefined != map_predefined_vars.end())
                     add += itPredefined->second;
                 else if(var_name == "__ident+__") {
@@ -305,8 +322,16 @@ std::string replace_transf2(    const std::map<std::string, std::string>& map_it
             }
             previus = i+1;
         }
-        add  = replace_string(add, "\n", JLE_SS("\n" << JLE_SS(ident)));
-        result = JLE_SS(result << add);
+        else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
+            col=0;
+        else
+        {
+//            JLE_COUT_TRACE(rule4replace[i])
+//            JLE_COUT_TRACE(col)
+            ++col;
+        }
+
+        add2result(0);
     }
     result += rule4replace.substr(previus);
 

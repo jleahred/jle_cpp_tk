@@ -6,6 +6,7 @@
 
 s_simple {
     i : int32
+    j : string
     s : string
 
 /* multiline 

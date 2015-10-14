@@ -23,9 +23,15 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->splitter_horiz->setStretchFactor(0, 4);
+    ui->splitter_horiz->setStretchFactor(1, 1);
+
     //  configure context menus  ---------------------------------
     ui->pteGramarSource->addAction(ui->actionCompile_gramar);
     ui->pteGramarSource->addAction(ui->actionConvert_to_c_code);
+
+    ui->pteTemplateSource->addAction(ui->actionCompile_gramar);
+    ui->pteTemplateSource->addAction(ui->actionConvert_to_c_code);
 
     ui->pteInput->addAction(ui->actionParse);
 
@@ -38,6 +44,7 @@ Widget::Widget(QWidget *parent)
 
     // code highlight
     highlighter = new Highlighter(ui->pteGramarSource->document());
+    highlighter = new Highlighter(ui->pteTemplateSource->document());
 
 
     //  testing
@@ -57,6 +64,8 @@ QString sup_compile_gramar(jle::hp::Humble_parser&  h_parser, const QString& gra
 {
     QString result = "Compiling...\n";
 
+    h_parser = jle::hp::Humble_parser{};
+
     //  compilar
     bool result_bool;
     std::string result_string;
@@ -70,15 +79,18 @@ QString sup_compile_gramar(jle::hp::Humble_parser&  h_parser, const QString& gra
     return result;
 }
 
-QString sup_gramar_save(const QString& gramarName, const QString& gramar_source)
+QString sup_gramar_save(const QString& gramarName, const QString& gramar_source, bool is_templ)
 {
     QString result;
+    QString extension = ".gram";
+    if(is_templ)
+        extension = ".templ";
 
     if(gramarName!="")
     {
         QString name = gramarName;
-        if (name.indexOf(".gram")==-1)
-            name.append(".gram");
+        if (name.indexOf(extension)==-1)
+            name.append(extension);
         QFile file (QString("./projects/").append(name));
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ))
             throw result.append("Cannot save on... ").append(name);
@@ -101,8 +113,10 @@ void Widget::on_actionCompile_gramar_triggered()
     {
         ui->twMain->setCurrentIndex(1);   ui->twGramarInfo->setCurrentIndex(0);
 
-        result.append(        sup_gramar_save         (ui->cbProjects->currentText(),   ui->pteGramarSource->toPlainText()));
-        result.append(        sup_compile_gramar      (h_parser,                        ui->pteGramarSource->toPlainText()));
+        result.append(        sup_gramar_save         (ui->cbProjects->currentText(),   ui->pteGramarSource->toPlainText(),    false));
+        result.append(        sup_gramar_save         (ui->cbProjects->currentText(),   ui->pteTemplateSource->toPlainText(),  true));
+
+        result.append(        sup_compile_gramar      (h_parser,  ui->pteGramarSource->toPlainText() + ui->pteTemplateSource->toPlainText()));
     }
     catch(const QString& error)
     {
@@ -265,9 +279,6 @@ void Widget::on_pbSelectAllRules_clicked()
     ui->lwSymbols->selectAll();
 }
 
-void Widget::on_pteGramarSource_selectionChanged()
-{
-}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -300,6 +311,17 @@ void Widget::on_cbProjects_currentIndexChanged(int /*index*/)
                 return;
             }
             ui->pteGramarSource->setPlainText(file.readAll());
+        }
+
+        {
+            QString name = origName;
+            QFile file (JLE_SS("./projects/" << name.append(".gram.templ").toStdString()).c_str());
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                ui->pteLoadInfo->setPlainText(JLE_SS("Cannot open on... " << name.toStdString()).c_str());
+            }
+            else
+                ui->pteTemplateSource->setPlainText(file.readAll());
         }
 
         {
