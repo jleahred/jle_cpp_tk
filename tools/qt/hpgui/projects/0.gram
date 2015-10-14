@@ -1,6 +1,6 @@
 MAIN
 
-MAIN   ::=  FRAME*
+MAIN   ::=  FRAME*               ##transf2->$(__template__ MAIN)
 
 __BEGIN_TEMPLATE__:: MAIN
 //  this is a test
@@ -9,8 +9,10 @@ __BEGIN_TEMPLATE__:: MAIN
 
 int main(void)
 {
-    __RUN__::
-    __INSERT__::$(FRAME*)
+    $(__run__)
+    $(__ident+__)
+    $(FRAME*)
+    $(__ident-__)
     return -1;
 };
 __END_TEMPLATE__:: MAIN
@@ -19,25 +21,24 @@ __END_TEMPLATE__:: MAIN
 
 FRAME  ::= .__. STRUCT .__.            
 
-STRUCT ::= id .__. {  FIELDS  }        ##templ->STRUCT
+STRUCT ::= id .__. {  FIELDS  }        ##transf2->$(__template__ STRUCT)
 
 __BEGIN_TEMPLATE__:: STRUCT
 //  this is a test
 //  on editor, I have to remove tabs
 //  and inprove the highlight
 
-class __INSERT__::$(id) {
-__RENAME__:: FIELDS FIELDS_CTOR_PARAMS  __RUN__::
-
-    __INSERT__::$(id) (
-           __INSERT__:: FIELDS
+class $(id) {
+$(__rename__ FIELDS FIELDS_CTOR_PARAMS)  $(__RUN__)
+    $(id) (
+           $(FIELDS)
     ) :
-__RENAME__:: FIELDS FIELDS_CTOR_ASSIGN  __RUN__::
-           __INSERT__:: FIELDS
+$(__rename__ FIELDS FIELDS_CTOR_PARAMS)  $(__RUN__)
+           $(FIELDS)
 
 
-__RENAME__:: FIELDS FIELDS_CLASS_H   __RUN__::
-    __INSERT__:: FIELDS
+$(__rename__ FIELDS FIELDS_CTOR_PARAMS)  $(__RUN__)
+    $(FIELDS)
 
 };
 

@@ -29,7 +29,6 @@ class Highlighter : public QSyntaxHighlighter
      QTextCharFormat singleLineCommentFormat;
      QTextCharFormat expandVar;
      QTextCharFormat expandPredefVar;
-     QTextCharFormat templateFormat;
 };
 
 #endif // HIGHLIGHTER_H

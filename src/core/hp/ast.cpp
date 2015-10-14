@@ -3,7 +3,7 @@
 #include <regex>
 #include <map>
 #include "core/string.h"
-
+#include "core/cont/vector.hpp"
 
 
 
@@ -11,30 +11,10 @@
 namespace jle {   namespace hp  {
 
 
-std::ostream& operator<< (std::ostream& os, const Rule4replace& r4r)
-{
-    os << "{";
-    switch (r4r.type) {
-    case rule4replace_type::none:
-        os << "none";
-        break;
-    case rule4replace_type::transf2:
-        os << "transf2";
-        break;
-    case rule4replace_type::templ:
-        os << "template";
-        break;
-    }
-    os << "}";
-    return os;
-}
-
-
-
 /**
     Adds in brother
 */
-jle::shared_ptr<AST_node_item> AST_node_item::add_next(const std::string& _name, const std::string& _value, const Rule4replace& _rule4replace)
+jle::shared_ptr<AST_node_item> AST_node_item::add_next(const std::string& _name, const std::string& _value, const std::string& _rule4replace)
 {
     next = jle::shared_ptr<AST_node_item>(new AST_node_item(_name, _value, _rule4replace));
     return next;
@@ -43,7 +23,7 @@ jle::shared_ptr<AST_node_item> AST_node_item::add_next(const std::string& _name,
 /**
     Adds in child
 */
-jle::shared_ptr<AST_node_item> AST_node_item::add_child(const std::string& _name, const std::string& _value, const Rule4replace& _rule4replace)
+jle::shared_ptr<AST_node_item> AST_node_item::add_child(const std::string& _name, const std::string& _value, const std::string& _rule4replace)
 {
     down = jle::shared_ptr<AST_node_item>(new AST_node_item(_name, _value, _rule4replace));
     return down;
@@ -112,24 +92,8 @@ std::string AST_get_string_nodes(const jle::shared_ptr<AST_node_item>& node)
     Replace methods
 */
 
-std::string replace_transf2(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace);
-std::string replace_transf2(const std::string& founded, const std::string& rule4replace);
-
-
-void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::string>& templates)
-{
-    switch (this->rule4replace.type) {
-    case rule4replace_type::none:
-        exec_replace_current_transf2(templates);
-        break;
-    case rule4replace_type::transf2:
-        exec_replace_current_transf2(templates);
-        break;
-    case rule4replace_type::templ:
-        exec_replace_current_templ(templates);
-        break;
-    }
-}
+std::string replace_transf2(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace, const jle::map<std::string /*name*/, std::string>& templates);
+std::string replace_transf2(const std::string& founded, const std::string& rule4replace, const jle::map<std::string /*name*/, std::string>& templates);
 
 
 namespace {
@@ -165,8 +129,7 @@ namespace {
 }
 
 
-
-void AST_node_item::exec_replace_current_transf2(const jle::map<std::string /*name*/, std::string>& templates)
+void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::string>& templates)
 {
     //  first we look down and later to right (same level)
     if (this->down.expired()==false)
@@ -185,25 +148,27 @@ void AST_node_item::exec_replace_current_transf2(const jle::map<std::string /*na
     {
         if (this->down.expired())
         {
-            if (rule4replace.data!="")
-                value = replace_transf2(value, rule4replace.data);
+            if (rule4replace!="")
+                value = replace_transf2(value, rule4replace, templates);
             return;
         }
 
-        if (rule4replace.data !="")
-            this->value = replace_transf2(get_map_found(this->down), rule4replace.data);
+        if (rule4replace !="")
+            this->value = replace_transf2(get_map_found(this->down), rule4replace, templates);
         else
-            this->value = exec_replace_no_vars(this->down, rule4replace.data);
+            this->value = exec_replace_no_vars(this->down, rule4replace);
     }
 }
 
-std::string replace_transf2(const std::string& founded, const std::string& rule4replace)
+
+
+std::string replace_transf2(const std::string& founded, const std::string& rule4replace, const jle::map<std::string /*name*/, std::string>& templates)
 {
     if (jle::s_trim(rule4replace, ' ') !="")
     {
         std::map<std::string, std::string> map_found;
         map_found["t"] = founded;
-        return replace_transf2(map_found, rule4replace);
+        return replace_transf2(map_found, rule4replace, templates);
     }
     else
         return founded;
@@ -223,9 +188,41 @@ namespace {
         }
         return result;
     }
+    std::tuple<std::string, jle::vector<std::string> >  get_command_and_params(const std::string& full_command)
+    {
+        auto v = jle::s_split(full_command, " ");
+        if(v.empty()==false)
+            return std::make_tuple(v[0], v);
+        else
+            return std::make_tuple("", v);
+    }
+
+
+    std::string   get_template_content(const std::string& templ,
+                                         const jle::map<std::string /*name*/, std::string>& templates,
+                                         const jle::map<std::string /*name*/, std::string>& templ_aliases)
+    {
+        auto effective_tmpl_name = templ;
+
+        auto fta = templ_aliases.find(effective_tmpl_name);
+        if(fta!=templ_aliases.cend())
+        {
+            effective_tmpl_name = fta->second;
+        }
+
+        auto ft = templates.find(effective_tmpl_name);
+        if(ft != templates.cend())
+            return ft->second;
+        else
+            return JLE_SS("TEMPLATE NOT FOUND (" << templ << ")");
+    }
 }
 
-std::string replace_transf2(const std::map<std::string, std::string>& map_items_found, const std::string& rule4replace)
+
+
+std::string replace_transf2(    const std::map<std::string, std::string>& map_items_found,
+                                const std::string& rule4replace,
+                                const jle::map<std::string /*name*/, std::string>& templates)
 {
     static auto ident = std::string("");
     static int replace_counter = 0;
@@ -263,23 +260,49 @@ std::string replace_transf2(const std::map<std::string, std::string>& map_items_
             std::string::size_type initVar = i;
             while (i<rule4replace.size()  &&  rule4replace[i] != ')')
                 ++i;
-            std::string var_name = rule4replace.substr(initVar, i-initVar);
-            std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
-            std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
-            if (it != map_items_found.end())
-                add += it->second;
-            else if (itPredefined != map_predefined_vars.end())
-                add += itPredefined->second;
-            else if(var_name == "__ident+__") {
-                ident = JLE_SS(ident << "  ");
-                add += JLE_SS("\n");
-            }
-            else if(var_name == "__ident-__"  &&  ident.length()>=2) {
-                ident = ident.substr(0, ident.length()-2);
-                add += JLE_SS("\n");
+
+            std::string  full_command = rule4replace.substr(initVar, i-initVar);
+            auto command_and_params = get_command_and_params(full_command);
+            std::string var_name = std::get<0>(command_and_params);
+
+            if(std::get<1>(command_and_params).size()==1)        //  no params
+            {
+                std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
+                std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
+                if (it != map_items_found.end())
+                    add += it->second;
+                else if (itPredefined != map_predefined_vars.end())
+                    add += itPredefined->second;
+                else if(var_name == "__ident+__") {
+                    ident = JLE_SS(ident << "  ");
+                    add += JLE_SS("\n");
+                }
+                else if(var_name == "__ident-__"  &&  ident.length()>=2) {
+                    ident = ident.substr(0, ident.length()-2);
+                    add += JLE_SS("\n");
+                }
+                else
+                {
+                    add += JLE_SS("unknown (" << var_name << ")");
+                }
             }
             else
-                add += JLE_SS("$(" << var_name << ")");
+            {
+                if(var_name == "__template__")
+                {
+                    if(std::get<1>(command_and_params).size()!=2)
+                    {
+                        add += JLE_SS("invalid param count (" << full_command << ")");
+                    }
+                    else {
+                        add += replace_transf2(map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, {}), templates);
+                    }
+                }
+                else
+                {
+                    add += JLE_SS("unknown (" << full_command << ")");
+                }
+            }
             previus = i+1;
         }
         add  = replace_string(add, "\n", JLE_SS("\n" << JLE_SS(ident)));
@@ -292,98 +315,98 @@ std::string replace_transf2(const std::map<std::string, std::string>& map_items_
 }
 
 
-namespace  {
+//namespace  {
 
-    struct Templ_running_status {
-        std::string  generated_text;
-        std::string  command;
-        std::string  text_pending;
-    };
+//    struct Templ_running_status {
+//        std::string  generated_text;
+//        std::string  command;
+//        std::string  text_pending;
+//    };
 
-    std::string   get_template_content(const std::string& templ,
-                                         const jle::map<std::string /*name*/, std::string>& templates,
-                                         const jle::map<std::string /*name*/, std::string>& templ_aliases)
-    {
-        auto effective_tmpl_name = templ;
+//    std::string   get_template_content(const std::string& templ,
+//                                         const jle::map<std::string /*name*/, std::string>& templates,
+//                                         const jle::map<std::string /*name*/, std::string>& templ_aliases)
+//    {
+//        auto effective_tmpl_name = templ;
 
-        auto fta = templ_aliases.find(effective_tmpl_name);
-        if(fta!=templ_aliases.cend())
-        {
-            effective_tmpl_name = fta->second;
-        }
+//        auto fta = templ_aliases.find(effective_tmpl_name);
+//        if(fta!=templ_aliases.cend())
+//        {
+//            effective_tmpl_name = fta->second;
+//        }
 
-        auto ft = templates.find(effective_tmpl_name);
-        if(ft != templates.cend())
-            return ft->second;
-        else
-            return "TEMPLATE NOT FOUND";
-    }
-    bool find_template_command(Templ_running_status& templ_run_status)
-    {
-//        templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
-//        templ_run_status.text_pending = "";
-//        templ_run_status.command = "";
-//        return false;
+//        auto ft = templates.find(effective_tmpl_name);
+//        if(ft != templates.cend())
+//            return ft->second;
+//        else
+//            return "TEMPLATE NOT FOUND";
+//    }
+//    bool find_template_command(Templ_running_status& templ_run_status)
+//    {
+////        templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
+////        templ_run_status.text_pending = "";
+////        templ_run_status.command = "";
+////        return false;
 
-        std::regex  re{R"(((.|\n|\r)*?)__(RUN|INSERT|RENAME)__::((.|\n|\r)*))"};
-        std::smatch re_result;
+//        std::regex  re{R"(((.|\n|\r)*?)__(RUN|INSERT|RENAME)__::((.|\n|\r)*))"};
+//        std::smatch re_result;
 
-        if (std::regex_match(templ_run_status.text_pending, re_result, re)==false)
-        {
-            templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
-            templ_run_status.text_pending = "";
-            templ_run_status.command = "";
+//        if (std::regex_match(templ_run_status.text_pending, re_result, re)==false)
+//        {
+//            templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
+//            templ_run_status.text_pending = "";
+//            templ_run_status.command = "";
 
-            return false;
-        }
-        else
-        {
-            auto text_pending = JLE_SS(re_result[4]);
-            auto command      = JLE_SS(re_result[3]);
-            auto generated_text = JLE_SS(re_result[1]);
+//            return false;
+//        }
+//        else
+//        {
+//            auto text_pending = JLE_SS(re_result[4]);
+//            auto command      = JLE_SS(re_result[3]);
+//            auto generated_text = JLE_SS(re_result[1]);
 
-            templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << generated_text);
-            templ_run_status.text_pending = JLE_SS(text_pending);
-            templ_run_status.command = JLE_SS(command);
+//            templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << generated_text);
+//            templ_run_status.text_pending = JLE_SS(text_pending);
+//            templ_run_status.command = JLE_SS(command);
 
-            return true;
-        }
-    }
+//            return true;
+//        }
+//    }
 
-}
-
-
-void AST_node_item::AST_node_item::exec_replace_current_templ(const jle::map<std::string /*name*/, std::string>& templates)
-{
-    //  find template  (first, look for alias)
-
-    //  while find template command
-        //  write text on value till first command
-        //  execute command
-    //  write text till end
+//}
 
 
-    std::map<std::string, std::string>  map_found = get_map_found(this->down);
-    auto templ_running_status = Templ_running_status{};
-    templ_running_status.text_pending = get_template_content(this->rule4replace.data, templates, {});
-    while(find_template_command(templ_running_status))
-    {
-        if(templ_running_status.command == "INSERT")
-        {
-            auto found_var_content = map_found.find("id");
-            if(found_var_content != map_found.end())
-                templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << found_var_content->second);
-            else
-                templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << "UNKNOWN VAR $$" << "id" << "$$" );
-        }
-        else
-            templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << "UNKNOWN COMMAND $$" << templ_running_status.command<< "$$" );
-    }
+//void AST_node_item::AST_node_item::exec_replace_current_templ(const jle::map<std::string /*name*/, std::string>& templates)
+//{
+//    //  find template  (first, look for alias)
 
-    this->value = templ_running_status.generated_text;
+//    //  while find template command
+//        //  write text on value till first command
+//        //  execute command
+//    //  write text till end
 
-    //this->value = JLE_SS("pending... " << this->rule4replace.data << std::endl);
-}
+
+//    std::map<std::string, std::string>  map_found = get_map_found(this->down);
+//    auto templ_running_status = Templ_running_status{};
+//    templ_running_status.text_pending = get_template_content(this->rule4replace, templates, {});
+//    while(find_template_command(templ_running_status))
+//    {
+//        if(templ_running_status.command == "INSERT")
+//        {
+//            auto found_var_content = map_found.find("id");
+//            if(found_var_content != map_found.end())
+//                templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << found_var_content->second);
+//            else
+//                templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << "UNKNOWN VAR $$" << "id" << "$$" );
+//        }
+//        else
+//            templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << "UNKNOWN COMMAND $$" << templ_running_status.command<< "$$" );
+//    }
+
+//    this->value = templ_running_status.generated_text;
+
+//    //this->value = JLE_SS("pending... " << this->rule4replace << std::endl);
+//}
 
 
 

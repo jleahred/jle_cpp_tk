@@ -78,7 +78,7 @@ private:
     typedef std::map<   std::string,                                        //  rule left
                         std::list<  jle::tuple<
                                                 std::list<std::string>,     //  right symbols
-                                                Rule4replace> > >            //  transformation2   or template
+                                                std::string> > >            //  transformation2
             Container_rules  ;
     Container_rules      non_terminal_rules ;
     Container_rules      terminal_rules    ;
@@ -110,9 +110,9 @@ private:
 
 
 
-    jle::tuple<bool, int> execute_predefined_var   (int srt2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const Rule4replace& rule2replace) const;
-    jle::tuple<bool, int> execute_regular_expresion(int srt2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const Rule4replace& rule2replace) const;
-    jle::tuple<bool, int> execute_literal          (int srt2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const Rule4replace& rule2replace) const;
+    jle::tuple<bool, int> execute_predefined_var   (int srt2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const;
+    jle::tuple<bool, int> execute_regular_expresion(int srt2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const;
+    jle::tuple<bool, int> execute_literal          (int srt2parse_pos, const std::string& terminal_rule, AST_node_item& ast_node, const std::string& rule2replace) const;
 
 
     //  debug

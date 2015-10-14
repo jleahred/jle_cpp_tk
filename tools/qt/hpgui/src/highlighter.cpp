@@ -34,30 +34,11 @@
          keywordFormat.setFontWeight(QFont::Bold);
          QStringList keywordPatterns;
          keywordPatterns << " ::= " << " ##transf2->";
-         keywordPatterns << " ::= " << " ##templ->";
          keywordPatterns << "__BEGIN_TEMPLATE__::";
          keywordPatterns << "__END_TEMPLATE__::";
-
-
             foreach (const QString &pattern, keywordPatterns) {
                  rule.pattern = QRegExp(pattern);
                  rule.format = keywordFormat;
-                 highlightingRules.append(rule);
-             }
-    }
-
-    {
-         templateFormat.setForeground(Qt::darkRed);
-         //templateFormat.setFontWeight(QFont::Bold);
-         QStringList keywordPatterns;
-         keywordPatterns << "__INSERT__::";
-         keywordPatterns << "__RENAME__::";
-         keywordPatterns << "__RUN__::";
-
-
-            foreach (const QString &pattern, keywordPatterns) {
-                 rule.pattern = QRegExp(pattern);
-                 rule.format = templateFormat;
                  highlightingRules.append(rule);
              }
     }
