@@ -468,6 +468,30 @@ jle::tuple<bool, std::string>  Humble_parser::_adding_rule_multi_line(const std:
 
 jle::tuple<bool, std::string>  Humble_parser::_adding_template(const std::string& line)
 {
+    std::regex  re(R"(^__END_TEMPLATE__::(.*)$)");
+    std::smatch re_result;
+    if (std::regex_match(line, re_result, re))
+    {
+        if(re_result.size()==1  ||  (re_result.size()>1 &&  jle::s_trim(re_result[1], ' ')==""))
+        {
+            templates[template_name] = building_template;
+            adding_template = false;
+            template_name = "";
+            building_template = "";
+            return make_tuple(true, JLE_SS("ok"));
+        }
+        else
+            return make_tuple(false, JLE_SS("invalid end template format on  " << line  << "  expected: nothing after __END_TEMPLATE__:: "));
+    }
+    else
+    {
+        if(building_template.empty()  ||  false)
+            building_template = line;
+        else
+            building_template = JLE_SS(building_template << std::endl << line);
+        return make_tuple(true, JLE_SS("ok"));
+    }
+    /*
     std::regex  re(R"(^__END_TEMPLATE__:: *([A-Z][A-Z0-9_]*)$)");
     std::smatch re_result;
 
@@ -490,9 +514,8 @@ jle::tuple<bool, std::string>  Humble_parser::_adding_template(const std::string
             building_template = line;
         else
             building_template = JLE_SS(building_template << std::endl << line);
-        //JLE_COUT_TRACE(building_template)
         return make_tuple(true, JLE_SS("ok"));
-    }
+    }*/
 }
 
 

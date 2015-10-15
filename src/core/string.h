@@ -67,10 +67,17 @@ namespace jle
     std::string     s_trim    (const std::string&    s , const std::string& chars2remove);
 
 
-    //! \brief  divide string ``s``  with ``separator``
+    /** \brief  divide string ``s``  with ``separator``
+     *  s_split("a b c")  -> ["a", "b", "c"]
+     *  s_split("a  b c") -> ["a", "", "b", "c"]
+
+     *  s_split("a  b c", true) -> ["a", "b", "c"]
+
+     */
     jle::vector<std::string> s_split (
                                     const std::string&  s,
-                                    const std::string&  separator
+                                    const std::string&  separator,
+                                    bool  remove_empty = false
                                 );
 
 

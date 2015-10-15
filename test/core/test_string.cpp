@@ -253,6 +253,23 @@ void test_conversion()
 }
 
 
+void test_split()
+{
+    JLE_TEST_INIT
+    JLE_TEST_ASSERT((jle::s_split(" a  b  c ", " ", true) == jle::vector<std::string>{"a", "b", "c"}))
+
+    JLE_TEST_ASSERT((jle::s_split("a b c", " ") == jle::vector<std::string>{"a", "b", "c"}))
+    JLE_TEST_ASSERT((jle::s_split("a b c", " ") != jle::vector<std::string>{"a", "b"}))
+    JLE_TEST_ASSERT((jle::s_split("a  b c", " ") == jle::vector<std::string>{"a", "", "b", "c"}))
+    JLE_TEST_ASSERT((jle::s_split(" a  b  c ", " ") == jle::vector<std::string>{"", "a", "", "b", "", "c", ""}))
+
+
+    JLE_TEST_ASSERT((jle::s_split("a b c", " ", true) == jle::vector<std::string>{"a", "b", "c"}))
+    JLE_TEST_ASSERT((jle::s_split("a b c", " ", true) != jle::vector<std::string>{"a", "b"}))
+    JLE_TEST_ASSERT((jle::s_split("a  b c", " ", true) == jle::vector<std::string>{"a", "b", "c"}))
+}
+
+
 int main(void)
 {
 
@@ -260,6 +277,7 @@ int main(void)
 
         test_trim();
         test_conversion();
+        test_split();
 
     JLE_TEST_REPORT
 }

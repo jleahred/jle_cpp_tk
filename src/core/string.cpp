@@ -204,18 +204,33 @@ namespace jle
 
 jle::vector<std::string> s_split (
                                 const std::string&  s,
-                                const std::string&  separator
+                                const std::string&  separator,
+                                bool  remove_empty
                             )
 {
     jle::vector<std::string> result;
     size_t current_pos = 0;
     size_t prev_pos    = 0;
 
-    while ( (current_pos = s.find(separator, prev_pos+1)) != std::string::npos) {
-        result.push_back(s.substr(prev_pos, current_pos - prev_pos));
-        prev_pos = current_pos+separator.length();
+    while ( (current_pos = s.find(separator, prev_pos)) != std::string::npos) {
+        auto to_insert = s.substr(prev_pos, current_pos - prev_pos);
+        if(to_insert.empty())
+        {
+            if(remove_empty==false)
+                result.push_back("");
+            prev_pos = current_pos+separator.length();
+        }
+        else
+        {
+            result.push_back(to_insert);
+            prev_pos = current_pos+separator.length();
+        }
     };
-    result.push_back(s.substr(prev_pos, s.length()-prev_pos));
+    auto tail = s.substr(prev_pos, s.length()-prev_pos);
+    if(remove_empty  &&  tail.empty())
+        ;
+    else
+        result.push_back(s.substr(prev_pos, s.length()-prev_pos));
 
     return result;
 }

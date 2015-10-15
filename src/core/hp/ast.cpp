@@ -229,7 +229,7 @@ namespace {
     }
     std::tuple<std::string, jle::vector<std::string> >  get_command_and_params(const std::string& full_command)
     {
-        auto v = jle::s_split(full_command, " ");
+        auto v = jle::s_split(full_command, " ", true);
         if(v.empty()==false)
             return std::make_tuple(v[0], v);
         else
@@ -241,11 +241,6 @@ namespace {
                                          const jle::map<std::string /*name*/, std::string>& templates,
                                          const jle::map<std::string /*name*/, std::string>& templ_aliases)
     {
-        JLE_COUT_TRACE(templ)
-if(templ_aliases.empty()==false) {
-JLE_COUT_TRACE(templ_aliases.cbegin()->first)
-        JLE_COUT_TRACE(templ_aliases.cbegin()->second)
-        }
         auto effective_tmpl_name = templ;
 
         auto fta = templ_aliases.find(effective_tmpl_name);
@@ -253,7 +248,6 @@ JLE_COUT_TRACE(templ_aliases.cbegin()->first)
         {
             effective_tmpl_name = fta->second;
         }
-        JLE_COUT_TRACE(effective_tmpl_name)
         auto ft = templates.find(effective_tmpl_name);
         if(ft != templates.cend())
             return ft->second;
@@ -295,11 +289,9 @@ std::string replace_transf2(    AST_node_item&                                  
     auto ident = std::string("");
     std::string add;
     auto add2result = [&add, &result, ident=ident](size_t col) {
-            //if(add.empty()  ||  (add.find('\r') == std::string::npos  &&  add.find('\n') == std::string::npos))
+        //if(add.empty()  ||  (add.find('\r') == std::string::npos  &&  add.find('\n') == std::string::npos))
         if(add.empty())
             return;
-//        if(col>0)
-//        JLE_COUT_TRACE(col)
         auto full_ident = JLE_SS(ident << std::string(col, ' '));
         add  = replace_string(add, "\n", JLE_SS("\n" << full_ident));
         result = JLE_SS(result << add);
@@ -355,13 +347,7 @@ std::string replace_transf2(    AST_node_item&                                  
                         // update map_items_found
                         if(current_node.down.expired()==false)
                             current_node.down->exec_replace(templates, renamed_templates);
-                        //  TODO
-//                        JLE_COUT_TRACE((++map_items_found.cbegin())->first)
-//                        JLE_COUT_TRACE((++map_items_found.cbegin())->second)
                         map_items_found = get_map_found(current_node.down);
-//                        JLE_COUT_TRACE((++map_items_found.cbegin())->first)
-//                        JLE_COUT_TRACE((++map_items_found.cbegin())->second)
-//                                std::cout << std::endl;
                     }
                     else
                     {
@@ -407,8 +393,6 @@ std::string replace_transf2(    AST_node_item&                                  
                 col=0;
             else
             {
-    //            JLE_COUT_TRACE(rule4replace[i])
-    //            JLE_COUT_TRACE(col)
                 ++col;
             }
 

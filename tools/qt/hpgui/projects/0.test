@@ -14,7 +14,7 @@ s_simple {
 */
 }
 
-
+/*
 s_inline {  i: int32,  s: string  }
 
 

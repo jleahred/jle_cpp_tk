@@ -71,8 +71,8 @@
                          << "\\$\\(__ident\\+__\\)"  << "\\$\\(__ident-__\\)"
                          <<  R"(\$\(__date_time__\))"  <<  R"(\$\(__date__\))"
                          <<  R"(\$\(__run__\))"
-                         <<  R"(\$\(__template__ [A-Z][A-Z_0-9]*\))"
-                         <<  R"(\$\(__rename__ [A-Z][A-Z_0-9]* [A-Z][A-Z_0-9]*\))"
+                         <<  R"(\$\(__template__ +[A-Z][A-Z_0-9]* *\))"
+                         <<  R"(\$\(__rename__ +[A-Z][A-Z_0-9]* +[A-Z][A-Z_0-9]* *\))"
                          ;
          foreach (const QString &pattern, keywordPatterns) {
              rule.pattern = QRegExp(pattern);

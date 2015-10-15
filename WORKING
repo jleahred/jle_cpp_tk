@@ -1,14 +1,28 @@
-    mutable std::string   string2parse;
+regular expresion warper
 
-    typedef std::map<   std::string,                                        //  rule left
-                        std::list<  jle::tuple<
-                                                std::list<std::string>,     //  right symbols
-                                                std::string> > >            //  transformation2   or template
-            Container_rules  ;
-    Container_rules      non_terminal_rules ;
-    Container_rules      terminal_rules    ;
+initializer_list in containers
 
+container helpers to std::cout <<
 
+//  comparison operators
+bool operator==( const vector<T>& rhs )   { return lhs.ivector == rhs.ivector }
+
+bool operator!=( const vector<T>& rhs )   { return lhs.ivector != rhs.ivector }
+
+bool operator< ( const vector<T>& rhs )   { return lhs.ivector < rhs.ivector }
+
+bool operator<=( const vector<T>& rhs )   { return lhs.ivector <= rhs.ivector }
+
+bool operator> ( const vector<T>& rhs )   { return lhs.ivector > rhs.ivector }
+
+bool operator>=( const vector<T>& rhs )   { return lhs.ivector >= rhs.ivector }
+
+    ~vector()
+    {
+        try{
+            internal_for_containers::unregister_container(registered_as);
+        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "exception on destructor", "catched exception on destructor")
+    };
 
 
 

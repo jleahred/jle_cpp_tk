@@ -177,15 +177,27 @@ public:
     {
         try{
             internal_for_containers::unregister_container(registered_as);
-        } catch(...){
-            jle::alarm_msg(jle::alarm(JLE_HERE, "exception on destructor", "catched exception on destructor", jle::al::priority::error));
-        }
+        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "exception on destructor", "catched exception on destructor")
     };
 
+    vector(std::initializer_list<T> il)  : ivector(il), registered_as(internal_for_containers::register_container(true))  {};
     vector(const vector<T>& l);
     vector(vector<T>&& l) = default;
     vector<T>& operator=(const vector<T>& l);
     vector<T>& operator=(vector<T>&& l)=default;
+
+    //  comparison operators
+    bool operator==( const vector<T>& rhs )   { return ivector == rhs.ivector; }
+
+    bool operator!=( const vector<T>& rhs )   { return ivector != rhs.ivector; }
+
+    bool operator< ( const vector<T>& rhs )   { return ivector < rhs.ivector; }
+
+    bool operator<=( const vector<T>& rhs )   { return ivector <= rhs.ivector; }
+
+    bool operator> ( const vector<T>& rhs )   { return ivector > rhs.ivector; }
+
+    bool operator>=( const vector<T>& rhs )   { return ivector >= rhs.ivector; }
 
 
     //  iterators
