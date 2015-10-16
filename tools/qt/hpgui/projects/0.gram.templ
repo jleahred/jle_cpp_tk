@@ -17,12 +17,12 @@ __BEGIN_TEMPLATE__:: STRUCT
 
 class $(id) {
     $(id) (
-$(__template__  FIELDS_CTOR_PARAMS)
+$(FIELDS_CTOR_PARAMS)
            $(FIELDS)
-$(__template__  FIELDS_CTOR_ASSING)
+$(FIELDS_CTOR_ASSING)
     ) :   $(FIELDS)  {}
 
-$(__template__  FIELDS_DECL)
+$(FIELDS_DECL)
     $(FIELDS)
 
 };

@@ -6,34 +6,6 @@
 #include "core/cont/vector.hpp"
 
 
-//namespace jle {
-//template<typename T1, typename T2>
-//std::ostream& operator<< (std::ostream& os, const jle::map<T1, T2>&  m)
-//{
-//    auto it = m.cbegin();
-//    while(it!=m.cend())
-//    {
-//        os << "(" << it->first << ", " << it->second << ") ";
-//        ++it;
-//    }
-
-//    return os;
-//}
-
-//template<typename T1, typename T2>
-//std::ostream& operator<< (std::ostream& os, jle::map<T1, T2>&  m)
-//{
-//    auto it = m.begin();
-//    while(it!=m.end())
-//    {
-//        os << "(" << it->first << ", " << it->second << ") ";
-//        ++it;
-//    }
-
-//    return os;
-//}
-
-//}
 namespace jle {   namespace hp  {
 
 
@@ -288,6 +260,7 @@ std::string replace_transf2(    AST_node_item&                                  
     std::string result;
     auto ident = std::string("");
     std::string add;
+
     auto add2result = [&add, &result, ident=ident](size_t col) {
         //if(add.empty()  ||  (add.find('\r') == std::string::npos  &&  add.find('\n') == std::string::npos))
         if(add.empty())
@@ -299,9 +272,118 @@ std::string replace_transf2(    AST_node_item&                                  
     };
 
 
+    size_t  col = 0;
+    auto process_full_commnand = [&](const std::string& full_command, std::function<void(const std::string)> exec_rule_for_replace) {
+        auto command_and_params = get_command_and_params(full_command);
+        std::string var_name = std::get<0>(command_and_params);
+
+        if(std::get<1>(command_and_params).size()==1)        //  no params
+        {
+            std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
+            std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
+            jle::map<std::string, std::string>::const_iterator itTemplates =  templates.find(var_name);
+            auto found_renamed = renamed_templates.find(var_name);
+            if (it != map_items_found.end())        //  add var
+            {
+                add2result(0);
+                add += it->second;
+                add2result(col);
+            }
+            else if (itPredefined != map_predefined_vars.end())
+                add += itPredefined->second;
+            else if (itTemplates != templates.cend()  ||  found_renamed!=renamed_templates.end()) {
+                exec_rule_for_replace(get_template_content(var_name, templates, renamed_templates));
+            } else if(var_name == "__ident+__") {
+                ident = JLE_SS(ident << "  ");
+                add += JLE_SS("\n");
+            }
+            else if(var_name == "__ident-__"  &&  ident.length()>=2) {
+                ident = ident.substr(0, ident.length()-2);
+                add += JLE_SS("\n");
+            }
+            else if(var_name == "__date_time__") {
+                add += JLE_SS(jle::chrono::now());
+            }
+            else if(var_name == "__date__") {
+                add += JLE_SS(jle::chrono::today());
+            }
+            else if(var_name == "__run__") {
+                // update map_items_found
+                if(current_node.down.expired()==false)
+                    current_node.down->exec_replace(templates, renamed_templates);
+                map_items_found = get_map_found(current_node.down);
+            }
+            else
+            {
+                add += JLE_SS("unknown (" << var_name << ")");
+            }
+        }
+        else
+        {
+//                    if(var_name == "__get__")
+//                    {
+//                        if(std::get<1>(command_and_params).size()!=2)
+//                        {
+//                            add += JLE_SS("invalid param count (" << full_command << ")");
+//                        }
+//                        else {
+//                            exec_rule_for_replace(get_template_content(std::get<1>(command_and_params)[1], templates, renamed_templates));
+//                        }
+//                    }
+//                    else
+            if(var_name == "__rename__")
+            {
+                if(std::get<1>(command_and_params).size()!=3)
+                {
+                    add += JLE_SS("invalid param count (" << full_command << ")");
+                }
+                else {
+                    renamed_templates[std::get<1>(command_and_params)[1]] = std::get<1>(command_and_params)[2];
+                    //add += replace_transf2(*(current_node.down), map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, renamed_templates), templates, renamed_templates);
+                }
+            }
+            else
+            {
+                add += JLE_SS("unknown (" << full_command << ")");
+            }
+        }
+    };
+
+    auto find_next_command = [&](const std::string& rule4replace, size_t start, size_t previous){
+        for (std::string::size_type i=start; i<rule4replace.size()-1; ++i)
+        {
+            if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
+            {
+                //  eureka
+                add += rule4replace.substr(previous, i-previous);
+                i+=2;
+                std::string::size_type initVar = i;
+                while (i<rule4replace.size()  &&  rule4replace[i] != ')') {
+                    ++i;
+                }
+                std::string  full_command = rule4replace.substr(initVar, i-initVar);
+                previous = i+1;
+                return std::make_tuple(full_command, i, previous);
+            }
+            else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
+                col=0;
+            else
+            {
+                ++col;
+            }
+            add2result(0);
+        }
+        return std::make_tuple(std::string{}, size_t{0}, size_t{0});
+    };
+
     std::function<void(const std::string)> exec_rule_for_replace = [&](const std::string& rule4replace) {
-        size_t  col = 0;
-        std::string::size_type previus = 0;
+        col = 0;
+        size_t pos = 0;
+        size_t previus = 0;
+        std::string full_command;
+
+        auto next_command = ;
+        std::tie(find_next_command(rule4replace, pos, previous)).
         for (std::string::size_type i=0; i<rule4replace.size()-1; ++i)
         {
             if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
@@ -310,83 +392,13 @@ std::string replace_transf2(    AST_node_item&                                  
                 add += rule4replace.substr(previus, i-previus);
                 i+=2;
                 std::string::size_type initVar = i;
-                while (i<rule4replace.size()  &&  rule4replace[i] != ')')
+                while (i<rule4replace.size()  &&  rule4replace[i] != ')') {
                     ++i;
+                }
 
                 std::string  full_command = rule4replace.substr(initVar, i-initVar);
-                auto command_and_params = get_command_and_params(full_command);
-                std::string var_name = std::get<0>(command_and_params);
+                process_full_commnand(full_command, exec_rule_for_replace);
 
-                if(std::get<1>(command_and_params).size()==1)        //  no params
-                {
-                    std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
-                    std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
-                    if (it != map_items_found.end())        //  add var
-                    {
-                        add2result(0);
-                        add += it->second;
-                        add2result(col);
-                    }
-                    else if (itPredefined != map_predefined_vars.end())
-                        add += itPredefined->second;
-                    else if(var_name == "__ident+__") {
-                        ident = JLE_SS(ident << "  ");
-                        add += JLE_SS("\n");
-                    }
-                    else if(var_name == "__ident-__"  &&  ident.length()>=2) {
-                        ident = ident.substr(0, ident.length()-2);
-                        add += JLE_SS("\n");
-                    }
-                    else if(var_name == "__date_time__") {
-                        add += JLE_SS(jle::chrono::now());
-                    }
-                    else if(var_name == "__date__") {
-                        add += JLE_SS(jle::chrono::today());
-                    }
-                    else if(var_name == "__run__") {
-                        // update map_items_found
-                        if(current_node.down.expired()==false)
-                            current_node.down->exec_replace(templates, renamed_templates);
-                        map_items_found = get_map_found(current_node.down);
-                    }
-                    else
-                    {
-                        add += JLE_SS("unknown (" << var_name << ")");
-                    }
-                }
-                else
-                {
-                    if(var_name == "__template__")
-                    {
-                        if(std::get<1>(command_and_params).size()!=2)
-                        {
-                            add += JLE_SS("invalid param count (" << full_command << ")");
-                        }
-                        else {
-                            //if(current_node.down.expired()==false)
-                            //    current_node.down->exec_replace(templates, renamed_templates);
-                            //map_items_found = get_map_found(current_node.down);
-                            //add += replace_transf2(current_node, map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, renamed_templates), templates, renamed_templates);
-                            //rule4replace = JLE_SS(get_template_content(std::get<1>(command_and_params)[1], templates, renamed_templates) << rule4replace);
-                            exec_rule_for_replace(get_template_content(std::get<1>(command_and_params)[1], templates, renamed_templates));
-                        }
-                    }
-                    else if(var_name == "__rename__")
-                    {
-                        if(std::get<1>(command_and_params).size()!=3)
-                        {
-                            add += JLE_SS("invalid param count (" << full_command << ")");
-                        }
-                        else {
-                            renamed_templates[std::get<1>(command_and_params)[1]] = std::get<1>(command_and_params)[2];
-                            //add += replace_transf2(*(current_node.down), map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, renamed_templates), templates, renamed_templates);
-                        }
-                    }
-                    else
-                    {
-                        add += JLE_SS("unknown (" << full_command << ")");
-                    }
-                }
                 previus = i+1;
             }
             else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
@@ -400,107 +412,14 @@ std::string replace_transf2(    AST_node_item&                                  
         }
         result += rule4replace.substr(previus);
     };
+
+
+
     exec_rule_for_replace(_rule4replace);
 
     return result;
 
 }
-
-
-//namespace  {
-
-//    struct Templ_running_status {
-//        std::string  generated_text;
-//        std::string  command;
-//        std::string  text_pending;
-//    };
-
-//    std::string   get_template_content(const std::string& templ,
-//                                         const jle::map<std::string /*name*/, std::string>& templates,
-//                                         const jle::map<std::string /*name*/, std::string>& templ_aliases)
-//    {
-//        auto effective_tmpl_name = templ;
-
-//        auto fta = templ_aliases.find(effective_tmpl_name);
-//        if(fta!=templ_aliases.cend())
-//        {
-//            effective_tmpl_name = fta->second;
-//        }
-
-//        auto ft = templates.find(effective_tmpl_name);
-//        if(ft != templates.cend())
-//            return ft->second;
-//        else
-//            return "TEMPLATE NOT FOUND";
-//    }
-//    bool find_template_command(Templ_running_status& templ_run_status)
-//    {
-////        templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
-////        templ_run_status.text_pending = "";
-////        templ_run_status.command = "";
-////        return false;
-
-//        std::regex  re{R"(((.|\n|\r)*?)__(RUN|INSERT|RENAME)__::((.|\n|\r)*))"};
-//        std::smatch re_result;
-
-//        if (std::regex_match(templ_run_status.text_pending, re_result, re)==false)
-//        {
-//            templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << templ_run_status.text_pending);
-//            templ_run_status.text_pending = "";
-//            templ_run_status.command = "";
-
-//            return false;
-//        }
-//        else
-//        {
-//            auto text_pending = JLE_SS(re_result[4]);
-//            auto command      = JLE_SS(re_result[3]);
-//            auto generated_text = JLE_SS(re_result[1]);
-
-//            templ_run_status.generated_text = JLE_SS(templ_run_status.generated_text << generated_text);
-//            templ_run_status.text_pending = JLE_SS(text_pending);
-//            templ_run_status.command = JLE_SS(command);
-
-//            return true;
-//        }
-//    }
-
-//}
-
-
-//void AST_node_item::AST_node_item::exec_replace_current_templ(const jle::map<std::string /*name*/, std::string>& templates)
-//{
-//    //  find template  (first, look for alias)
-
-//    //  while find template command
-//        //  write text on value till first command
-//        //  execute command
-//    //  write text till end
-
-
-//    std::map<std::string, std::string>  map_found = get_map_found(this->down);
-//    auto templ_running_status = Templ_running_status{};
-//    templ_running_status.text_pending = get_template_content(this->rule4replace, templates, {});
-//    while(find_template_command(templ_running_status))
-//    {
-//        if(templ_running_status.command == "INSERT")
-//        {
-//            auto found_var_content = map_found.find("id");
-//            if(found_var_content != map_found.end())
-//                templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << found_var_content->second);
-//            else
-//                templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << "UNKNOWN VAR $$" << "id" << "$$" );
-//        }
-//        else
-//            templ_running_status.generated_text = JLE_SS(templ_running_status.generated_text << "UNKNOWN COMMAND $$" << templ_running_status.command<< "$$" );
-//    }
-
-//    this->value = templ_running_status.generated_text;
-
-//    //this->value = JLE_SS("pending... " << this->rule4replace << std::endl);
-//}
-
-
 
 
 
