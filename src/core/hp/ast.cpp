@@ -349,12 +349,15 @@ std::string replace_transf2(    AST_node_item&                                  
         }
     };
 
-    auto find_next_command = [&](const std::string& rule4replace, size_t start, size_t previous){
+    std::function<std::tuple<std::string, size_t, size_t>(const std::string&, size_t, size_t)>
+    find_next_command = [&](const std::string& rule4replace, size_t start, size_t previous){
         for (std::string::size_type i=start; i<rule4replace.size()-1; ++i)
         {
             if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
             {
                 //  eureka
+//                if(rule4replace.substr(previous, i-previous).empty()==false)
+//                    JLE_COUT_TRACE(rule4replace.substr(previous, i-previous))
                 add += rule4replace.substr(previous, i-previous);
                 i+=2;
                 std::string::size_type initVar = i;
@@ -371,46 +374,50 @@ std::string replace_transf2(    AST_node_item&                                  
             {
                 ++col;
             }
-            add2result(0);
+            //add2result(0);
         }
-        return std::make_tuple(std::string{}, size_t{0}, size_t{0});
+        return std::make_tuple(std::string{}, size_t{0}, previous);
     };
 
     std::function<void(const std::string)> exec_rule_for_replace = [&](const std::string& rule4replace) {
         col = 0;
         size_t pos = 0;
-        size_t previus = 0;
+        size_t previous = 0;
         std::string full_command;
 
-        auto next_command = ;
-        std::tie(find_next_command(rule4replace, pos, previous)).
-        for (std::string::size_type i=0; i<rule4replace.size()-1; ++i)
-        {
-            if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
-            {
-                //  eureka
-                add += rule4replace.substr(previus, i-previus);
-                i+=2;
-                std::string::size_type initVar = i;
-                while (i<rule4replace.size()  &&  rule4replace[i] != ')') {
-                    ++i;
-                }
-
-                std::string  full_command = rule4replace.substr(initVar, i-initVar);
-                process_full_commnand(full_command, exec_rule_for_replace);
-
-                previus = i+1;
-            }
-            else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
-                col=0;
-            else
-            {
-                ++col;
-            }
-
-            add2result(0);
+        std::tie(full_command, pos, previous) = find_next_command(rule4replace, pos, previous);
+        while(full_command.empty() == false) {
+            process_full_commnand(full_command, exec_rule_for_replace);
+            std::tie(full_command, pos, previous) = find_next_command(rule4replace, pos, previous);
         }
-        result += rule4replace.substr(previus);
+
+//        for (std::string::size_type i=0; i<rule4replace.size()-1; ++i)
+//        {
+//            if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
+//            {
+//                //  eureka
+//                add += rule4replace.substr(previus, i-previus);
+//                i+=2;
+//                std::string::size_type initVar = i;
+//                while (i<rule4replace.size()  &&  rule4replace[i] != ')') {
+//                    ++i;
+//                }
+
+//                std::string  full_command = rule4replace.substr(initVar, i-initVar);
+//                process_full_commnand(full_command, exec_rule_for_replace);
+
+//                previus = i+1;
+//            }
+//            else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
+//                col=0;
+//            else
+//            {
+//                ++col;
+//            }
+
+//            add2result(0);
+//        }
+        result += rule4replace.substr(previous);
     };
 
 
