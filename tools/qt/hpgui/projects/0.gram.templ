@@ -17,12 +17,12 @@ __BEGIN_TEMPLATE__:: STRUCT
 
 class $(id) {
     $(id) (
-$(FIELDS_CTOR_PARAMS)
+$(PREP_FIELDS_CTOR_PARAMS)
            $(FIELDS)
-$(FIELDS_CTOR_ASSING)
+$(PREP_FIELDS_CTOR_ASSING)
     ) :   $(FIELDS)  {}
 
-$(FIELDS_DECL)
+$(PREP_FIELDS_DECL)
     $(FIELDS)
 
 };
@@ -32,61 +32,29 @@ __END_TEMPLATE__::
 
 
 
-
-__BEGIN_TEMPLATE__:: FIELDS_CTOR_PARAMS
-$(__rename__  NAMED_NOEND NAMED_PARAM_CTOR_NOEND)
-$(__rename__  NAMED_END   NAMED_PARAM_CTOR_END  )
-$(__run__)
-__END_TEMPLATE__:: 
-
-__BEGIN_TEMPLATE__:: NAMED_PARAM_CTOR_NOEND
-$(FULL_TYPE) _$(id),
-$(NAMED)
-__END_TEMPLATE__:: 
-
-__BEGIN_TEMPLATE__:: NAMED_PARAM_CTOR_END
-$(FULL_TYPE) _$(id)
-__END_TEMPLATE__:: 
-
-
-
-
-
-__BEGIN_TEMPLATE__:: FIELDS_CTOR_ASSING
-$(__rename__  NAMED_NOEND  NAMED_CTOR_ASSING_NOEND)
-$(__rename__  NAMED_END    NAMED_CTOR_ASSING_END  )
+__BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_PARAMS
+$(__set__  NAMED_NOEND $(FULL_TYPE)~_$(id),$(__endl__)$(NAMED))
+$(__set__  NAMED_END   $(FULL_TYPE)~_$(id))
 $(__run__)
 __END_TEMPLATE__:: 
 
 
 
-__BEGIN_TEMPLATE__:: NAMED_CTOR_ASSING_NOEND
-$(id)(_$(id)),
-$(NAMED)
-__END_TEMPLATE__:: 
 
-__BEGIN_TEMPLATE__:: NAMED_CTOR_ASSING_END
-$(id)(_$(id))
-__END_TEMPLATE__:: 
-
-
-
-
-__BEGIN_TEMPLATE__:: FIELDS_DECL
-$(__rename__  NAMED_NOEND  FIELDS_DECL_NOEND)
-$(__rename__  NAMED_END    FIELDS_DECL_END  )
+__BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_ASSING
+$(__set__  NAMED_NOEND  $(id)(_$(id)\(,$(__endl__)$(NAMED))
+$(__set__  NAMED_END    $(id)(_$(id)\()
 $(__run__)
 __END_TEMPLATE__:: 
 
 
 
-__BEGIN_TEMPLATE__:: FIELDS_DECL_NOEND
-$(FULL_TYPE) $(id);
-$(NAMED)
-__END_TEMPLATE__:: 
 
-__BEGIN_TEMPLATE__:: FIELDS_DECL_END
-$(FULL_TYPE) $(id)
-__END_TEMPLATE__:: 
 
+
+__BEGIN_TEMPLATE__:: PREP_FIELDS_DECL
+$(__set__  NAMED_NOEND  $(FULL_TYPE)~$(id);$(__endl__)$(NAMED))
+$(__set__  NAMED_END    $(FULL_TYPE)~$(id))
+$(__run__)
+__END_TEMPLATE__:: 
 

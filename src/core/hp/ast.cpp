@@ -94,12 +94,12 @@ std::string replace_transf2(    AST_node_item&                                  
                                 std::map<std::string, std::string>                  map_items_found,
                                 const std::string&                                  rule4replace,
                                 const jle::map<std::string /*name*/, std::string>&  templates,
-                                jle::map<std::string, std::string>                  renamed_templates);
+                                jle::map<std::string, std::string>                  declared_vars);
 std::string replace_transf2(    AST_node_item&                                      current_node,
                                 const std::string&                                  founded,
                                 const std::string&                                  rule4replace,
                                 const jle::map<std::string /*name*/, std::string>&  templates,
-                                jle::map<std::string, std::string>                  renamed_templates);
+                                jle::map<std::string, std::string>                  declared_vars);
 
 
 namespace {
@@ -136,18 +136,18 @@ namespace {
 
 
 void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::string>& templates,
-                                 jle::map<std::string, std::string> ren_templ)
+                                 jle::map<std::string, std::string> declared_vars)
 {
     //  first we look down and later to right (same level)
     if (this->down.expired()==false)
     {
-        this->down->exec_replace(templates, ren_templ);
+        this->down->exec_replace(templates, declared_vars);
         //this->value = this->down->value;
     }
 
     if (this->next.expired()==false)
     {
-        this->next->exec_replace(templates, ren_templ);
+        this->next->exec_replace(templates, declared_vars);
         //this->value += this->next->value;
     }
 
@@ -156,12 +156,12 @@ void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::strin
         if (this->down.expired())
         {
             if (rule4replace!="")
-                value = replace_transf2(*this, value, rule4replace, templates, ren_templ);
+                value = replace_transf2(*this, value, rule4replace, templates, declared_vars);
             return;
         }
 
         if (rule4replace !="")
-            this->value = replace_transf2(*this, get_map_found(this->down), rule4replace, templates, ren_templ);
+            this->value = replace_transf2(*this, get_map_found(this->down), rule4replace, templates, declared_vars);
         else
             this->value = exec_replace_no_vars(this->down, rule4replace);
     }
@@ -173,13 +173,13 @@ std::string replace_transf2(        AST_node_item&                              
                                     const std::string&                                  founded,
                                     const std::string&                                  rule4replace,
                                     const jle::map<std::string /*name*/, std::string>&  templates,
-                                    jle::map<std::string, std::string>                  renamed_templates)
+                                    jle::map<std::string, std::string>                  declared_vars)
 {
     if (jle::s_trim(rule4replace, ' ') !="")
     {
         std::map<std::string, std::string> map_found;
         map_found["t"] = founded;
-        return replace_transf2(current_node, map_found, rule4replace, templates, renamed_templates);
+        return replace_transf2(current_node, map_found, rule4replace, templates, declared_vars);
     }
     else
         return founded;
@@ -209,24 +209,23 @@ namespace {
     }
 
 
-    std::string   get_template_content(const std::string& templ,
+    std::string   get_template_content(const std::string& var_name,
                                          const jle::map<std::string /*name*/, std::string>& templates,
-                                         const jle::map<std::string /*name*/, std::string>& templ_aliases)
+                                         const jle::map<std::string /*name*/, std::string>& declared_vars)
     {
-        auto effective_tmpl_name = templ;
-
-        auto fta = templ_aliases.find(effective_tmpl_name);
-        if(fta!=templ_aliases.cend())
-        {
-            effective_tmpl_name = fta->second;
-        }
-        auto ft = templates.find(effective_tmpl_name);
+        auto ft = templates.find(var_name);
         if(ft != templates.cend())
             return ft->second;
-        else
-            return JLE_SS("TEMPLATE NOT FOUND (" << templ << ")");
+        else {
+            auto fta = declared_vars.find(var_name);
+            if(fta!=declared_vars.cend())
+            {
+                return fta->second;
+            }
+        }
+       return JLE_SS("TEMPLATE NOT FOUND (" << var_name << ")");
     }
-}
+ }
 
 
 
@@ -234,7 +233,7 @@ std::string replace_transf2(    AST_node_item&                                  
                                 std::map<std::string, std::string>                  map_items_found,
                                 const std::string&                                  _rule4replace,
                                 const jle::map<std::string /*name*/, std::string>&  templates,
-                                jle::map<std::string, std::string>                  renamed_templates)
+                                jle::map<std::string, std::string>                  declared_vars)
 {
     static int replace_counter = 0;
     ++replace_counter;
@@ -282,7 +281,7 @@ std::string replace_transf2(    AST_node_item&                                  
             std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
             std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
             jle::map<std::string, std::string>::const_iterator itTemplates =  templates.find(var_name);
-            auto found_renamed = renamed_templates.find(var_name);
+            auto found_var = declared_vars.find(var_name);
             if (it != map_items_found.end())        //  add var
             {
                 add2result(0);
@@ -291,8 +290,8 @@ std::string replace_transf2(    AST_node_item&                                  
             }
             else if (itPredefined != map_predefined_vars.end())
                 add += itPredefined->second;
-            else if (itTemplates != templates.cend()  ||  found_renamed!=renamed_templates.end()) {
-                exec_rule_for_replace(get_template_content(var_name, templates, renamed_templates));
+            else if (itTemplates != templates.cend()  ||  found_var!=declared_vars.end()) {
+                exec_rule_for_replace(get_template_content(var_name, templates, declared_vars));
             } else if(var_name == "__ident+__") {
                 ident = JLE_SS(ident << "  ");
                 add += JLE_SS("\n");
@@ -310,12 +309,13 @@ std::string replace_transf2(    AST_node_item&                                  
             else if(var_name == "__run__") {
                 // update map_items_found
                 if(current_node.down.expired()==false)
-                    current_node.down->exec_replace(templates, renamed_templates);
+                    current_node.down->exec_replace(templates, declared_vars);
                 map_items_found = get_map_found(current_node.down);
             }
             else
             {
                 add += JLE_SS("unknown (" << var_name << ")");
+                add2result(0);
             }
         }
         else
@@ -327,19 +327,19 @@ std::string replace_transf2(    AST_node_item&                                  
 //                            add += JLE_SS("invalid param count (" << full_command << ")");
 //                        }
 //                        else {
-//                            exec_rule_for_replace(get_template_content(std::get<1>(command_and_params)[1], templates, renamed_templates));
+//                            exec_rule_for_replace(get_template_content(std::get<1>(command_and_params)[1], templates, declared_vars));
 //                        }
 //                    }
 //                    else
-            if(var_name == "__rename__")
+            if(var_name == "__set__")
             {
                 if(std::get<1>(command_and_params).size()!=3)
                 {
                     add += JLE_SS("invalid param count (" << full_command << ")");
                 }
                 else {
-                    renamed_templates[std::get<1>(command_and_params)[1]] = std::get<1>(command_and_params)[2];
-                    //add += replace_transf2(*(current_node.down), map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, renamed_templates), templates, renamed_templates);
+                    declared_vars[std::get<1>(command_and_params)[1]] = std::get<1>(command_and_params)[2];
+                    //add += replace_transf2(*(current_node.down), map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, declared_vars), templates, declared_vars);
                 }
             }
             else
@@ -356,12 +356,15 @@ std::string replace_transf2(    AST_node_item&                                  
             if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
             {
                 //  eureka
-//                if(rule4replace.substr(previous, i-previous).empty()==false)
-//                    JLE_COUT_TRACE(rule4replace.substr(previous, i-previous))
                 add += rule4replace.substr(previous, i-previous);
                 i+=2;
                 std::string::size_type initVar = i;
-                while (i<rule4replace.size()  &&  rule4replace[i] != ')') {
+                int depth=0;
+                while (i<rule4replace.size()  &&  (rule4replace[i] != ')'   ||   depth!=0)) {
+                    if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
+                        ++depth;
+                    if (rule4replace[i] == ')')
+                        --depth;
                     ++i;
                 }
                 std::string  full_command = rule4replace.substr(initVar, i-initVar);
@@ -374,7 +377,6 @@ std::string replace_transf2(    AST_node_item&                                  
             {
                 ++col;
             }
-            //add2result(0);
         }
         return std::make_tuple(std::string{}, size_t{0}, previous);
     };
@@ -391,33 +393,8 @@ std::string replace_transf2(    AST_node_item&                                  
             std::tie(full_command, pos, previous) = find_next_command(rule4replace, pos, previous);
         }
 
-//        for (std::string::size_type i=0; i<rule4replace.size()-1; ++i)
-//        {
-//            if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
-//            {
-//                //  eureka
-//                add += rule4replace.substr(previus, i-previus);
-//                i+=2;
-//                std::string::size_type initVar = i;
-//                while (i<rule4replace.size()  &&  rule4replace[i] != ')') {
-//                    ++i;
-//                }
-
-//                std::string  full_command = rule4replace.substr(initVar, i-initVar);
-//                process_full_commnand(full_command, exec_rule_for_replace);
-
-//                previus = i+1;
-//            }
-//            else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
-//                col=0;
-//            else
-//            {
-//                ++col;
-//            }
-
-//            add2result(0);
-//        }
-        result += rule4replace.substr(previous);
+        if(rule4replace.size()>previous)
+            result += rule4replace.substr(previous);
     };
 
 
