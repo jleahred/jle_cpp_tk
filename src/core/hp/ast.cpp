@@ -309,9 +309,11 @@ std::string replace_transf2(    AST_node_item&                                  
                 add += it->second;
                 add2result(col);
             }
-            else if (itPredefined != map_predefined_vars.end())
+            else if (itPredefined != map_predefined_vars.end()) {
                 add += itPredefined->second;
-            else if (itTemplates != templates.cend()  ||  found_var!=declared_vars.end()) {
+                if(itPredefined->first == "__endl__")
+                    col=0;
+            } else if (itTemplates != templates.cend()  ||  found_var!=declared_vars.end()) {
                 exec_rule_for_replace(get_template_content(var_name, templates, declared_vars));
             } else if(var_name == "__ident+__") {
                 ident = JLE_SS(ident << "  ");
@@ -396,7 +398,7 @@ std::string replace_transf2(    AST_node_item&                                  
                 }
                 std::string  full_command = rule4replace.substr(initVar, i-initVar);
                 previous = i+1;
-                return std::make_tuple(full_command, i, previous);
+                return std::make_tuple(full_command, i+1, previous);
             }
             else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
                 col=0;

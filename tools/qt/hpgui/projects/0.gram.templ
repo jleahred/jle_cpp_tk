@@ -18,7 +18,7 @@ __BEGIN_TEMPLATE__:: STRUCT
 class $(id) {
     $(id) (
 $(PREP_FIELDS_CTOR_PARAMS)
-           $(FIELDS)
+          $(FIELDS)
 $(PREP_FIELDS_CTOR_ASSING)
     ) :   $(FIELDS)  {}
 
@@ -33,8 +33,7 @@ __END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_PARAMS
-$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),
-$(NAMED))
+$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))
 $(__set__  NAMED_END   $(FULL_TYPE) _$(id))
 $(__run__)
 __END_TEMPLATE__:: 
@@ -43,7 +42,7 @@ __END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_ASSING
-$(__set__  NAMED_NOEND  $(id)(___$(id)\(,$(__endl__)$(NAMED))
+$(__set__  NAMED_NOEND  $(id)(_$(id)\(,$(__endl__)$(NAMED))
 $(__set__  NAMED_END    $(id)(_$(id)\()
 $(__run__)
 __END_TEMPLATE__:: 
