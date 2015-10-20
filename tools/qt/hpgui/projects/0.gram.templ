@@ -33,8 +33,8 @@ __END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_PARAMS
-$(__set__  NAMED_NOEND $(FULL_TYPE)~_$(id),$(__endl__)$(NAMED))
-$(__set__  NAMED_END   $(FULL_TYPE)~_$(id))
+$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))
+$(__set__  NAMED_END   $(FULL_TYPE) _$(id))
 $(__run__)
 __END_TEMPLATE__:: 
 
@@ -53,8 +53,8 @@ __END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: PREP_FIELDS_DECL
-$(__set__  NAMED_NOEND  $(FULL_TYPE)~$(id);$(__endl__)$(NAMED))
-$(__set__  NAMED_END    $(FULL_TYPE)~$(id))
+$(__set__  NAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(NAMED))
+$(__set__  NAMED_END    $(FULL_TYPE) $(id))
 $(__run__)
 __END_TEMPLATE__:: 
 

@@ -2,6 +2,8 @@
 
 #include <regex>
 #include <map>
+
+#include "core/tuple.hpp"
 #include "core/string.h"
 #include "core/cont/vector.hpp"
 
@@ -199,13 +201,31 @@ namespace {
         }
         return result;
     }
-    std::tuple<std::string, jle::vector<std::string> >  get_command_and_params(const std::string& full_command)
+
+//    jle::tuple<std::string, jle::vector<std::string> >  get_command_and_params(const std::string& full_command)
+//    {
+//        auto v = jle::s_split(full_command, " ", true);
+//        if(v.empty()==false)
+//            return std::make_tuple(v[0], v);
+//        else
+//            return std::make_tuple("", v);
+//    }
+
+    jle::tuple<std::string, std::string>  get_id(const std::string&  from)
     {
-        auto v = jle::s_split(full_command, " ", true);
-        if(v.empty()==false)
-            return std::make_tuple(v[0], v);
+        std::regex  re_rt("([a-zA-Z_][a-zA-Z_0-1]*[\*]?) ?(.*)?");
+        std::smatch re_result;
+
+        if (std::regex_match(from, re_result, re_rt))
+        {
+            std::string  id = jle::s_trim(re_result[1], ' ');
+            std::string  params = jle::s_trim(re_result[2], ' ');
+            return std::make_tuple(id, params);
+        }
         else
-            return std::make_tuple("", v);
+        {
+            return std::make_tuple(JLE_SS("invalid id " << from), "");
+        }
     }
 
 
@@ -273,15 +293,16 @@ std::string replace_transf2(    AST_node_item&                                  
 
     size_t  col = 0;
     auto process_full_commnand = [&](const std::string& full_command, std::function<void(const std::string)> exec_rule_for_replace) {
-        auto command_and_params = get_command_and_params(full_command);
-        std::string var_name = std::get<0>(command_and_params);
+        auto id_params = get_id(full_command);
+        std::string id = std::get<0>(id_params);
 
-        if(std::get<1>(command_and_params).size()==1)        //  no params
+        if(id.empty()==false  &&  std::get<1>(id_params).empty())        //  id without params
         {
+            std::string var_name = id;
             std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
             std::map<std::string, std::string>::const_iterator itPredefined = map_predefined_vars.find(var_name);
             jle::map<std::string, std::string>::const_iterator itTemplates =  templates.find(var_name);
-            auto found_var = declared_vars.find(var_name);
+            auto found_var = declared_vars.find(id);
             if (it != map_items_found.end())        //  add var
             {
                 add2result(0);
@@ -331,25 +352,31 @@ std::string replace_transf2(    AST_node_item&                                  
 //                        }
 //                    }
 //                    else
-            if(var_name == "__set__")
+            if(id == "__set__")
             {
-                if(std::get<1>(command_and_params).size()!=3)
+                auto id_params_command = get_id(std::get<1>(id_params));
+                auto var_name = std::get<0>(id_params_command);
+                auto param  = std::get<1>(id_params_command);
+                if(var_name.empty())
+                    add += JLE_SS("invalid var_name on  (" << full_command << ")");
+                else if(param.empty())
                 {
-                    add += JLE_SS("invalid param count (" << full_command << ")");
+                    add += JLE_SS("empty param  (" << full_command << ")");
                 }
                 else {
-                    declared_vars[std::get<1>(command_and_params)[1]] = std::get<1>(command_and_params)[2];
+                    declared_vars[var_name] = param;
                     //add += replace_transf2(*(current_node.down), map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, declared_vars), templates, declared_vars);
                 }
             }
             else
             {
-                add += JLE_SS("unknown (" << full_command << ")");
+        add += JLE_SS("unknown (" << full_command << ") with id (" << id << ")");
+                add2result(0);
             }
         }
     };
 
-    std::function<std::tuple<std::string, size_t, size_t>(const std::string&, size_t, size_t)>
+    std::function<jle::tuple<std::string, size_t, size_t>(const std::string&, size_t, size_t)>
     find_next_command = [&](const std::string& rule4replace, size_t start, size_t previous){
         for (std::string::size_type i=start; i<rule4replace.size()-1; ++i)
         {
