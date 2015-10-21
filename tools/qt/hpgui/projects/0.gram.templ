@@ -42,8 +42,8 @@ __END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_ASSING
-$(__set__  NAMED_NOEND  $(id)(_$(id)\(,$(__endl__)$(NAMED))
-$(__set__  NAMED_END    $(id)(_$(id)\()
+$(__set__  NAMED_NOEND  $(id)(_$(id)$(__close_par__),$(__endl__)$(NAMED))
+$(__set__  NAMED_END    (id)(_(id)_aa_~$(__close_par__)9999)--
 $(__run__)
 __END_TEMPLATE__:: 
 

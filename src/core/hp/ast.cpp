@@ -378,8 +378,9 @@ std::string replace_transf2(    AST_node_item&                                  
         }
     };
 
-    std::function<jle::tuple<std::string, size_t, size_t>(const std::string&, size_t, size_t)>
+    std::function<jle::tuple<std::string, size_t, size_t, std::string/*error*/>(const std::string&, size_t, size_t)>
     find_next_command = [&](const std::string& rule4replace, size_t start, size_t previous){
+        int depth=0;
         for (std::string::size_type i=start; i<rule4replace.size()-1; ++i)
         {
             if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
@@ -388,17 +389,22 @@ std::string replace_transf2(    AST_node_item&                                  
                 add += rule4replace.substr(previous, i-previous);
                 i+=2;
                 std::string::size_type initVar = i;
-                int depth=0;
+                depth=0;
                 while (i<rule4replace.size()  &&  (rule4replace[i] != ')'   ||   depth!=0)) {
                     if (rule4replace.size()>i  &&   rule4replace[i] == '$'  &&  rule4replace[i+1] == '(')
                         ++depth;
                     if (rule4replace[i] == ')')
+                    {
                         --depth;
+                    }
                     ++i;
                 }
                 std::string  full_command = rule4replace.substr(initVar, i-initVar);
                 previous = i+1;
-                return std::make_tuple(full_command, i+1, previous);
+                if(depth==0  &&  rule4replace[i]==')')
+                    return std::make_tuple(full_command, i+1, previous, std::string{});
+                else
+                    return std::make_tuple(std::string{}, size_t{0}, previous, JLE_SS(" bad command close (" << rule4replace << ")"));
             }
             else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
                 col=0;
@@ -407,7 +413,7 @@ std::string replace_transf2(    AST_node_item&                                  
                 ++col;
             }
         }
-        return std::make_tuple(std::string{}, size_t{0}, previous);
+        return std::make_tuple(std::string{}, size_t{0}, previous, std::string{});
     };
 
     std::function<void(const std::string)> exec_rule_for_replace = [&](const std::string& rule4replace) {
@@ -415,13 +421,16 @@ std::string replace_transf2(    AST_node_item&                                  
         size_t pos = 0;
         size_t previous = 0;
         std::string full_command;
+        std::string error_reading_command;
 
-        std::tie(full_command, pos, previous) = find_next_command(rule4replace, pos, previous);
+        std::tie(full_command, pos, previous, error_reading_command) = find_next_command(rule4replace, pos, previous);
         while(full_command.empty() == false) {
+            result += error_reading_command;
             process_full_commnand(full_command, exec_rule_for_replace);
-            std::tie(full_command, pos, previous) = find_next_command(rule4replace, pos, previous);
+            std::tie(full_command, pos, previous, error_reading_command) = find_next_command(rule4replace, pos, previous);
         }
 
+        result += error_reading_command;
         if(rule4replace.size()>previous)
             result += rule4replace.substr(previous);
     };
