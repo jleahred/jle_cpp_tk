@@ -293,6 +293,7 @@ std::string replace_transf2(    AST_node_item&                                  
 
     size_t  col = 0;
     auto process_full_commnand = [&](const std::string& full_command, std::function<void(const std::string)> exec_rule_for_replace) {
+        add2result(0);
         auto id_params = get_id(full_command);
         std::string id = std::get<0>(id_params);
 
@@ -404,7 +405,7 @@ std::string replace_transf2(    AST_node_item&                                  
                 if(depth==0  &&  rule4replace[i]==')')
                     return std::make_tuple(full_command, i+1, previous, std::string{});
                 else
-                    return std::make_tuple(std::string{}, size_t{0}, previous, JLE_SS(" bad command close (" << rule4replace << ")"));
+                    return std::make_tuple(std::string{}, size_t{0}, previous, JLE_SS(" bad command close (" << full_command << ")"));
             }
             else if (rule4replace[i] == '\n'  ||  rule4replace[i] == '\r')
                 col=0;
@@ -425,6 +426,7 @@ std::string replace_transf2(    AST_node_item&                                  
 
         std::tie(full_command, pos, previous, error_reading_command) = find_next_command(rule4replace, pos, previous);
         while(full_command.empty() == false) {
+            JLE_COUT_TRACE(full_command)
             result += error_reading_command;
             process_full_commnand(full_command, exec_rule_for_replace);
             std::tie(full_command, pos, previous, error_reading_command) = find_next_command(rule4replace, pos, previous);
@@ -434,7 +436,6 @@ std::string replace_transf2(    AST_node_item&                                  
         if(rule4replace.size()>previous)
             result += rule4replace.substr(previous);
     };
-
 
 
     exec_rule_for_replace(_rule4replace);
