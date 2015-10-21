@@ -312,6 +312,7 @@ std::string replace_transf2(    AST_node_item&                                  
             }
             else if (itPredefined != map_predefined_vars.end()) {
                 add += itPredefined->second;
+                add2result(0);
                 if(itPredefined->first == "__endl__")
                     col=0;
             } else if (itTemplates != templates.cend()  ||  found_var!=declared_vars.end()) {
