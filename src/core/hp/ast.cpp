@@ -286,6 +286,7 @@ std::string replace_transf2(    AST_node_item&                                  
             return;
         auto full_ident = JLE_SS(ident << std::string(col, ' '));
         add  = replace_string(add, "\n", JLE_SS("\n" << full_ident));
+        add  = replace_string(add, "\\\n", "");
         result = JLE_SS(result << add);
         add  = "";
     };
@@ -427,7 +428,6 @@ std::string replace_transf2(    AST_node_item&                                  
 
         std::tie(full_command, pos, previous, error_reading_command) = find_next_command(rule4replace, pos, previous);
         while(full_command.empty() == false) {
-            JLE_COUT_TRACE(full_command)
             result += error_reading_command;
             process_full_commnand(full_command, exec_rule_for_replace);
             std::tie(full_command, pos, previous, error_reading_command) = find_next_command(rule4replace, pos, previous);

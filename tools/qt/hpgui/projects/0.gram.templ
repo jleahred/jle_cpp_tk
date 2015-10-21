@@ -16,35 +16,43 @@ __END_TEMPLATE__::
 __BEGIN_TEMPLATE__:: STRUCT
 
 class $(id) {
+
+    //  fields
+$(PREP_FIELDS_DECL)
+    $(FIELDS)
+
+    //  ctor
+    $(id)() = delete;
     $(id) (
 $(PREP_FIELDS_CTOR_PARAMS)
           $(FIELDS)
 $(PREP_FIELDS_CTOR_ASSING)
     ) :   $(FIELDS)  {}
 
-$(PREP_FIELDS_DECL)
-    $(FIELDS)
-
 };
 
+bool operator<(const $(id)& l, const $(id)& r) {
+$(PREP_FIELDS_LESS)
+    $(FIELDS)
+}
 
 __END_TEMPLATE__:: 
 
 
 
 __BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_PARAMS
-$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))
-$(__set__  NAMED_END   $(FULL_TYPE) _$(id))
-$(__run__)
+$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
+$(__run__)\
 __END_TEMPLATE__:: 
 
 
 
 
 __BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_ASSING
-$(__set__  NAMED_NOEND  $(id)(_$(id)$(__close_par__),$(__endl__)$(NAMED))
-$(__set__  NAMED_END    (id)(_(id)_aa_~$(__close_par__)9999)--
-$(__run__)
+$(__set__  NAMED_NOEND  $(id)(_$(id)$(__close_par__),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END    $(id)(_$(id)$(__close_par__))\
+$(__run__)\
 __END_TEMPLATE__:: 
 
 
@@ -53,8 +61,21 @@ __END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: PREP_FIELDS_DECL
-$(__set__  NAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(NAMED))
-$(__set__  NAMED_END    $(FULL_TYPE) $(id))
-$(__run__)
+$(__set__  NAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(NAMED))\
+$(__set__  NAMED_END    $(FULL_TYPE) $(id))\
+$(__run__)\
+__END_TEMPLATE__:: 
+
+
+__BEGIN_TEMPLATE__:: PREP_FIELDS_LESS
+$(__set__  NAMED_NOEND\
+if(l.$(id) < r.$(id)$(__close_par__)  return false;
+else if(l.$(id) == r.$(id)$(__close_par__) {
+
+}
+)\
+\
+$(__set__  NAMED_END    _)\
+$(__run__)\
 __END_TEMPLATE__:: 
 
