@@ -1,6 +1,8 @@
 regular expresion warper
 
 initializer_list in containers
+check containers modifs in vectors, there are errors to be applied on all containers
+
 
 container helpers to std::cout <<
 
