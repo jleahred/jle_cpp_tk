@@ -1,9 +1,8 @@
-__BEGIN_TEMPLATE__:: MAIN
+__BEGIN_TEMPLATE__:: HEADER
+__BEGIN_FILE__::file.h
 //  generated on $(__date_time__)
 //  generated on $(__date__)
 //  this is a test
-
-
 
 
 $(FRAME*)
@@ -15,67 +14,42 @@ __END_TEMPLATE__::
 
 __BEGIN_TEMPLATE__:: STRUCT
 
-class $(id) {
+struct $(id) {
 
-    //  fields
-$(PREP_FIELDS_DECL)
-    $(FIELDS)
+    //  fields  ------------------------------------------------
+$(__set__  NAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(NAMED))\
+$(__set__  NAMED_END    $(FULL_TYPE) $(id);)\
+$(__run__)\
+
+        $(__lmargin__)$(FIELDS)
+
+    //  --------------------------------------------------------
+
 
     //  ctor
     $(id)() = delete;
     $(id) (
-$(PREP_FIELDS_CTOR_PARAMS)
-          $(FIELDS)
-$(PREP_FIELDS_CTOR_ASSING)
-    ) :   $(FIELDS)  {}
-
-};
-
-bool operator<(const $(id)& l, const $(id)& r) {
-$(PREP_FIELDS_LESS)
-    $(FIELDS)
-}
-
-__END_TEMPLATE__:: 
-
-
-
-__BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_PARAMS
 $(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
 $(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
 $(__run__)\
+          $(__lmargin__)$(FIELDS)
+    );
+    $(id) (const $(id)& ) = default;
+    $(id) (      $(id)&&) = default;
+
+    //  assign
+    $(id)& operator=(const $(id)& ) = default;
+    $(id)& operator=(      $(id)&&) = default;
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+
+
+
 __END_TEMPLATE__:: 
 
 
-
-
-__BEGIN_TEMPLATE__:: PREP_FIELDS_CTOR_ASSING
-$(__set__  NAMED_NOEND  $(id)(_$(id)$(__close_par__),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END    $(id)(_$(id)$(__close_par__))\
-$(__run__)\
-__END_TEMPLATE__:: 
-
-
-
-
-
-
-__BEGIN_TEMPLATE__:: PREP_FIELDS_DECL
-$(__set__  NAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(NAMED))\
-$(__set__  NAMED_END    $(FULL_TYPE) $(id))\
-$(__run__)\
-__END_TEMPLATE__:: 
-
-
-__BEGIN_TEMPLATE__:: PREP_FIELDS_LESS
-$(__set__  NAMED_NOEND\
-if(l.$(id) < r.$(id)$(__close_par__)  return false;
-else if(l.$(id) == r.$(id)$(__close_par__) {
-
-}
-)\
-\
-$(__set__  NAMED_END    _)\
-$(__run__)\
-__END_TEMPLATE__:: 
 

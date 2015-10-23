@@ -4,7 +4,7 @@
 
 
 
-s_simple {
+t_simple {
     i : int32
     j : string
     s : string
@@ -14,15 +14,16 @@ s_simple {
 */
 }
 
-/*
-s_inline {  i: int32,  s: string  }
+
+t_inline {  i: int32,  s: string  }
 
 
-s_inline2 {  
+t_inline2 {  
    i: int32,   i64: int64
    s: string  
 }
 
+/*
 s_tuple {  int32,  string  }
 
 

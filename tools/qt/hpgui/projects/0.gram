@@ -1,6 +1,6 @@
 MAIN
 
-MAIN   ::=  FRAME*               ##transf2->$(MAIN)
+MAIN   ::=  FRAME*               ##transf2->$(HEADER)
 
 
 FRAME  ::= .__. STRUCT .__.            
@@ -55,10 +55,10 @@ FULL_TYPE  ::=  BASIC_TYPE
 B_L_TYPE  ::=  BASIC_TYPE
 B_L_TYPE  ::=  TYPE_LIST
 
-BASIC_TYPE  ::= string  ##transf2-> string
-BASIC_TYPE  ::= double  ##transf2-> double
-BASIC_TYPE  ::= int32   ##transf2-> int32
-BASIC_TYPE  ::= int64   ##transf2-> int64
+BASIC_TYPE  ::= string  
+BASIC_TYPE  ::= double  
+BASIC_TYPE  ::= int32   
+BASIC_TYPE  ::= int64   
 
 TYPE_LIST  ::= BASIC_TYPE [ ]
 
@@ -77,10 +77,10 @@ prop ::= 'prop'
 
 
 
-string ::= 'string'
-double ::= 'double'
-int32  ::= 'int32'
-int64  ::= 'int64'
+string ::= 'string'   ##transf2->std::string
+double ::= 'double'   ##transf2->double
+int32  ::= 'int32'    ##transf2->int32_t
+int64  ::= 'int64'    ##transf2->int64_t
 
 
 

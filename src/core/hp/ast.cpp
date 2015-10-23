@@ -293,6 +293,7 @@ std::string replace_transf2(    AST_node_item&                                  
 
 
     size_t  col = 0;
+    size_t  margin = 0;
     auto process_full_commnand = [&](const std::string& full_command, std::function<void(const std::string)> exec_rule_for_replace) {
         add2result(0);
         auto id_params = get_id(full_command);
@@ -309,7 +310,7 @@ std::string replace_transf2(    AST_node_item&                                  
             {
                 add2result(0);
                 add += it->second;
-                add2result(col);
+                add2result(margin);
             }
             else if (itPredefined != map_predefined_vars.end()) {
                 add += itPredefined->second;
@@ -318,6 +319,8 @@ std::string replace_transf2(    AST_node_item&                                  
                     col=0;
             } else if (itTemplates != templates.cend()  ||  found_var!=declared_vars.end()) {
                 exec_rule_for_replace(get_template_content(var_name, templates, declared_vars));
+            } else if(var_name == "__lmargin__") {
+                margin = col;
             } else if(var_name == "__ident+__") {
                 ident = JLE_SS(ident << "  ");
                 add += JLE_SS("\n");
@@ -371,6 +374,19 @@ std::string replace_transf2(    AST_node_item&                                  
                 else {
                     declared_vars[var_name] = param;
                     //add += replace_transf2(*(current_node.down), map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, declared_vars), templates, declared_vars);
+                }
+            }
+            else if(id == "__alignc__")
+            {
+                auto param = std::get<1>(id_params);
+                if(param.empty())
+                {
+                    add += JLE_SS("empty param  (" << full_command << ")");
+                }
+                else {
+                    //declared_vars[var_name] = param;
+                    add += replace_transf2(*(current_node.down), map_items_found, get_template_content(param, templates, declared_vars), templates, declared_vars);
+                    add += "<<<<<<<<<<<<<<<<<<<<";
                 }
             }
             else

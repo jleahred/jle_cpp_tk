@@ -6,6 +6,8 @@
 #include <regex>
 #include <iostream>
 #include <string>
+#include <iomanip>
+
 
 #include "core/misc.h"
 
@@ -375,6 +377,45 @@ std::string s_normalize_utf8(const std::string& source_string)
             destination_string+=source_string[counter];
     }
     return destination_string;
+}
+
+
+std::string  align_cols(const std::string&  text)
+{
+    auto lines = s_split(text, "\n", false);
+    auto max_size_col = jle::vector<size_t>{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+
+    auto update_if_bigger = [](size_t val, size_t& updatable) {
+        if(val>updatable)
+            updatable = val;
+    };
+
+    auto rows = jle::vector<jle::vector<std::string>>{};
+    for(l : lines) {
+        rows.push_back(s_split(l, " ", true));
+        size_t col = 0;
+        for(cell : rows.back()) {
+            update_if_bigger(cell.size(), max_size_col[col]);
+            ++col;
+            if(col>=max_size_col.size())
+                break;
+        }
+    }
+
+    std::ostringstream  result;
+    for(row : rows) {
+        size_t col = 0;
+        for(cell : row) {
+            result << std::setw(int(max_size_col[col])) << std::left << cell << "  ";
+            ++col;
+            if(col>=max_size_col.size())
+                break;
+        }
+        result << std::endl;
+    }
+
+    return result.str();
 }
 
 

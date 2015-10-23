@@ -87,6 +87,8 @@ namespace jle
 
     std::string     s_align_left (const std::string& s, int size, char char_fill=' ');
     std::string     s_align_right(const std::string& s, int size, char char_fill=' ');
+    std::string     align_cols   (const std::string&  text);
+
 
     //! \brief  return a valid utf8 string from a raw one
     //!  If char is "special" as  á, é, í, ó, ú, ñ, ü (and uppercases)
