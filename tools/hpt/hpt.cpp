@@ -55,8 +55,13 @@ int main(int argc, char* argv[])
     jle::hp::Humble_parser  hparser;
     bool result1;
     std::string result_string;
-    std::tie(result1, result_string) =  hparser.load_rules_from_files(file_rules1, file_rules2);
+    std::tie(result1, result_string) =  hparser.add_rules_from_file(file_rules2);
+    if (result1==false){
+      std::cerr << std::endl << result_string << std::endl;
+      return -1;
+    }
 
+    std::tie(result1, result_string) =  hparser.add_rules_from_file(file_rules2);
     if (result1==false){
       std::cerr << std::endl << result_string << std::endl;
       return -1;

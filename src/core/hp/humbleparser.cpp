@@ -385,7 +385,7 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
 
 
 
-jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istream& stream)
+jle::tuple<bool, std::string> Humble_parser::add_rules_from_stream (std::istream& stream)
 {
     clear();
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
@@ -413,29 +413,24 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istrea
 }
 
 
-jle::tuple<bool, std::string> Humble_parser::load_rules_from_string (const std::string& rules)
+jle::tuple<bool, std::string> Humble_parser::add_rules_from_string (const std::string& rules)
 {
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
 
     std::istringstream iss(rules);
-    result = load_rules_from_stream(iss);
+    result = add_rules_from_stream(iss);
 
     return result;
 
 }
 
 
-jle::tuple<bool, std::string> Humble_parser::load_rules_from_files(const std::string& file_rules1, const std::string& file_rules2)
+jle::tuple<bool, std::string> Humble_parser::add_rules_from_file(const std::string& file_rules)
 {
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
     {
-        std::ifstream frules(file_rules1.c_str(), std::ios::in);
-        result = load_rules_from_stream(frules);
-        frules.close();
-    }
-    {
-        std::ifstream frules(file_rules2.c_str(), std::ios::in);
-        result = load_rules_from_stream(frules);
+        std::ifstream frules(file_rules.c_str(), std::ios::in);
+        result = add_rules_from_stream(frules);
         frules.close();
     }
 
@@ -921,7 +916,8 @@ std::list<std::string>   Humble_parser::get_non_terminal_rules(void)const
     return result;
 }
 
-void  Humble_parser::set_var(const std::string&  name,  const std::string&  value)
+
+void Humble_parser::set_var(const std::string& name, const std::string& value)
 {
     templates[name] = value;
 }
