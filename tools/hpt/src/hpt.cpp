@@ -41,36 +41,40 @@ int main(int argc, char* argv[])
     std::string file_rules2;
     std::string input_file;
 
-    if (argc==4)
+    if (argc==3)
     {
-        file_rules1 = argv[2];
-        input_file = argv[3];
+        file_rules1 = argv[1];
+        input_file = argv[2];
     }
-    else if (argc==5)
+    else if (argc==4)
     {
-        file_rules1 = argv[2];
-        file_rules2 = argv[3];
-        input_file = argv[4];
+        file_rules1 = argv[1];
+        file_rules2 = argv[2];
+        input_file = argv[3];
     }
     else
     {
+        std::cerr << "bad argument count... " << argc << std::endl;
         std::cerr << "ussage...\nhpt  <gram-file> <2gram-file>  <input-file>" << std::endl;
         return -1;
     }
 
+    JLE_COUT_TRACE(file_rules1)
+    JLE_COUT_TRACE(file_rules2)
+    JLE_COUT_TRACE(input_file)
 
 
     jle::hp::Humble_parser  hparser;
-    bool result1;
+    bool result;
     std::string result_string;
-    std::tie(result1, result_string) =  hparser.add_rules_from_file(file_rules1);
-    if (result1==false){
+    std::tie(result, result_string) =  hparser.add_rules_from_file(file_rules1);
+    if (result==false){
       std::cerr << std::endl << result_string << std::endl;
       return -1;
     }
 
-    std::tie(result1, result_string) =  hparser.add_rules_from_file(file_rules2);
-    if (result1==false){
+    std::tie(result, result_string) =  hparser.add_rules_from_file(file_rules2);
+    if (result==false){
       std::cerr << std::endl << result_string << std::endl;
       return -1;
     }

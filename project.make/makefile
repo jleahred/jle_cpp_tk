@@ -80,6 +80,13 @@ default:
 	@echo
 	@echo
 	@echo
+	@echo "make idl"
+	@echo "--------------"
+	@echo "it will find .type files and will generate .cpp and .h"
+	@echo
+	@echo
+	@echo
+	@echo
 	@echo
 
 
@@ -112,6 +119,10 @@ clean:
 	rm -f $(OBJS_CXX)
 
 
+
+.PHONY : idl
+idl:
+	find . -name '*.type' | xargs ./jle/tools/bin/idl/hpt ./jle/tools/bin/idl/type.gram  ./jle/tools/bin/idl/type.gram.templ
 
 
 

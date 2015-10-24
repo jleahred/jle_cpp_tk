@@ -1,0 +1,103 @@
+/* multiline 
+    comment
+*/
+
+
+
+jt_simple {
+    i : int32
+    j : string
+    s : string
+
+/* multiline 
+    comment
+*/
+}
+
+
+jt_inline {  i: int32,  s: string  }
+
+
+jt_inline2 {  
+   i: int32,   i64: int64
+   s: string  
+}
+
+/*
+jt_tuple {  int32,  string  }
+
+
+/****
+jt_union 
+{
+    |  s : string
+    |  i : int32
+}
+
+
+jt_color   //  enumeration
+{
+    |  red
+    |  blue
+    |  green
+    |  orange
+    |  pink
+    |  white
+    |  black
+}
+
+
+
+//  type modifiers
+jt_example
+{
+    //  comentary
+
+    int_field       :   int32       //  mandatory
+    string_field    :   string
+
+    opt_string      :   string?     //  optional
+    rec_float       :   double!     //  recomended
+
+    def_string0     :   string[<"hi">]                      //  default value
+    def_string1     :   string[<"there">][<2015-10-23>]     //  new mandatory since...
+
+
+    string_list     :   string[]    
+    int_list        :   int32[]    
+
+prop:
+    less
+    AMQP: EX/A.B
+}
+
+
+jt_composed
+{
+    i : int32
+    s : string
+
+    composed_field : sub_struct_type_name
+    {
+        i   :   int32
+        s   :   string
+
+        composed_field2 : sub_struct_type_name
+        {
+            i   :   int32
+            s   :   string
+        }
+    }
+
+    i2 : int32
+    s2 : string
+
+
+    composed_field2 :    //  anonymous struct, implicit name
+    {
+        i   :   int32
+        s   :   string
+    }
+
+}
+***/
