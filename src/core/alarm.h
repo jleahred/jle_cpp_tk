@@ -185,7 +185,7 @@ extern void alarm_msg (const alarm& error);
                                 JLE_HERE,                            \
                                 __SUBJECT__,                      \
                                 __DESCRIPTION__  + std::string(" alarm"),\
-                                __alarm__.priority,                      \
+                                jle::al::priority::critic,                      \
                                 __alarm__.type                            \
                         );                                              \
                     jle_error.add(__alarm__);                \
