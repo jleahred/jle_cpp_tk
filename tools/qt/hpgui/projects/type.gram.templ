@@ -1,0 +1,154 @@
+__BEGIN_TEMPLATE__:: H_FILE
+__BEGIN_FILE__::$(__file_name__).h
+//  generated on $(__date_time__)
+//  generated on $(__date__)
+//  this is a test
+
+
+#include <cstdint>
+#include <string>
+
+$(__set__  STRUCT  $(STRUCT_H))  $(__run__)
+$(FRAME*)
+
+__END_FILE__::
+
+__END_TEMPLATE__:: 
+
+
+
+__BEGIN_TEMPLATE__:: CPP_FILE
+__BEGIN_FILE__::$(__file_name__).cpp
+#include "$(__file_name__).h"
+
+#include "core/tuple.hpp"
+
+
+$(__set__  STRUCT  $(STRUCT_CPP))  $(__run__)\
+$(FRAME*)
+
+
+__END_FILE__::
+
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: STRUCT_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct $(id) {
+
+    //  fields  ·································
+$(__set__  NAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(NAMED))\
+$(__set__  NAMED_END    $(FULL_TYPE) $(id);)\
+$(__run__)\
+
+        $(__lmargin__  $(__alignc__ $(FIELDS)))\
+
+    //  ·········································
+
+
+    //  ctor
+    $(id)() = delete;
+    $(id) (
+$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
+$(__run__)\
+          $(__lmargin__ $(FIELDS))
+    );
+    $(id) (const $(id)& ) = default;
+    $(id) (      $(id)&&) = default;
+
+    //  assign
+    $(id)& operator=(const $(id)& ) = default;
+    $(id)& operator=(      $(id)&&) = default;
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+
+
+
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: STRUCT_CPP
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+$(id)::$(id) (
+$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
+$(__run__)\
+          $(__lmargin__ $(FIELDS))
+    )  :
+$(__set__  NAMED_NOEND $(id)(_$(id)$(__close_par__),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   $(id)(_$(id)$(__close_par__))\
+$(__run__)\
+          $(__lmargin__ $(FIELDS))
+    {}
+
+
+//  comparison
+bool $(id)::operator==(const $(id)& r) const
+{
+$(__set__  NAMED_NOEND $(id) == r.$(id)  &&$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   $(id) == r.$(id))\
+$(__run__)\
+    if(
+        $(__lmargin__ $(FIELDS))
+    )     return true;
+    else  return false;
+}
+
+bool $(id)::operator< (const $(id)& r) const
+{
+$(__set__  NAMED_NOEND $(id),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   $(id))\
+$(__run__)\
+    if(std::tie(
+          $(__lmargin__ $(FIELDS)))
+       <
+       std::tie(
+$(__set__  NAMED_NOEND r.$(id),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   r.$(id))\
+$(__run__)\
+          $(__lmargin__ $(FIELDS)))
+    )     return true;
+    else  return false;
+
+}
+
+std::ostream& operator<< (std::ostream& os, const $(id)& t)
+{
+$(__set__  NAMED_NOEND << "$(id): " << t.$(id) << ", "$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   << "$(id): " << t.$(id))\
+$(__run__)\
+    os  << " $(id) { " 
+           $(__lmargin__ $(FIELDS))
+        << " }";
+    return os;
+}
+
+
+
+__END_TEMPLATE__:: 

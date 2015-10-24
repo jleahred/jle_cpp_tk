@@ -39,23 +39,31 @@ int main(int argc, char* argv[])
 {
     std::string file_rules1;
     std::string file_rules2;
+    std::string input_file;
 
-    if (argc==3)
+    if (argc==4)
+    {
         file_rules1 = argv[2];
-    else if (argc==4)
+        input_file = argv[3];
+    }
+    else if (argc==5)
     {
         file_rules1 = argv[2];
         file_rules2 = argv[3];
+        input_file = argv[4];
     }
     else
-        std::cerr << "ussage...\nhpt  <input-file> <gram-file> <2gram-file>" << std::endl;
+    {
+        std::cerr << "ussage...\nhpt  <gram-file> <2gram-file>  <input-file>" << std::endl;
+        return -1;
+    }
 
 
 
     jle::hp::Humble_parser  hparser;
     bool result1;
     std::string result_string;
-    std::tie(result1, result_string) =  hparser.add_rules_from_file(file_rules2);
+    std::tie(result1, result_string) =  hparser.add_rules_from_file(file_rules1);
     if (result1==false){
       std::cerr << std::endl << result_string << std::endl;
       return -1;
@@ -67,7 +75,7 @@ int main(int argc, char* argv[])
       return -1;
     }
 
-    std::string string2parse = get_string2parse_from_file(argv[1]);
+    std::string string2parse = get_string2parse_from_file(input_file);
 
     bool result2;
     std::string resultTest;
