@@ -225,7 +225,10 @@ void Widget::on_actionParse_triggered()
 
         ui->twInput->setCurrentIndex(0);
         result.append(      sup_save_parse_input    (ui->cbProjects->currentText(),     ui->pteInput->toPlainText()             ));
+
+        auto start = jle::chrono::now();
         result.append(      sup_parse               (ui->pteInput->toPlainText(),       h_parser,                        ast_root ));
+        result.append(QString::fromStdString(JLE_SS(std::endl << "parsed... " << jle::chrono::now() - start)));
 
         ui->pteParsed->setPlainText(ast_root.value.c_str());
 
