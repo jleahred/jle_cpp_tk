@@ -34,13 +34,14 @@
          keywordFormat.setFontWeight(QFont::Bold);
          QStringList keywordPatterns;
          keywordPatterns << " ::= " << " ##transf2->";
-
+         keywordPatterns << "__BEGIN_TEMPLATE__::";
+         keywordPatterns << "__END_TEMPLATE__::";
             foreach (const QString &pattern, keywordPatterns) {
                  rule.pattern = QRegExp(pattern);
                  rule.format = keywordFormat;
                  highlightingRules.append(rule);
              }
-        }
+    }
 
 
 
@@ -67,6 +68,11 @@
          QStringList keywordPatterns;
          keywordPatterns << "\\$\\(__endl__\\)" << "\\$\\(__nothing__\\)"
                          << "\\$\\(__space__\\)" << "\\$\\(__counter__\\)"
+                         << "\\$\\(__ident\\+__\\)"  << "\\$\\(__ident-__\\)"
+                         <<  R"(\$\(__date_time__\))"  <<  R"(\$\(__date__\))"
+                         <<  R"(\$\(__run__\))"
+                         //<<  R"(\$\(__get__ +[A-Z][A-Z_0-9]* *\))"
+                         <<  R"(\$\(__set__ +[A-Z][A-Z_0-9]* +[A-Z][A-Z_0-9]* *\))"
                          ;
          foreach (const QString &pattern, keywordPatterns) {
              rule.pattern = QRegExp(pattern);

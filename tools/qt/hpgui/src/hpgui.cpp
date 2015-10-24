@@ -23,9 +23,15 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->splitter_horiz->setStretchFactor(0, 4);
+    ui->splitter_horiz->setStretchFactor(1, 1);
+
     //  configure context menus  ---------------------------------
     ui->pteGramarSource->addAction(ui->actionCompile_gramar);
     ui->pteGramarSource->addAction(ui->actionConvert_to_c_code);
+
+    ui->pteTemplateSource->addAction(ui->actionCompile_gramar);
+    ui->pteTemplateSource->addAction(ui->actionConvert_to_c_code);
 
     ui->pteInput->addAction(ui->actionParse);
 
@@ -38,6 +44,7 @@ Widget::Widget(QWidget *parent)
 
     // code highlight
     highlighter = new Highlighter(ui->pteGramarSource->document());
+    highlighter = new Highlighter(ui->pteTemplateSource->document());
 
 
     //  testing
@@ -53,9 +60,11 @@ Widget::~Widget()
 //      COMPILE GRAMAR
 
 
-QString sup_compile_gramar(jle::Humble_parser&  h_parser, const QString& gramar_source)
+QString sup_compile_gramar(jle::hp::Humble_parser&  h_parser, const QString& gramar_source)
 {
     QString result = "Compiling...\n";
+
+    h_parser = jle::hp::Humble_parser{};
 
     //  compilar
     bool result_bool;
@@ -70,15 +79,18 @@ QString sup_compile_gramar(jle::Humble_parser&  h_parser, const QString& gramar_
     return result;
 }
 
-QString sup_gramar_save(const QString& gramarName, const QString& gramar_source)
+QString sup_gramar_save(const QString& gramarName, const QString& gramar_source, bool is_templ)
 {
     QString result;
+    QString extension = ".gram";
+    if(is_templ)
+        extension = ".templ";
 
     if(gramarName!="")
     {
         QString name = gramarName;
-        if (name.indexOf(".gram")==-1)
-            name.append(".gram");
+        if (name.indexOf(extension)==-1)
+            name.append(extension);
         QFile file (QString("./projects/").append(name));
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ))
             throw result.append("Cannot save on... ").append(name);
@@ -101,8 +113,10 @@ void Widget::on_actionCompile_gramar_triggered()
     {
         ui->twMain->setCurrentIndex(1);   ui->twGramarInfo->setCurrentIndex(0);
 
-        result.append(        sup_gramar_save         (ui->cbProjects->currentText(),   ui->pteGramarSource->toPlainText()));
-        result.append(        sup_compile_gramar      (h_parser,                        ui->pteGramarSource->toPlainText()));
+        result.append(        sup_gramar_save         (ui->cbProjects->currentText(),   ui->pteGramarSource->toPlainText(),    false));
+        result.append(        sup_gramar_save         (ui->cbProjects->currentText(),   ui->pteTemplateSource->toPlainText(),  true));
+
+        result.append(        sup_compile_gramar      (h_parser,  ui->pteGramarSource->toPlainText() + ui->pteTemplateSource->toPlainText()));
     }
     catch(const QString& error)
     {
@@ -146,7 +160,7 @@ QString sup_save_parse_input(const QString& gramar_name, const QString& input_te
 }
 
 
-QString  sup_parse (const QString text2parse, jle::Humble_parser& h_parser, jle::AST_node_item& ast_root)
+QString  sup_parse (const QString text2parse, jle::hp::Humble_parser& h_parser, jle::hp::AST_node_item& ast_root)
 {
     QString result;
 
@@ -158,7 +172,7 @@ QString  sup_parse (const QString text2parse, jle::Humble_parser& h_parser, jle:
     return result.append(result_string.c_str());
 }
 
-QString sup_mantein_nodes_ast(const QList<QListWidgetItem *>& selectedNodes, jle::AST_node_item& ast_root)
+QString sup_mantein_nodes_ast(const QList<QListWidgetItem *>& selectedNodes, jle::hp::AST_node_item& ast_root)
 {
     QString result;
 
@@ -174,7 +188,7 @@ QString sup_mantein_nodes_ast(const QList<QListWidgetItem *>& selectedNodes, jle
 }
 
 
-void sup_FillAST_listTree(const jle::AST_node_item& node, QTreeWidgetItem* parent_item)
+void sup_FillAST_listTree(const jle::hp::AST_node_item& node, QTreeWidgetItem* parent_item)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem(parent_item);
     item->setText(0, node.name.c_str());
@@ -187,7 +201,7 @@ void sup_FillAST_listTree(const jle::AST_node_item& node, QTreeWidgetItem* paren
 }
 
 
-QString sup_fill_ast_nodes (QTreeWidget* tw, const jle::AST_node_item& ast_root)
+QString sup_fill_ast_nodes (QTreeWidget* tw, const jle::hp::AST_node_item& ast_root)
 {
     QString result;
 
@@ -211,7 +225,10 @@ void Widget::on_actionParse_triggered()
 
         ui->twInput->setCurrentIndex(0);
         result.append(      sup_save_parse_input    (ui->cbProjects->currentText(),     ui->pteInput->toPlainText()             ));
+
+        auto start = jle::chrono::now();
         result.append(      sup_parse               (ui->pteInput->toPlainText(),       h_parser,                        ast_root ));
+        result.append(QString::fromStdString(JLE_SS(std::endl << "parsed... " << jle::chrono::now() - start)));
 
         ui->pteParsed->setPlainText(ast_root.value.c_str());
 
@@ -265,9 +282,6 @@ void Widget::on_pbSelectAllRules_clicked()
     ui->lwSymbols->selectAll();
 }
 
-void Widget::on_pteGramarSource_selectionChanged()
-{
-}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -300,6 +314,17 @@ void Widget::on_cbProjects_currentIndexChanged(int /*index*/)
                 return;
             }
             ui->pteGramarSource->setPlainText(file.readAll());
+        }
+
+        {
+            QString name = origName;
+            QFile file (JLE_SS("./projects/" << name.append(".gram.templ").toStdString()).c_str());
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                ui->pteLoadInfo->setPlainText(JLE_SS("Cannot open on... " << name.toStdString()).c_str());
+            }
+            else
+                ui->pteTemplateSource->setPlainText(file.readAll());
         }
 
         {

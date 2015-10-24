@@ -1,6 +1,6 @@
 #include "humbleparser.h"
 
-#include <regex.h>
+#include <regex>
 #include "core/string.h"
 
 
@@ -15,7 +15,7 @@
 
 
 
-namespace jle {
+namespace jle {  namespace hp  {
 
 
 
@@ -91,7 +91,7 @@ jle::tuple<bool, int> Humble_parser::execute_non_terminal( int str2parse_pos, co
     if (it_non_terminal == non_terminal_rules.end())
         throw JLE_SS("non terminal symbol [" << non_terminal_code <<  "] has no expansion rule");
 
-    std::list< jle::tuple <std::list<std::string>, std::string> >::const_iterator it0 = non_terminal_rules.find(non_terminal_code)->second.begin();
+    auto  it0 = non_terminal_rules.find(non_terminal_code)->second.cbegin();
 
     bool result=false;
     int str_pos_rule = str2parse_pos;
@@ -258,8 +258,8 @@ jle::tuple<bool, int> Humble_parser::execute_terminal(const int str2parse_pos, c
 
     int remaining_str2_parse_pos = str2parse_pos;
     bool result = false;
-    std::list< jle::tuple <std::list<std::string> , std::string> >::const_iterator it = terminal_rules.find(terminal_code)->second.begin();
-    while (it!=terminal_rules.find(terminal_code)->second.end())
+    auto  it = terminal_rules.find(terminal_code)->second.cbegin();
+    while (it!=terminal_rules.find(terminal_code)->second.cend())
     {
         //  predefined consts     ------------------------------------------------------------
         if ((*(std::get<0>(*it).begin())).substr(0, 2) == "__"  ||  (*(std::get<0>(*it).begin())).substr(0, 3) == "!__") {
@@ -296,9 +296,11 @@ jle::tuple<bool, int> Humble_parser::execute_terminal(const int str2parse_pos, c
 jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_t2)
 {
     std::string rule;
+
+
     std::string transform2;
     {
-        std::regex  re_rt(" *(.*) *##transf2-> *(.*) *");
+        static std::regex  re_rt(" *(.*) *##transf2-> *(.*) *");
         std::smatch re_result;
 
         if (std::regex_match(rule_t2, re_result, re_rt))
@@ -312,10 +314,8 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
         }
     }
 
-
-
     //  separate rule sides
-    std::regex re ("^ *([^ \t]*) *::= *(.*)$");
+    static std::regex re ("^ *([^ \t]*) *::= *(.*)$");
     std::smatch re_result;
     if (std::regex_match(rule, re_result, re))
     {
@@ -398,9 +398,9 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istrea
 
     while (stream.getline(buffer, 4096))
     {
-        if (buffer[0] == '/'  &&  buffer[1]=='/')
+        if (adding_template==false  &&  buffer[0] == '/'  &&  buffer[1]=='/')
             continue;
-        if (jle::s_trim(buffer, ' ') != "")
+        if (adding_template  ||  jle::s_trim(buffer, ' ') != "")
         {
             //result = add_rule(buffer);
             result = add_line(buffer);
@@ -436,47 +436,131 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_file(const std::str
 }
 
 
+jle::tuple<bool, std::string>  Humble_parser::_adding_rule_multi_line(const std::string& line)
+{
+    if (line != "")
+    {
+        if (line == "__endrule__")
+        {
+            adding_rule_multi_line = false;
+            building_rule = "";
+            return add_rule(building_rule);
+        }
+        else
+        {
+            building_rule.push_back(' ');      //  it's necessary because we get lines without nont valid codes
+            for (unsigned i=0; i<line.size(); ++i)
+            {
+                char char2add = line[i];
+                if (char2add == '\r'  ||  char2add == '\n'  ||  char2add=='\t')  // it's not necessary. It can be removed
+                    char2add = ' ';
+
+                building_rule.push_back(char2add);
+            }
+            return make_tuple(true, JLE_SS("ok"));
+        }
+    }
+    else
+        return make_tuple(true, JLE_SS("ok"));
+}
+
+
+
+jle::tuple<bool, std::string>  Humble_parser::_adding_template(const std::string& line)
+{
+    static std::regex  re(R"(^__END_TEMPLATE__::(.*)$)");
+    std::smatch re_result;
+    if (std::regex_match(line, re_result, re))
+    {
+        if(re_result.size()==1  ||  (re_result.size()>1 &&  jle::s_trim(re_result[1], ' ')==""))
+        {
+            templates[template_name] = building_template;
+            adding_template = false;
+            template_name = "";
+            building_template = "";
+            return make_tuple(true, JLE_SS("ok"));
+        }
+        else
+            return make_tuple(false, JLE_SS("invalid end template format on  " << line  << "  expected: nothing after __END_TEMPLATE__:: "));
+    }
+    else
+    {
+        if(building_template.empty()  ||  false)
+            building_template = line;
+        else
+            building_template = JLE_SS(building_template << std::endl << line);
+        return make_tuple(true, JLE_SS("ok"));
+    }
+    /*
+    std::regex  re(R"(^__END_TEMPLATE__:: *([A-Z][A-Z0-9_]*)$)");
+    std::smatch re_result;
+
+    if (std::regex_match(line, re_result, re))
+    {
+        if(template_name == re_result[1])
+        {
+            templates[template_name] = building_template;
+            adding_template = false;
+            template_name = "";
+            building_template = "";
+            return make_tuple(true, JLE_SS("ok"));
+        }
+        else
+            return make_tuple(false, JLE_SS("invalid template name on  " << line  << "  expected:"  << template_name << "."));
+    }
+    else
+    {
+        if(building_template.empty()  ||  false)
+            building_template = line;
+        else
+            building_template = JLE_SS(building_template << std::endl << line);
+        return make_tuple(true, JLE_SS("ok"));
+    }*/
+}
+
+
 
 jle::tuple<bool, std::string>
 Humble_parser::add_line (std::string line)
 {
-    line = jle::s_trim(line, ' ');
     if (adding_rule_multi_line)
     {
-        if (line != "")
+        line = jle::s_trim(line, ' ');
+        return _adding_rule_multi_line(line);
+    }
+    else if (adding_template)
+    {
+        return _adding_template(line);
+    }
+    else
+    {
+        if (line == "__beginrule__")
         {
-            if (line == "__endrule__")
-            {
-                adding_rule_multi_line = false;
-                return add_rule(building_rule);
-            }
-            else
-            {
-                building_rule.push_back(' ');      //  it's necessary because we get lines without nont valid codes
-                for (unsigned i=0; i<line.size(); ++i)
-                {
-                    char char2add = line[i];
-                    if (char2add == '\r'  ||  char2add == '\n'  ||  char2add=='\t')  // it's not necessary. It can be removed
-                        char2add = ' ';
+            adding_rule_multi_line = true;
+            building_rule = "";
+            return make_tuple(true, JLE_SS("ok"));
+        }
+        else if (line.find("__BEGIN_TEMPLATE__::")==0)
+        {
+            adding_template = true;
+            building_template = "";
 
-                    building_rule.push_back(char2add);
-                }
+            static std::regex  re{R"(__BEGIN_TEMPLATE__:: *([A-Z][A-Z0-9_]*))"};
+            std::smatch re_result;
+
+            if (std::regex_match(line, re_result, re)== false)
+                return make_tuple(false, JLE_SS("invalid template name on   " << line << ". "));
+
+            template_name = re_result[1];
+            if(template_name.empty())
+                return make_tuple(false, JLE_SS("missing template name " << line << ". "));
+            else {
+                template_name = re_result[1];
                 return make_tuple(true, JLE_SS("ok"));
             }
         }
         else
-            return make_tuple(true, JLE_SS("ok"));
-    }
-    else
-    {
-    if (line == "__beginrule__")
-    {
-        adding_rule_multi_line = true;
-        building_rule = "";
-        return make_tuple(true, JLE_SS("ok"));
-    }
-    else
-        return add_rule(line);
+            return add_rule(line);
     }
 }
 
@@ -546,7 +630,7 @@ Humble_parser::multi_parse(const std::string& input, std::string minit) const
 
     std::string new_input = input;
     AST_node_item ast_result("<pending>");
-    std::regex re("([^,]+)");
+    static std::regex re("([^,]+)");
 
     auto re_begin =
         std::sregex_iterator(minit.begin(), minit.end(), re);
@@ -558,7 +642,7 @@ Humble_parser::multi_parse(const std::string& input, std::string minit) const
         std::tie(result, remaining_input, ast_result) =  parse(new_input, i->str());
         if (result==false  ||  remaining_input!= "ok")
             return std::make_tuple(result, remaining_input, ast_result);
-        ast_result.exec_replace();
+        ast_result.exec_replace(templates, {});
         new_input =  ast_result.value;
     }
 
@@ -832,4 +916,4 @@ std::list<std::string>   Humble_parser::get_non_terminal_rules(void)const
 
 
 
-};  //  namespace jle {
+}; };  //  namespace jle {   namespace hp  {
