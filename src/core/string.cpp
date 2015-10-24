@@ -394,7 +394,7 @@ std::string  align_cols(const std::string&  text)
     auto rows = jle::vector<jle::vector<std::string>>{};
     for(l : lines) {
         rows.push_back(s_split(l, " ", true));
-        size_t col = 0;
+        unsigned int col = 0;
         for(cell : rows.back()) {
             update_if_bigger(cell.size(), max_size_col[col]);
             ++col;
@@ -405,7 +405,7 @@ std::string  align_cols(const std::string&  text)
 
     std::ostringstream  result;
     for(row : rows) {
-        size_t col = 0;
+        unsigned col = 0;
         for(cell : row) {
             result << std::setw(int(max_size_col[col])) << std::left << cell << "  ";
             ++col;
