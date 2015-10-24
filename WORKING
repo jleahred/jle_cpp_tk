@@ -1,34 +1,8 @@
 regular expresion warper
 
-initializer_list in containers
-check containers modifs in vectors, there are errors to be applied on all containers
 
 
 container helpers to std::cout <<
-
-//  comparison operators
-bool operator==( const vector<T>& rhs )   { return lhs.ivector == rhs.ivector }
-
-bool operator!=( const vector<T>& rhs )   { return lhs.ivector != rhs.ivector }
-
-bool operator< ( const vector<T>& rhs )   { return lhs.ivector < rhs.ivector }
-
-bool operator<=( const vector<T>& rhs )   { return lhs.ivector <= rhs.ivector }
-
-bool operator> ( const vector<T>& rhs )   { return lhs.ivector > rhs.ivector }
-
-bool operator>=( const vector<T>& rhs )   { return lhs.ivector >= rhs.ivector }
-
-    ~vector()
-    {
-        try{
-            internal_for_containers::unregister_container(registered_as);
-        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "exception on destructor", "catched exception on destructor")
-    };
-
-
-
-
 
 
 

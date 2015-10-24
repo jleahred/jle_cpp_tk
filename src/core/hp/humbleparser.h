@@ -56,7 +56,8 @@ public:
 
 
     jle::tuple<bool, std::string>
-    load_rules_from_file(const std::string& file_rules);
+    load_rules_from_files(const std::string& file_rules1, const std::string& file_rules2);
+
 
     jle::tuple<bool, std::string>
     load_rules_from_string (const std::string& rules);

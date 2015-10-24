@@ -425,12 +425,19 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_string (const std::
 }
 
 
-jle::tuple<bool, std::string> Humble_parser::load_rules_from_file(const std::string& file_rules)
+jle::tuple<bool, std::string> Humble_parser::load_rules_from_files(const std::string& file_rules1, const std::string& file_rules2)
 {
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
-    std::ifstream frules(file_rules.c_str(), std::ios::in);
-    result = load_rules_from_stream(frules);
-    frules.close();
+    {
+        std::ifstream frules(file_rules1.c_str(), std::ios::in);
+        result = load_rules_from_stream(frules);
+        frules.close();
+    }
+    {
+        std::ifstream frules(file_rules2.c_str(), std::ios::in);
+        result = load_rules_from_stream(frules);
+        frules.close();
+    }
 
     return result;
 }
