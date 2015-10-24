@@ -167,6 +167,7 @@ QString  sup_parse (const QString text2parse, jle::hp::Humble_parser& h_parser, 
     bool result_bool;
     std::string  result_string;
 
+    h_parser.set_var("__file_name__", "testing");
     std::tie(result_bool, result_string, ast_root) = h_parser.multi_parse(text2parse.toStdString());
 
     return result.append(result_string.c_str());

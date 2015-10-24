@@ -921,6 +921,10 @@ std::list<std::string>   Humble_parser::get_non_terminal_rules(void)const
     return result;
 }
 
+void  Humble_parser::set_var(const std::string&  name,  const std::string&  value)
+{
+    templates[name] = value;
+}
 
 
 }; };  //  namespace jle {   namespace hp  {

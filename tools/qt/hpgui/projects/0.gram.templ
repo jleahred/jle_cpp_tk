@@ -1,5 +1,5 @@
 __BEGIN_TEMPLATE__:: H_FILE
-__BEGIN_FILE__::file.h
+__BEGIN_FILE__::$(__file_name__).h
 //  generated on $(__date_time__)
 //  generated on $(__date__)
 //  this is a test
@@ -18,8 +18,8 @@ __END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: CPP_FILE
-__BEGIN_FILE__::file.cpp
-#include "file.h"
+__BEGIN_FILE__::$(__file_name__).cpp
+#include "$(__file_name__).h"
 
 #include "core/tuple.hpp"
 

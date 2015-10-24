@@ -71,6 +71,8 @@ public:
     std::list<std::string>   get_non_terminal_rules(void)const;
 
 
+    void set_var(const std::string&  name,  const std::string&  value);
+
 protected:
 
 private:
