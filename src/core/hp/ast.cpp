@@ -213,7 +213,7 @@ namespace {
 
     jle::tuple<std::string, std::string>  get_id(const std::string&  from)
     {
-        std::regex  re_rt(R"(([a-zA-Z_][a-zA-Z_0-1]*[\*]?)[ \n\r]?((.|\n|\r)*)?)");
+        static std::regex  re_rt(R"(([a-zA-Z_][a-zA-Z_0-1]*[\*]?)[ \n\r]?((.|\n|\r)*)?)");
         std::smatch re_result;
 
         if (std::regex_match(from, re_result, re_rt))

@@ -300,7 +300,7 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
 
     std::string transform2;
     {
-        std::regex  re_rt(" *(.*) *##transf2-> *(.*) *");
+        static std::regex  re_rt(" *(.*) *##transf2-> *(.*) *");
         std::smatch re_result;
 
         if (std::regex_match(rule_t2, re_result, re_rt))
@@ -315,7 +315,7 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
     }
 
     //  separate rule sides
-    std::regex re ("^ *([^ \t]*) *::= *(.*)$");
+    static std::regex re ("^ *([^ \t]*) *::= *(.*)$");
     std::smatch re_result;
     if (std::regex_match(rule, re_result, re))
     {
@@ -468,7 +468,7 @@ jle::tuple<bool, std::string>  Humble_parser::_adding_rule_multi_line(const std:
 
 jle::tuple<bool, std::string>  Humble_parser::_adding_template(const std::string& line)
 {
-    std::regex  re(R"(^__END_TEMPLATE__::(.*)$)");
+    static std::regex  re(R"(^__END_TEMPLATE__::(.*)$)");
     std::smatch re_result;
     if (std::regex_match(line, re_result, re))
     {
@@ -545,7 +545,7 @@ Humble_parser::add_line (std::string line)
             adding_template = true;
             building_template = "";
 
-            std::regex  re{R"(__BEGIN_TEMPLATE__:: *([A-Z][A-Z0-9_]*))"};
+            static std::regex  re{R"(__BEGIN_TEMPLATE__:: *([A-Z][A-Z0-9_]*))"};
             std::smatch re_result;
 
             if (std::regex_match(line, re_result, re)== false)
@@ -630,7 +630,7 @@ Humble_parser::multi_parse(const std::string& input, std::string minit) const
 
     std::string new_input = input;
     AST_node_item ast_result("<pending>");
-    std::regex re("([^,]+)");
+    static std::regex re("([^,]+)");
 
     auto re_begin =
         std::sregex_iterator(minit.begin(), minit.end(), re);
