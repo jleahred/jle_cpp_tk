@@ -144,6 +144,10 @@ void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::strin
     if (this->down.expired()==false)
     {
         this->down->exec_replace(templates, declared_vars);
+//        if(this->down->rule4replace!="$(__nothing__)")
+//            this->down->exec_replace(templates, declared_vars);
+//        else
+//            this->down.reset();
         //this->value = this->down->value;
     }
 
@@ -262,7 +266,7 @@ std::string replace_transf2(    AST_node_item&                                  
     static std::map<std::string, std::string> map_predefined_vars;
     if (map_predefined_vars.size() == 0)
     {
-        map_predefined_vars["__nothing__"] = "";
+        //map_predefined_vars["__nothing__"] = "";
         map_predefined_vars["__endl__"] =  JLE_SS("\n");  //JLE_SS(std::endl);
         map_predefined_vars["__space__"] = " ";
         map_predefined_vars["__dollar_open_par__"] = "$(";
@@ -339,6 +343,10 @@ std::string replace_transf2(    AST_node_item&                                  
                 if(current_node.down.expired()==false)
                     current_node.down->exec_replace(templates, declared_vars);
                 map_items_found = get_map_found(current_node.down);
+            }
+            else if(var_name == "__nothing__") {
+                current_node.down.reset();
+                //current_node.next.reset();
             }
             else
             {

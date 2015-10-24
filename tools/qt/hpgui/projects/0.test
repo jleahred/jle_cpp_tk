@@ -4,7 +4,7 @@
 
 
 
-t_simple {
+jt_simple {
     i : int32
     j : string
     s : string
@@ -15,27 +15,27 @@ t_simple {
 }
 
 
-t_inline {  i: int32,  s: string  }
+jt_inline {  i: int32,  s: string  }
 
 
-t_inline2 {  
+jt_inline2 {  
    i: int32,   i64: int64
    s: string  
 }
 
 /*
-s_tuple {  int32,  string  }
+jt_tuple {  int32,  string  }
 
 
 /****
-s_union 
+jt_union 
 {
     |  s : string
     |  i : int32
 }
 
 
-s_color   //  enumeration
+jt_color   //  enumeration
 {
     |  red
     |  blue
@@ -49,7 +49,7 @@ s_color   //  enumeration
 
 
 //  type modifiers
-s_example
+jt_example
 {
     //  comentary
 
@@ -72,7 +72,7 @@ prop:
 }
 
 
-s_composed
+jt_composed
 {
     i : int32
     s : string

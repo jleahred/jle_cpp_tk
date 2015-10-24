@@ -1,18 +1,36 @@
-__BEGIN_TEMPLATE__:: HEADER
+__BEGIN_TEMPLATE__:: H_FILE
 __BEGIN_FILE__::file.h
 //  generated on $(__date_time__)
 //  generated on $(__date__)
 //  this is a test
 
 
+$(__set__  STRUCT  $(STRUCT_H))  $(__run__)\
 $(FRAME*)
+
+__END_FILE__::
+
+__END_TEMPLATE__:: 
+
+
+
+__BEGIN_TEMPLATE__:: CPP_FILE
+__BEGIN_FILE__::file.cpp
+#include "file.h"
+
+
+$(__set__  STRUCT  $(STRUCT_CPP))  $(__run__)\
+$(FRAME*)
+
+
+__END_FILE__::
 
 __END_TEMPLATE__:: 
 
 
 
 
-__BEGIN_TEMPLATE__:: STRUCT
+__BEGIN_TEMPLATE__:: STRUCT_H
 
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
@@ -57,9 +75,40 @@ std::ostream& operator<< (std::ostream& o, const $(id)& t);
 
 
 
-
-
 __END_TEMPLATE__:: 
 
 
 
+
+__BEGIN_TEMPLATE__:: STRUCT_CPP
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+$(id)::$(id) (
+$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
+$(__run__)\
+          $(__lmargin__ $(FIELDS))
+    )  :
+$(__set__  NAMED_NOEND $(id)(_$(id)$(__close_par__),$(__endl__)$(NAMED))\
+$(__set__  NAMED_END   $(id)(_$(id)$(__close_par__))\
+$(__run__)\
+          $(__lmargin__ $(FIELDS))
+    {}
+
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+
+
+
+__END_TEMPLATE__:: 
