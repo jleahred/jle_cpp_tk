@@ -67,10 +67,17 @@ namespace jle
     std::string     s_trim    (const std::string&    s , const std::string& chars2remove);
 
 
-    //! \brief  divide string ``s``  with ``separator``
+    /** \brief  divide string ``s``  with ``separator``
+     *  s_split("a b c")  -> ["a", "b", "c"]
+     *  s_split("a  b c") -> ["a", "", "b", "c"]
+
+     *  s_split("a  b c", true) -> ["a", "b", "c"]
+
+     */
     jle::vector<std::string> s_split (
                                     const std::string&  s,
-                                    const std::string&  separator
+                                    const std::string&  separator,
+                                    bool  remove_empty = false
                                 );
 
 
@@ -80,6 +87,12 @@ namespace jle
 
     std::string     s_align_left (const std::string& s, int size, char char_fill=' ');
     std::string     s_align_right(const std::string& s, int size, char char_fill=' ');
+
+    /** \brief  format in columns separated by spaces
+     *  align_cols("aa, b, cccc, dd, eee\n. . . ............ .")
+     */
+    std::string     align_cols   (const std::string&  text);
+
 
     //! \brief  return a valid utf8 string from a raw one
     //!  If char is "special" as  á, é, í, ó, ú, ñ, ü (and uppercases)

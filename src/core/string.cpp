@@ -6,6 +6,8 @@
 #include <regex>
 #include <iostream>
 #include <string>
+#include <iomanip>
+
 
 #include "core/misc.h"
 
@@ -204,18 +206,33 @@ namespace jle
 
 jle::vector<std::string> s_split (
                                 const std::string&  s,
-                                const std::string&  separator
+                                const std::string&  separator,
+                                bool  remove_empty
                             )
 {
     jle::vector<std::string> result;
     size_t current_pos = 0;
     size_t prev_pos    = 0;
 
-    while ( (current_pos = s.find(separator, prev_pos+1)) != std::string::npos) {
-        result.push_back(s.substr(prev_pos, current_pos - prev_pos));
-        prev_pos = current_pos+separator.length();
+    while ( (current_pos = s.find(separator, prev_pos)) != std::string::npos) {
+        auto to_insert = s.substr(prev_pos, current_pos - prev_pos);
+        if(to_insert.empty())
+        {
+            if(remove_empty==false)
+                result.push_back("");
+            prev_pos = current_pos+separator.length();
+        }
+        else
+        {
+            result.push_back(to_insert);
+            prev_pos = current_pos+separator.length();
+        }
     };
-    result.push_back(s.substr(prev_pos, s.length()-prev_pos));
+    auto tail = s.substr(prev_pos, s.length()-prev_pos);
+    if(remove_empty  &&  tail.empty())
+        ;
+    else
+        result.push_back(s.substr(prev_pos, s.length()-prev_pos));
 
     return result;
 }
@@ -360,6 +377,45 @@ std::string s_normalize_utf8(const std::string& source_string)
             destination_string+=source_string[counter];
     }
     return destination_string;
+}
+
+
+std::string  align_cols(const std::string&  text)
+{
+    auto lines = s_split(text, "\n", false);
+    auto max_size_col = jle::vector<size_t>{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+
+    auto update_if_bigger = [](size_t val, size_t& updatable) {
+        if(val>updatable)
+            updatable = val;
+    };
+
+    auto rows = jle::vector<jle::vector<std::string>>{};
+    for(l : lines) {
+        rows.push_back(s_split(l, " ", true));
+        unsigned int col = 0;
+        for(cell : rows.back()) {
+            update_if_bigger(cell.size(), max_size_col[col]);
+            ++col;
+            if(col>=max_size_col.size())
+                break;
+        }
+    }
+
+    std::ostringstream  result;
+    for(row : rows) {
+        unsigned col = 0;
+        for(cell : row) {
+            result << std::setw(int(max_size_col[col])) << std::left << cell << "  ";
+            ++col;
+            if(col>=max_size_col.size())
+                break;
+        }
+        result << std::endl;
+    }
+
+    return result.str();
 }
 
 
