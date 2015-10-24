@@ -100,15 +100,22 @@ public:
     {
         try{
             internal_for_containers::unregister_container(registered_as);
-        } catch(...){
-            jle::alarm_msg(jle::alarm(JLE_HERE, "exception on destructor", "catched exception on destructor", jle::al::priority::error));
-        }
+        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "exception on destructor", "catched exception on destructor")
     };
 
+    map(std::initializer_list<T> il)  : imap(il), registered_as(internal_for_containers::register_container(true))  {};
     map(const map<key_type, T>& m);
-    map(map<key_type, T>&& m) = default;
+    map(map<key_type, T>&& m);
     map<key_type, T>& operator=(const map<key_type, T>& m);
-    map<key_type, T>& operator=(map<key_type, T>&& m) = default;
+    map<key_type, T>& operator=(map<key_type, T>&& m);
+
+    //  comparison operators
+    bool operator==( const map<key_type, T>& rhs )   { return imap == rhs.imap; }
+    bool operator!=( const map<key_type, T>& rhs )   { return imap != rhs.imap; }
+    bool operator< ( const map<key_type, T>& rhs )   { return imap < rhs.imap; }
+    bool operator<=( const map<key_type, T>& rhs )   { return imap <= rhs.imap; }
+    bool operator> ( const map<key_type, T>& rhs )   { return imap > rhs.imap; }
+    bool operator>=( const map<key_type, T>& rhs )   { return imap >= rhs.imap; }
 
 
 
@@ -171,7 +178,18 @@ map<key_type, T>::map(const map<key_type, T>& m)
 }
 
 template <typename key_type, typename T>
-map<key_type, T>& map<key_type, T>::operator=(const map<key_type, T>& m)
+map<key_type, T>::map(map<key_type, T>&& l)
+  : registered_as (internal_for_containers::register_container( imap.empty() ? true : false))
+{
+    imap = std::move(l.imap);
+
+    if (imap.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
+}
+
+
+template <typename key_type, typename T>
+map<key_type, T>&   map<key_type, T>::operator=(const map<key_type, T>& m)
 {
     imap = m.imap;
     registered_as = internal_for_containers::register_container( imap.empty() ? true : false);
@@ -180,6 +198,15 @@ map<key_type, T>& map<key_type, T>::operator=(const map<key_type, T>& m)
     return *this;
 }
 
+template <typename key_type, typename T>
+map<key_type, T>&   map<key_type, T>::operator=(map<key_type, T>&& v)
+{
+    imap = std::move(v.imap);
+    registered_as = internal_for_containers::register_container( imap.empty() ? true : false);
+    if (imap.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
+    return *this;
+}
 
 
 //  iterators       ---------------------------------------------------

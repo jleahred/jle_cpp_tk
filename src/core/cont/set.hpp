@@ -102,16 +102,22 @@ public:
     {
         try{
             internal_for_containers::unregister_container(registered_as);
-        } catch(...){
-            jle::alarm_msg(jle::alarm(JLE_HERE, "exception on destructor", "catched exception on destructor", jle::al::priority::error));
-        }
+        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "exception on destructor", "catched exception on destructor")
     };
 
+    set(std::initializer_list<T> il)  : iset(il), registered_as(internal_for_containers::register_container(true))  {};
     set(const set<key_type>& s);
-    set(set<key_type>&& s)=default;
+    set(set<key_type>&& s);
     set<key_type>& operator=(const set<key_type>& s);
-    set<key_type>& operator=(set<key_type>&& s)=default;
+    set<key_type>& operator=(set<key_type>&& s);
 
+    //  comparison operators
+    bool operator==( const set<T>& rhs )   { return iset == rhs.iset; }
+    bool operator!=( const set<T>& rhs )   { return iset != rhs.iset; }
+    bool operator< ( const set<T>& rhs )   { return iset < rhs.iset; }
+    bool operator<=( const set<T>& rhs )   { return iset <= rhs.iset; }
+    bool operator> ( const set<T>& rhs )   { return iset > rhs.iset; }
+    bool operator>=( const set<T>& rhs )   { return iset >= rhs.iset; }
 
 
 
@@ -169,12 +175,33 @@ set<key_type>::set(const set<key_type>& s)
         internal_for_containers::register_container_size_change(registered_as);
 }
 
+template <typename T>
+set<T>::set(set<T>&& l)
+  : registered_as (internal_for_containers::register_container( iset.empty() ? true : false))
+{
+    iset = std::move(l.iset);
+
+    if (iset.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
+}
+
+
 template <typename key_type>
 set<key_type>& set<key_type>::operator=(const set<key_type>& s)
 {
     iset = s.iset;
     registered_as = internal_for_containers::register_container( iset.empty() ? true : false);
     if(iset.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
+    return *this;
+}
+
+template <typename T>
+set<T>& set<T>::operator=(set<T>&& v)
+{
+    iset = std::move(v.iset);
+    registered_as = internal_for_containers::register_container( iset.empty() ? true : false);
+    if (iset.empty() == false)
         internal_for_containers::register_container_size_change(registered_as);
     return *this;
 }

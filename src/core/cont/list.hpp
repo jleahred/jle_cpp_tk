@@ -176,16 +176,22 @@ public:
     {
         try{
             internal_for_containers::unregister_container(registered_as);
-        } catch(...){
-            jle::alarm_msg(jle::alarm(JLE_HERE, "exception on destructor", "catched exception on destructor", jle::al::priority::error));
-        }
+        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "exception on destructor", "catched exception on destructor")
     };
 
+    list(std::initializer_list<T> il)  : ilist(il), registered_as(internal_for_containers::register_container(true))  {};
     list(const list<T>& l);
-    list(list<T>&& l)=default;
+    list(list<T>&& l);
     list<T>& operator=(const list<T>& l);
-    list<T>& operator=(list<T>&& l)=default;
+    list<T>& operator=(list<T>&& l);
 
+    //  comparison operators
+    bool operator==( const list<T>& rhs )   { return ilist == rhs.ilist; }
+    bool operator!=( const list<T>& rhs )   { return ilist != rhs.ilist; }
+    bool operator< ( const list<T>& rhs )   { return ilist < rhs.ilist; }
+    bool operator<=( const list<T>& rhs )   { return ilist <= rhs.ilist; }
+    bool operator> ( const list<T>& rhs )   { return ilist > rhs.ilist; }
+    bool operator>=( const list<T>& rhs )   { return ilist >= rhs.ilist; }
 
 
 
@@ -268,6 +274,16 @@ list<T>::list(const list<T>& l)
 }
 
 template <typename T>
+list<T>::list(list<T>&& l)
+  : registered_as (internal_for_containers::register_container( ilist.empty() ? true : false))
+{
+    ilist = std::move(l.ilist);
+
+    if (ilist.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
+}
+
+template <typename T>
 list<T>& list<T>::operator=(const list<T>& l)
 {
     ilist = l.ilist;
@@ -277,6 +293,15 @@ list<T>& list<T>::operator=(const list<T>& l)
     return *this;
 }
 
+template <typename T>
+list<T>& list<T>::operator=(list<T>&& v)
+{
+    ilist = std::move(v.ilist);
+    registered_as = internal_for_containers::register_container( ilist.empty() ? true : false);
+    if (ilist.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
+    return *this;
+}
 
 
 

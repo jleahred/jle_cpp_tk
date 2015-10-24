@@ -177,15 +177,22 @@ public:
     {
         try{
             internal_for_containers::unregister_container(registered_as);
-        } catch(...){
-            jle::alarm_msg(jle::alarm(JLE_HERE, "exception on destructor", "catched exception on destructor", jle::al::priority::error));
-        }
+        } JLE_CATCH_CALLFUNCION(jle::alarm_msg, "exception on destructor", "catched exception on destructor")
     };
 
+    vector(std::initializer_list<T> il)  : ivector(il), registered_as(internal_for_containers::register_container(true))  {};
     vector(const vector<T>& l);
-    vector(vector<T>&& l) = default;
+    vector(vector<T>&& l);
     vector<T>& operator=(const vector<T>& l);
-    vector<T>& operator=(vector<T>&& l)=default;
+    vector<T>& operator=(vector<T>&& l);
+
+    //  comparison operators
+    bool operator==( const vector<T>& rhs )   { return ivector == rhs.ivector; }
+    bool operator!=( const vector<T>& rhs )   { return ivector != rhs.ivector; }
+    bool operator< ( const vector<T>& rhs )   { return ivector < rhs.ivector; }
+    bool operator<=( const vector<T>& rhs )   { return ivector <= rhs.ivector; }
+    bool operator> ( const vector<T>& rhs )   { return ivector > rhs.ivector; }
+    bool operator>=( const vector<T>& rhs )   { return ivector >= rhs.ivector; }
 
 
     //  iterators
@@ -252,9 +259,31 @@ vector<T>::vector(const vector<T>& l)
 
 
 template <typename T>
+vector<T>::vector(vector<T>&& l)
+  : registered_as (internal_for_containers::register_container( ivector.empty() ? true : false))
+{
+    ivector = std::move(l.ivector);
+
+    if (ivector.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
+}
+
+
+template <typename T>
 vector<T>& vector<T>::operator=(const vector<T>& v)
 {
     ivector = v.ivector;
+    registered_as = internal_for_containers::register_container( ivector.empty() ? true : false);
+    if (ivector.empty() == false)
+        internal_for_containers::register_container_size_change(registered_as);
+    return *this;
+}
+
+
+template <typename T>
+vector<T>& vector<T>::operator=(vector<T>&& v)
+{
+    ivector = std::move(v.ivector);
     registered_as = internal_for_containers::register_container( ivector.empty() ? true : false);
     if (ivector.empty() == false)
         internal_for_containers::register_container_size_change(registered_as);
