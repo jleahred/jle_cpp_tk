@@ -67,12 +67,14 @@ int main(int argc, char* argv[])
     jle::hp::Humble_parser  hparser;
     bool result;
     std::string result_string;
+    JLE_COUT_TRACE(file_rules1);
     std::tie(result, result_string) =  hparser.add_rules_from_file(file_rules1);
     if (result==false){
       std::cerr << std::endl << result_string << std::endl;
       return -1;
     }
 
+    JLE_COUT_TRACE(file_rules2);
     std::tie(result, result_string) =  hparser.add_rules_from_file(file_rules2);
     if (result==false){
       std::cerr << std::endl << result_string << std::endl;

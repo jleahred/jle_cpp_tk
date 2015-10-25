@@ -63,6 +63,8 @@ all:  prepare lib clean
 lib: prepare $(OUT)
 
 
+incremental_dangerous: $(OUT)
+
 
 
 .PHONY : prepare

@@ -387,14 +387,16 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
 
 jle::tuple<bool, std::string> Humble_parser::add_rules_from_stream (std::istream& stream)
 {
-    clear();
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
     char buffer[4096];
 
-    stream.getline(buffer, 4096);
 
     //  The first rule indicates the gramar starting rule
-    default_init_symbol = jle::s_trim(buffer, ' ');
+    if(default_init_symbol.empty())
+    {
+        stream.getline(buffer, 4096);
+        default_init_symbol = jle::s_trim(buffer, ' ');
+    }
 
     while (stream.getline(buffer, 4096))
     {
