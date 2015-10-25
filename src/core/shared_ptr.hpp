@@ -29,8 +29,6 @@ class weak_ptr;
     to noninitializated pointer, an exception will be
     throw
 
-    operator bool has also been removed
-
     _No external dependencies_
 
     Example:
@@ -318,9 +316,9 @@ public:
             return ptr.get();
         }
 
-//        explicit operator bool() const // never throws
-//        { return _M_ptr == 0 ? false : true; }
-//
+        explicit operator bool() const // never throws
+        { return bool(ptr); }
+
         bool
         unique() const /*noexcept*/
         { return ptr.unique(); }

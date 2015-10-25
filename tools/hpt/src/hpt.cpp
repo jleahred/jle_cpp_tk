@@ -7,6 +7,7 @@
 #include <iostream>  // I/O
 #include <fstream>   // file I/O
 #include <iomanip>   // format manipulation
+#include "core/optional.hpp"
 
 
 
@@ -28,6 +29,28 @@ std::string get_string2parse_from_file(const std::string& file_name)
     ftext2transform.close();
 
     return std::string(ostext4parse.str());
+}
+
+void process_result(const std::string& result)
+{
+    jle::shared_ptr<std::ofstream>  current_file;
+
+    auto lines = jle::s_split(result, "\n", true);
+    for(l : lines)
+    {
+        auto found = l.find("__BEGIN_FILE__::");
+        if(found == 0)
+        {
+            if(current_file)
+                current_file->close();
+            current_file = jle::make_shared<std::ofstream>(l.substr(found).c_str(), std::ios::trunc);
+        }
+
+        if(current_file)
+            *current_file << l << std::endl;
+        else
+            std::cout << l << std::endl;
+    }
 }
 
 
@@ -59,22 +82,17 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    JLE_COUT_TRACE(file_rules1)
-    JLE_COUT_TRACE(file_rules2)
-    JLE_COUT_TRACE(input_file)
-
 
     jle::hp::Humble_parser  hparser;
+    hparser.set_var("__file_name__", input_file);
     bool result;
     std::string result_string;
-    JLE_COUT_TRACE(file_rules1);
     std::tie(result, result_string) =  hparser.add_rules_from_file(file_rules1);
     if (result==false){
       std::cerr << std::endl << result_string << std::endl;
       return -1;
     }
 
-    JLE_COUT_TRACE(file_rules2);
     std::tie(result, result_string) =  hparser.add_rules_from_file(file_rules2);
     if (result==false){
       std::cerr << std::endl << result_string << std::endl;
@@ -96,7 +114,8 @@ int main(int argc, char* argv[])
     }
     else
     {
-        std::cout << ast_root.value << std::endl;
+        process_result(ast_root.value);
+        //std::cout << ast_root.value << std::endl;
     }
 
 
