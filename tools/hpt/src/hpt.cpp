@@ -46,10 +46,13 @@ void process_result(const std::string& result)
             current_file = jle::make_shared<std::ofstream>(jle::s_trim(l.substr(begin_file_indicator.length()), ' ').c_str(), std::ios::trunc);
         }
 
-        if(current_file)
-            *current_file << l << std::endl;
         else
-            std::cout << l << std::endl;
+        {
+            if(current_file)
+                *current_file << l << std::endl;
+            else
+                std::cout << l << std::endl;
+        }
     }
 }
 
@@ -85,8 +88,12 @@ int main(int argc, char* argv[])
 
     jle::hp::Humble_parser  hparser;
     auto file_name = input_file.substr(0, input_file.find_last_of('.'));
-    JLE_COUT_TRACE(file_name);
+    auto last_path_sep = input_file.find_last_of('/');
+    if(last_path_sep == std::string::npos)
+        last_path_sep = 0;
+    auto file_name_no_path = file_name.substr(last_path_sep+1);
     hparser.set_var("__file_name__", file_name);
+    hparser.set_var("__file_name_no_path__", file_name_no_path);
     bool result;
     std::string result_string;
     std::tie(result, result_string) =  hparser.add_rules_from_file(file_rules1);

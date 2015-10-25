@@ -1,41 +1,41 @@
-/* multiline 
+/* multiline
     comment
 */
 
 
 
-jt_simple {
+t_simple {
     i : int32
     j : string
     s : string
 
-/* multiline 
+/* multiline
     comment
 */
 }
 
 
-jt_inline {  i: int32,  s: string  }
+t_inline {  i: int32,  s: string  }
 
 
-jt_inline2 {  
+t_inline2 {
    i: int32,   i64: int64
-   s: string  
+   s: string
 }
 
 /*
-jt_tuple {  int32,  string  }
+t_tuple {  int32,  string  }
 
 
 /****
-jt_union 
+t_union
 {
     |  s : string
     |  i : int32
 }
 
 
-jt_color   //  enumeration
+t_color   //  enumeration
 {
     |  red
     |  blue
@@ -49,7 +49,7 @@ jt_color   //  enumeration
 
 
 //  type modifiers
-jt_example
+t_example
 {
     //  comentary
 
@@ -63,8 +63,8 @@ jt_example
     def_string1     :   string[<"there">][<2015-10-23>]     //  new mandatory since...
 
 
-    string_list     :   string[]    
-    int_list        :   int32[]    
+    string_list     :   string[]
+    int_list        :   int32[]
 
 prop:
     less
@@ -72,7 +72,7 @@ prop:
 }
 
 
-jt_composed
+t_composed
 {
     i : int32
     s : string

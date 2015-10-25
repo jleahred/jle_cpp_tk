@@ -1,5 +1,4 @@
-__BEGIN_FILE__::./src/test.h
-//  generated on 2015-10-25 17:11:32.698
+//  generated on 2015-10-25 17:25:36.755
 //  generated on 2015-10-24 23:59:59.000
 //  this is a test
 #include <cstdint>
@@ -8,11 +7,11 @@ __BEGIN_FILE__::./src/test.h
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    jt_simple
+//    t_simple
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
-struct jt_simple {
+struct t_simple {
     //  fields  ·································
         int32_t      i;  
         std::string  j;  
@@ -20,59 +19,59 @@ struct jt_simple {
         
     //  ·········································
     //  ctor
-    jt_simple() = delete;
-    jt_simple (
+    t_simple() = delete;
+    t_simple (
           int32_t _i,
           std::string _j,
           std::string _s
     );
-    jt_simple (const jt_simple& ) = default;
-    jt_simple (      jt_simple&&) = default;
+    t_simple (const t_simple& ) = default;
+    t_simple (      t_simple&&) = default;
     //  assign
-    jt_simple& operator=(const jt_simple& ) = default;
-    jt_simple& operator=(      jt_simple&&) = default;
+    t_simple& operator=(const t_simple& ) = default;
+    t_simple& operator=(      t_simple&&) = default;
     //  comparison
-    bool operator==(const jt_simple& ) const;
-    bool operator< (const jt_simple& ) const;
+    bool operator==(const t_simple& ) const;
+    bool operator< (const t_simple& ) const;
 };
-std::ostream& operator<< (std::ostream& o, const jt_simple& t);
+std::ostream& operator<< (std::ostream& o, const t_simple& t);
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    jt_inline
+//    t_inline
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
-struct jt_inline {
+struct t_inline {
     //  fields  ·································
         int32_t      i;  
         std::string  s;  
         
     //  ·········································
     //  ctor
-    jt_inline() = delete;
-    jt_inline (
+    t_inline() = delete;
+    t_inline (
           int32_t _i,
           std::string _s
     );
-    jt_inline (const jt_inline& ) = default;
-    jt_inline (      jt_inline&&) = default;
+    t_inline (const t_inline& ) = default;
+    t_inline (      t_inline&&) = default;
     //  assign
-    jt_inline& operator=(const jt_inline& ) = default;
-    jt_inline& operator=(      jt_inline&&) = default;
+    t_inline& operator=(const t_inline& ) = default;
+    t_inline& operator=(      t_inline&&) = default;
     //  comparison
-    bool operator==(const jt_inline& ) const;
-    bool operator< (const jt_inline& ) const;
+    bool operator==(const t_inline& ) const;
+    bool operator< (const t_inline& ) const;
 };
-std::ostream& operator<< (std::ostream& o, const jt_inline& t);
+std::ostream& operator<< (std::ostream& o, const t_inline& t);
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    jt_inline2
+//    t_inline2
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
-struct jt_inline2 {
+struct t_inline2 {
     //  fields  ·································
         int32_t      i;    
         int64_t      i64;  
@@ -80,19 +79,19 @@ struct jt_inline2 {
         
     //  ·········································
     //  ctor
-    jt_inline2() = delete;
-    jt_inline2 (
+    t_inline2() = delete;
+    t_inline2 (
           int32_t _i,
           int64_t _i64,
           std::string _s
     );
-    jt_inline2 (const jt_inline2& ) = default;
-    jt_inline2 (      jt_inline2&&) = default;
+    t_inline2 (const t_inline2& ) = default;
+    t_inline2 (      t_inline2&&) = default;
     //  assign
-    jt_inline2& operator=(const jt_inline2& ) = default;
-    jt_inline2& operator=(      jt_inline2&&) = default;
+    t_inline2& operator=(const t_inline2& ) = default;
+    t_inline2& operator=(      t_inline2&&) = default;
     //  comparison
-    bool operator==(const jt_inline2& ) const;
-    bool operator< (const jt_inline2& ) const;
+    bool operator==(const t_inline2& ) const;
+    bool operator< (const t_inline2& ) const;
 };
-std::ostream& operator<< (std::ostream& o, const jt_inline2& t);
+std::ostream& operator<< (std::ostream& o, const t_inline2& t);

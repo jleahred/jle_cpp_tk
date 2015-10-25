@@ -1,14 +1,13 @@
-__BEGIN_FILE__::./src/test.cpp
-#include "./src/test.h"
+#include "test.h"
 #include "core/tuple.hpp"
   //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    jt_simple
+//    t_simple
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
-jt_simple::jt_simple (
+t_simple::t_simple (
           int32_t _i,
           std::string _j,
           std::string _s
@@ -18,7 +17,7 @@ jt_simple::jt_simple (
           s(_s)
     {}
 //  comparison
-bool jt_simple::operator==(const jt_simple& r) const
+bool t_simple::operator==(const t_simple& r) const
 {
     if(
         i == r.i  &&
@@ -27,7 +26,7 @@ bool jt_simple::operator==(const jt_simple& r) const
     )     return true;
     else  return false;
 }
-bool jt_simple::operator< (const jt_simple& r) const
+bool t_simple::operator< (const t_simple& r) const
 {
     if(std::tie(
           i,
@@ -41,9 +40,9 @@ bool jt_simple::operator< (const jt_simple& r) const
     )     return true;
     else  return false;
 }
-std::ostream& operator<< (std::ostream& os, const jt_simple& t)
+std::ostream& operator<< (std::ostream& os, const t_simple& t)
 {
-    os  << " jt_simple { " 
+    os  << " t_simple { " 
            << "i: " << t.i << ", "
            << "j: " << t.j << ", "
            << "s: " << t.s
@@ -53,11 +52,11 @@ std::ostream& operator<< (std::ostream& os, const jt_simple& t)
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    jt_inline
+//    t_inline
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
-jt_inline::jt_inline (
+t_inline::t_inline (
           int32_t _i,
           std::string _s
     )  :
@@ -65,7 +64,7 @@ jt_inline::jt_inline (
           s(_s)
     {}
 //  comparison
-bool jt_inline::operator==(const jt_inline& r) const
+bool t_inline::operator==(const t_inline& r) const
 {
     if(
         i == r.i  &&
@@ -73,7 +72,7 @@ bool jt_inline::operator==(const jt_inline& r) const
     )     return true;
     else  return false;
 }
-bool jt_inline::operator< (const jt_inline& r) const
+bool t_inline::operator< (const t_inline& r) const
 {
     if(std::tie(
           i,
@@ -85,9 +84,9 @@ bool jt_inline::operator< (const jt_inline& r) const
     )     return true;
     else  return false;
 }
-std::ostream& operator<< (std::ostream& os, const jt_inline& t)
+std::ostream& operator<< (std::ostream& os, const t_inline& t)
 {
-    os  << " jt_inline { " 
+    os  << " t_inline { " 
            << "i: " << t.i << ", "
            << "s: " << t.s
         << " }";
@@ -96,11 +95,11 @@ std::ostream& operator<< (std::ostream& os, const jt_inline& t)
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    jt_inline2
+//    t_inline2
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
-jt_inline2::jt_inline2 (
+t_inline2::t_inline2 (
           int32_t _i,
           int64_t _i64,
           std::string _s
@@ -110,7 +109,7 @@ jt_inline2::jt_inline2 (
           s(_s)
     {}
 //  comparison
-bool jt_inline2::operator==(const jt_inline2& r) const
+bool t_inline2::operator==(const t_inline2& r) const
 {
     if(
         i == r.i  &&
@@ -119,7 +118,7 @@ bool jt_inline2::operator==(const jt_inline2& r) const
     )     return true;
     else  return false;
 }
-bool jt_inline2::operator< (const jt_inline2& r) const
+bool t_inline2::operator< (const t_inline2& r) const
 {
     if(std::tie(
           i,
@@ -133,9 +132,9 @@ bool jt_inline2::operator< (const jt_inline2& r) const
     )     return true;
     else  return false;
 }
-std::ostream& operator<< (std::ostream& os, const jt_inline2& t)
+std::ostream& operator<< (std::ostream& os, const t_inline2& t)
 {
-    os  << " jt_inline2 { " 
+    os  << " t_inline2 { " 
            << "i: " << t.i << ", "
            << "i64: " << t.i64 << ", "
            << "s: " << t.s
