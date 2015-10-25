@@ -11,15 +11,13 @@ __BEGIN_FILE__::$(__file_name__).h
 $(__set__  STRUCT  $(STRUCT_H))  $(__run__)
 $(FRAME*)
 
-__END_FILE__::
-
 __END_TEMPLATE__:: 
 
 
 
 __BEGIN_TEMPLATE__:: CPP_FILE
 __BEGIN_FILE__::$(__file_name__).cpp
-#include "$(__file_name__).h"
+#include "$(__file_name_no_path__).h"
 
 #include "core/tuple.hpp"
 
@@ -27,8 +25,6 @@ __BEGIN_FILE__::$(__file_name__).cpp
 $(__set__  STRUCT  $(STRUCT_CPP))  $(__run__)\
 $(FRAME*)
 
-
-__END_FILE__::
 
 __END_TEMPLATE__:: 
 
