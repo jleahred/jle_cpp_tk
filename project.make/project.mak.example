@@ -1,0 +1,26 @@
+#
+# Output...
+OUT = bin/example
+#
+#
+# Directories with source code
+DIR_SRC_CXX = src
+#
+#
+# library paths
+LIBS = -L./jle/lib -ljlecore
+#
+#
+# include directories
+INCLUDES = -I./src -I./jle/src
+
+
+
+#CXXFLAGS_CUSTOM = -std=gnu++0x -g -O2 -Werror -Wall -W -Wundef -Wpointer-arith  -Wfloat-equal -fexceptions -Winit-self -Wconversion 
+#CXXFLAGS_CUSTOM += -Wclobbered  -Wempty-body  -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -Wno-unused-result 
+#CXXFLAGS_CUSTOM +=-Wnon-virtual-dtor -Wreorder -Woverloaded-virtual -Wsign-promo -Winit-self -Wignored-qualifiers -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wshadow -Wcast-qual -Wwrite-strings
+
+#CFLAGS_CUSTOM= -O2
+#LDFLAGS_CUSTOM= -O2
+#CXX_CUSTOM= g++
+#CC_CUSTOM= gcc

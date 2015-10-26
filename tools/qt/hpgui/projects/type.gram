@@ -1,25 +1,26 @@
 MAIN
 
-MAIN   ::=  FRAME*
+MAIN   ::=  FRAME*               ##transf2->$(H_FILE)$(CPP_FILE)
 
 
-FRAME  ::= .__. STRUCT .__.
+FRAME  ::= .__. STRUCT .__.            
 
-STRUCT ::= id .__. {  FIELDS  }
+STRUCT ::= id .__. {  FIELDS  }        ##transf2->$(STRUCT)
 
 
-FIELDS ::=  NAMED  PROP
-FIELDS ::=  NAMED
-FIELDS ::=  TUPLE
+FIELDS ::=  NAMED  PROP                
+FIELDS ::=  NAMED                      
+FIELDS ::=  TUPLE                      
 FIELDS ::=  UNION
 FIELDS ::=  ENUMERATION
 
 
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   NAMED
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   NAMED
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   NAMED    ##transf2-> $(NAMED_NOEND)
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   NAMED    ##transf2-> $(NAMED_NOEND)
+NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                          ##transf2-> $(NAMED_END)
 NAMED ::=  NAMED_SUB
 NAMED ::=  NAMED_IMPL_SUB
+
 
 NAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.   NAMED
 NAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.
@@ -28,9 +29,11 @@ NAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.
 ANON_STRUCT        ::= .__. {  FIELDS   }
 
 
-TUPLE ::=  .__.   id   ._.   endl    .__.  TUPLE
-TUPLE ::=  .__.   id   ._.   ,       .__.  TUPLE
-TUPLE ::=  .__.   id   .__.
+TUPLE ::=  .__.   TUPLE_TYPE   ._.   endl    .__.  TUPLE                         ##transf2-> "" : $(TUPLE_TYPE),$(__endl__)$(TUPLE)
+TUPLE ::=  .__.   TUPLE_TYPE   ._.   ,       .__.  TUPLE                         ##transf2-> "" : $(TUPLE_TYPE),$(__endl__)$(TUPLE)
+TUPLE ::=  .__.   TUPLE_TYPE   .__.                                              ##transf2-> "" : $(TUPLE_TYPE)
+
+TUPLE_TYPE  ::=  BASIC_TYPE                                                      
 
 UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   endl    .__.  UNION
 UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   ,       .__.  UNION
@@ -46,16 +49,16 @@ FULL_TYPE  ::=  TYPE_OPTIONAL
 FULL_TYPE  ::=  TYPE_RECOMENDED
 FULL_TYPE  ::=  TYPE_WITH_DEFAULT_DATE
 FULL_TYPE  ::=  TYPE_WITH_DEFAULT
-FULL_TYPE  ::=  BASIC_TYPE
+FULL_TYPE  ::=  BASIC_TYPE                    
 
 
 B_L_TYPE  ::=  BASIC_TYPE
 B_L_TYPE  ::=  TYPE_LIST
 
-BASIC_TYPE  ::= string
-BASIC_TYPE  ::= double
-BASIC_TYPE  ::= int32
-BASIC_TYPE  ::= int64
+BASIC_TYPE  ::= string  
+BASIC_TYPE  ::= double  
+BASIC_TYPE  ::= int32   
+BASIC_TYPE  ::= int64   
 
 TYPE_LIST  ::= BASIC_TYPE [ ]
 
@@ -74,25 +77,25 @@ prop ::= 'prop'
 
 
 
-string ::= 'string'
-double ::= 'double'
-int32  ::= 'int32'
-int64  ::= 'int64'
+string ::= 'string'   ##transf2->std::string
+double ::= 'double'   ##transf2->double
+int32  ::= 'int32'    ##transf2->int32_t
+int64  ::= 'int64'    ##transf2->int64_t
 
 
 
 
-.__.  ::=  __  MULTILINE_COMMENT  .__.    ##transf2-> $(__nothing__)
-.__.  ::=  __  SINGLELINE_COMMENT .__.    ##transf2-> $(__nothing__)
-.__.  ::=  __                             ##transf2-> $(__nothing__)
-._.   ::=  _   MULTILINE_COMMENT  ._.     ##transf2-> $(__nothing__)
-._.   ::=  _   SINGLELINE_COMMENT         ##transf2-> $(__nothing__)
-._.   ::=  _                              ##transf2-> $(__nothing__)
+.__.  ::=  __  MULTILINE_COMMENT  .__.    ##transf2->$(__nothing__)
+.__.  ::=  __  SINGLELINE_COMMENT .__.    ##transf2->$(__nothing__)
+.__.  ::=  __                             ##transf2->$(__nothing__)
+._.   ::=  _   MULTILINE_COMMENT  ._.     ##transf2->$(__nothing__)
+._.   ::=  _   SINGLELINE_COMMENT         ##transf2->$(__nothing__)
+._.   ::=  _                              ##transf2->$(__nothing__)
 
-SINGLELINE_COMMENT   ::=  _  /_/  !endl*              ##transf2-> $(__nothing__)
-MULTILINE_COMMENT    ::=  /*_  IN_ML_COMMENT*  _*/    ##transf2-> $(__nothing__)
-IN_ML_COMMENT        ::=  u__                         ##transf2-> $(__nothing__)
-IN_ML_COMMENT        ::=  !_*/                        ##transf2-> $(__nothing__)
+SINGLELINE_COMMENT   ::=  _  /_/  !endl*              ##transf2->$(__nothing__)
+MULTILINE_COMMENT    ::=  /*_  IN_ML_COMMENT*  _*/    ##transf2->$(__nothing__)
+IN_ML_COMMENT        ::=  u__                         ##transf2->$(__nothing__)
+IN_ML_COMMENT        ::=  !_*/                        ##transf2->$(__nothing__)
 
 
 /*_   ::=  '/*'
@@ -124,3 +127,9 @@ id  ::=  ([_A-Za-z][A-Za-z0-9_]*)
 !>] ::=  !'>]'
 #   ::=  ([0-9])
 -   ::=  '-'
+
+
+
+
+
+

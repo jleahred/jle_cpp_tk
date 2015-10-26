@@ -385,16 +385,18 @@ jle::tuple<bool, std::string>  Humble_parser::add_rule (const std::string& rule_
 
 
 
-jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istream& stream)
+jle::tuple<bool, std::string> Humble_parser::add_rules_from_stream (std::istream& stream)
 {
-    clear();
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
     char buffer[4096];
 
-    stream.getline(buffer, 4096);
 
     //  The first rule indicates the gramar starting rule
-    default_init_symbol = jle::s_trim(buffer, ' ');
+    if(default_init_symbol.empty())
+    {
+        stream.getline(buffer, 4096);
+        default_init_symbol = jle::s_trim(buffer, ' ');
+    }
 
     while (stream.getline(buffer, 4096))
     {
@@ -413,24 +415,26 @@ jle::tuple<bool, std::string> Humble_parser::load_rules_from_stream (std::istrea
 }
 
 
-jle::tuple<bool, std::string> Humble_parser::load_rules_from_string (const std::string& rules)
+jle::tuple<bool, std::string> Humble_parser::add_rules_from_string (const std::string& rules)
 {
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
 
     std::istringstream iss(rules);
-    result = load_rules_from_stream(iss);
+    result = add_rules_from_stream(iss);
 
     return result;
 
 }
 
 
-jle::tuple<bool, std::string> Humble_parser::load_rules_from_file(const std::string& file_rules)
+jle::tuple<bool, std::string> Humble_parser::add_rules_from_file(const std::string& file_rules)
 {
     jle::tuple<bool, std::string> result = make_tuple(true, std::string());
-    std::ifstream frules(file_rules.c_str(), std::ios::in);
-    result = load_rules_from_stream(frules);
-    frules.close();
+    {
+        std::ifstream frules(file_rules.c_str(), std::ios::in);
+        result = add_rules_from_stream(frules);
+        frules.close();
+    }
 
     return result;
 }
@@ -914,6 +918,11 @@ std::list<std::string>   Humble_parser::get_non_terminal_rules(void)const
     return result;
 }
 
+
+void Humble_parser::set_var(const std::string& name, const std::string& value)
+{
+    templates[name] = value;
+}
 
 
 }; };  //  namespace jle {   namespace hp  {

@@ -52,14 +52,15 @@ public:
 
 
     jle::tuple<bool, std::string>
-    load_rules_from_stream (std::istream& stream);
+    add_rules_from_stream (std::istream& stream);
 
 
     jle::tuple<bool, std::string>
-    load_rules_from_file(const std::string& file_rules);
+    add_rules_from_file(const std::string& file_rules1);
+
 
     jle::tuple<bool, std::string>
-    load_rules_from_string (const std::string& rules);
+    add_rules_from_string (const std::string& rules);
 
 
 
@@ -69,6 +70,7 @@ public:
     std::list<std::string>   get_terminal_rules(void)const;
     std::list<std::string>   get_non_terminal_rules(void)const;
 
+    void set_var(const std::string& name, const std::string& value);
 
 protected:
 

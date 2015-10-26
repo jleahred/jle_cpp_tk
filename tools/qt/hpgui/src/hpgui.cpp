@@ -69,7 +69,7 @@ QString sup_compile_gramar(jle::hp::Humble_parser&  h_parser, const QString& gra
     //  compilar
     bool result_bool;
     std::string result_string;
-    std::tie(result_bool, result_string) = h_parser.load_rules_from_string(gramar_source.toStdString());
+    std::tie(result_bool, result_string) = h_parser.add_rules_from_string(gramar_source.toStdString());
     result.append(result_string.c_str());
     if (result_bool==false)
         throw (result.append("ERRORS"));
@@ -167,6 +167,7 @@ QString  sup_parse (const QString text2parse, jle::hp::Humble_parser& h_parser, 
     bool result_bool;
     std::string  result_string;
 
+    h_parser.set_var("__file_name__", "testing");
     std::tie(result_bool, result_string, ast_root) = h_parser.multi_parse(text2parse.toStdString());
 
     return result.append(result_string.c_str());

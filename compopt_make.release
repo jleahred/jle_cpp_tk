@@ -1,6 +1,6 @@
 
 # compiler flags (-g -O2 -Wall)
-CXXFLAGS_RELEASE = -std=c++14 -O2 -Werror -Wall -W -Wundef -Wpointer-arith  -Wfloat-equal -fexceptions -Winit-self -Wconversion
+CXXFLAGS_RELEASE = -std=c++1z -O2 -Werror -Wall -W -Wundef -Wpointer-arith  -Wfloat-equal -fexceptions -Winit-self -Wconversion
 
 CXXFLAGS_RELEASE += -Wclobbered  -Wempty-body  -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -Wno-unused-result
 
