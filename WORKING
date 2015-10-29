@@ -9,7 +9,6 @@ README idl example project
 add compiling this project to make examples
 
 
-make tools -> make libcore -> make tools
 make libs -> make tools -> make rest of libs
 
 

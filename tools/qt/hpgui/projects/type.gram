@@ -3,8 +3,17 @@ MAIN
 MAIN   ::=  FRAME*               ##transf2->$(H_FILE)$(CPP_FILE)
 
 
-FRAME  ::= .__. STRUCT .__.            
+FRAME  ::= .__. MODULE .__.
+FRAME  ::= .__. STRUCT .__.
 
+//  MODULE
+MODULE ::= module ._. MOD_ID ._.  { .__.  FRAME*  .__. }   ##transf2->$(BEGIN_MODULE)$(__endl__)$(FRAME*)$(__endl__)$(END_MODULE)$(__endl__)
+MOD_ID ::= id _. MOD_ID                                    ##transf2->$(MOD_IDS)
+MOD_ID ::= id
+module ::= 'module'
+
+
+//  STRUCT
 STRUCT ::= id .__. {  FIELDS  }        ##transf2->$(STRUCT)
 
 
@@ -127,7 +136,7 @@ id  ::=  ([_A-Za-z][A-Za-z0-9_]*)
 !>] ::=  !'>]'
 #   ::=  ([0-9])
 -   ::=  '-'
-
+_.  ::=  '.'
 
 
 

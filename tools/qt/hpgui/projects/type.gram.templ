@@ -8,7 +8,12 @@ __BEGIN_FILE__::$(__file_name__).h
 #include <cstdint>
 #include <string>
 
-$(__set__  STRUCT  $(STRUCT_H))  $(__run__)
+$(__set__  STRUCT  $(STRUCT_H))\
+$(__set__  MOD_IDS $(id) { namespace $(MOD_ID))\
+$(__set__  BEGIN_MODULE  namespace $(MOD_ID) {$(__endl__))\
+$(__set__  END_MODULE  $(MOD_ID) }$(__endl__))\
+$(__run__)
+
 $(FRAME*)
 
 __END_TEMPLATE__:: 
@@ -22,7 +27,7 @@ __BEGIN_FILE__::$(__file_name__).cpp
 #include "core/tuple.hpp"
 
 
-$(__set__  STRUCT  $(STRUCT_CPP))  $(__run__)\
+$(__set__  STRUCT  $(STRUCT_CPP))$(__run__)\
 $(FRAME*)
 
 
@@ -73,6 +78,8 @@ $(__run__)\
     bool operator< (const $(id)& ) const;
 };
 std::ostream& operator<< (std::ostream& o, const $(id)& t);
+
+
 
 
 
@@ -144,6 +151,8 @@ $(__run__)\
         << " }";
     return os;
 }
+
+
 
 
 

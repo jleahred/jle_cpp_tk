@@ -2,7 +2,7 @@
     comment
 */
 
-
+module idl.pr {
 
 jt_simple {
     i : int32
@@ -17,17 +17,23 @@ jt_simple {
 
 jt_inline {  i: int32,  s: string  }
 
+module nested {  jt_inline {  i: int32,  s: string  }  }
+
+
 
 jt_inline2 {  
    i: int32,   i64: int64
    s: string  
 }
 
-/*
+
+}  // module idl.pr {
+
+/****
 jt_tuple {  int32,  string  }
 
 
-/****
+
 jt_union 
 {
     |  s : string

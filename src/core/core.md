@@ -353,7 +353,7 @@ links:
 
  \section timers
 
- It is part or reactive programming.
+ It is part or message driven programming.
 
  Only one line is necessary to configure a timer, check the example.
 
