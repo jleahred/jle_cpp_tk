@@ -17,21 +17,24 @@ __END_TEMPLATE__::
 
 
 
+__BEGIN_TEMPLATE__::MODULE
+$(__set__ BEGIN_MOD
+            $(__set__ MOD_IDS_  namespace $(id) { $(MOD_ID))\
+            $(__set__ MOD_ID_ namespace $(id) { )\
+            $(__run__)\
+            $(MOD_ID))\
+$(__set__ END_MOD
+            $(__set__ MOD_IDS_  }  $(MOD_ID))\
+            $(__set__ MOD_ID_  })\
+            $(__run__)\
+            $(MOD_ID))\
+\
+$(BEGIN_MOD)
+$(FRAME*)
+$(END_MOD)   //  $(BEGIN_MOD)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
 
 
-__BEGIN_TEMPLATE__::BEGIN_MOD
-$(__set__ MOD_IDS_  namespace $(id) { $(MOD_ID))\
-$(__set__ MOD_ID_ namespace $(id) { )\
-$(__run__)\
-$(MOD_ID)
-__END_TEMPLATE__::
-
-__BEGIN_TEMPLATE__::END_MOD
-$(__set__ MOD_IDS_  }  $(MOD_ID))\
-$(__set__ MOD_ID_  })\
-$(__run__)\
-$(MOD_ID)
-__END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: CPP_FILE
