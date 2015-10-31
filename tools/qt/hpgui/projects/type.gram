@@ -7,9 +7,9 @@ FRAME  ::= .__. MODULE .__.
 FRAME  ::= .__. STRUCT .__.
 
 //  MODULE
-MODULE ::= module ._. MOD_ID ._.  { .__.  FRAME*  .__. }   ##transf2->$(BEGIN_MODULE)$(__endl__)$(FRAME*)$(__endl__)$(END_MODULE)$(__endl__)
-MOD_ID ::= id _. MOD_ID                                    ##transf2->$(MOD_IDS)
-MOD_ID ::= id
+MODULE ::= module ._. MOD_ID ._.  { .__.  FRAME*  .__. }   ##transf2->$(BEGIN_MOD)$(__endl__)$(FRAME*)$(__endl__)$(END_MOD)   //  $(BEGIN_MOD)$(__endl__)$(__endl__)
+MOD_ID ::= id _. MOD_ID                                    ##transf2->$(MOD_IDS_)
+MOD_ID ::= id                                              ##transf2->$(MOD_ID_)
 module ::= 'module'
 
 

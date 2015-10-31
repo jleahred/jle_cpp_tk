@@ -9,15 +9,29 @@ __BEGIN_FILE__::$(__file_name__).h
 #include <string>
 
 $(__set__  STRUCT  $(STRUCT_H))\
-$(__set__  MOD_IDS $(id) { namespace $(MOD_ID))\
-$(__set__  BEGIN_MODULE  namespace $(MOD_ID) {$(__endl__))\
-$(__set__  END_MODULE  $(MOD_ID) }$(__endl__))\
 $(__run__)
 
 $(FRAME*)
 
 __END_TEMPLATE__:: 
 
+
+
+
+
+__BEGIN_TEMPLATE__::BEGIN_MOD
+$(__set__ MOD_IDS_  namespace $(id) { $(MOD_ID))\
+$(__set__ MOD_ID_ namespace $(id) { )\
+$(__run__)\
+$(MOD_ID)
+__END_TEMPLATE__::
+
+__BEGIN_TEMPLATE__::END_MOD
+$(__set__ MOD_IDS_  }  $(MOD_ID))\
+$(__set__ MOD_ID_  })\
+$(__run__)\
+$(MOD_ID)
+__END_TEMPLATE__::
 
 
 __BEGIN_TEMPLATE__:: CPP_FILE

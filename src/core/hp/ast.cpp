@@ -299,6 +299,7 @@ std::string replace_transf2(    AST_node_item&                                  
     size_t  col = 0;
     auto process_full_commnand = [&](const std::string& full_command, std::function<void(const std::string)> exec_rule_for_replace) {
         add2result(0);
+
         auto id_params = get_id(full_command);
         std::string id = std::get<0>(id_params);
 
@@ -381,6 +382,21 @@ std::string replace_transf2(    AST_node_item&                                  
                 else {
                     declared_vars[var_name] = param;
                     //add += replace_transf2(*(current_node.down), map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, declared_vars), templates, declared_vars);
+                }
+            }
+            else if(id == "__copy__")
+            {
+                auto id_params_command = get_id(std::get<1>(id_params));
+                auto var_name = std::get<0>(id_params_command);
+                auto param  = std::get<1>(id_params_command);
+                if(var_name.empty())
+                    add += JLE_SS("invalid var_name on  (" << full_command << ")");
+                else if(param.empty())
+                {
+                    add += JLE_SS("empty param  (" << full_command << ")");
+                }
+                else {
+                    declared_vars[var_name] = get_template_content(param, templates, declared_vars);
                 }
             }
             else if(id == "__alignc__")
