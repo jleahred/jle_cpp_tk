@@ -8,11 +8,15 @@ __BEGIN_FILE__::$(__file_name__).h
 #include <cstdint>
 #include <string>
 
-$(__set__  STRUCT  $(STRUCT_H))  $(__run__)
+$(__set__  RECORD  $(RECORD_H))~
+$(__run__)
+
 $(FRAME*)
 
 
 __END_TEMPLATE__:: 
+
+
 
 
 
@@ -23,18 +27,35 @@ __BEGIN_FILE__::$(__file_name__).cpp
 #include "core/tuple.hpp"
 
 
-$(__set__  STRUCT  $(STRUCT_CPP))  $(__run__)\
+$(__set__  RECORD  $(RECORD_CPP))$(__run__)~
 $(FRAME*)
-
-
 
 
 __END_TEMPLATE__:: 
 
 
 
+__BEGIN_TEMPLATE__::MODULE
+$(__set__ BEGIN_MOD
+~            $(__set__ MOD_IDS_  namespace $(id) { $(MOD_ID))~
+~            $(__set__ MOD_ID_ namespace $(id) { )~
+~            $(__run__)~
+~            $(MOD_ID))~
+$(__set__ END_MOD
+~            $(__set__ MOD_IDS_  }  $(MOD_ID))~
+~            $(__set__ MOD_ID_  })~
+~            $(__run__)~
+~            $(MOD_ID))~
+~
+$(BEGIN_MOD)
+$(FRAME*)
+$(END_MOD)   //  $(BEGIN_MOD)$(__endl__)$(__endl__)
+$(__endl__)
+__END_TEMPLATE__:: 
 
-__BEGIN_TEMPLATE__:: STRUCT_H
+
+
+__BEGIN_TEMPLATE__:: RECORD_H
 
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
@@ -46,23 +67,23 @@ __BEGIN_TEMPLATE__:: STRUCT_H
 
 struct $(id) {
 
-    //  fields  ·································
-$(__set__  NAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(NAMED))\
-$(__set__  NAMED_END    $(FULL_TYPE) $(id);)\
-$(__run__)\
+    //  fields  ...................................
+$(__set__  FNAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END    $(FULL_TYPE) $(id);)~
+$(__run__)~
 
-        $(__lmargin__  $(__alignc__ $(FIELDS)))\
+        $(__lmargin__  $(__alignc__ $(RECORD_FIELDS)))~
 
-    //  ·········································
+    //  ...........................................
 
 
     //  ctor
     $(id)() = delete;
     $(id) (
-$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
-$(__run__)\
-          $(__lmargin__ $(FIELDS))
+$(__set__  FNAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(FULL_TYPE) _$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
     );
     $(id) (const $(id)& ) = default;
     $(id) (      $(id)&&) = default;
@@ -79,12 +100,14 @@ std::ostream& operator<< (std::ostream& o, const $(id)& t);
 
 
 
+
+
 __END_TEMPLATE__:: 
 
 
 
 
-__BEGIN_TEMPLATE__:: STRUCT_CPP
+__BEGIN_TEMPLATE__:: RECORD_CPP
 
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
@@ -95,43 +118,43 @@ __BEGIN_TEMPLATE__:: STRUCT_CPP
 //-----------------------------------------------------------------
 
 $(id)::$(id) (
-$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
-$(__run__)\
-          $(__lmargin__ $(FIELDS))
+$(__set__  FNAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(FULL_TYPE) _$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
     )  :
-$(__set__  NAMED_NOEND $(id)(_$(id)$(__close_par__),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(id)(_$(id)$(__close_par__))\
-$(__run__)\
-          $(__lmargin__ $(FIELDS))
+$(__set__  FNAMED_NOEND $(id)(_$(id)$(__close_par__),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id)(_$(id)$(__close_par__))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
     {}
 
 
 //  comparison
 bool $(id)::operator==(const $(id)& r) const
 {
-$(__set__  NAMED_NOEND $(id) == r.$(id)  &&$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(id) == r.$(id))\
-$(__run__)\
+$(__set__  FNAMED_NOEND $(id) == r.$(id)  &&$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id) == r.$(id))~
+$(__run__)~
     if(
-        $(__lmargin__ $(FIELDS))
+        $(__lmargin__ $(FRECORD_FIELDS))
     )     return true;
     else  return false;
 }
 
 bool $(id)::operator< (const $(id)& r) const
 {
-$(__set__  NAMED_NOEND $(id),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(id))\
-$(__run__)\
+$(__set__  FNAMED_NOEND $(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id))~
+$(__run__)~
     if(std::tie(
-          $(__lmargin__ $(FIELDS)))
+          $(__lmargin__ $(RECORD_FIELDS)))
        <
        std::tie(
-$(__set__  NAMED_NOEND r.$(id),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   r.$(id))\
-$(__run__)\
-          $(__lmargin__ $(FIELDS)))
+$(__set__  FNAMED_NOEND r.$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   r.$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS)))
     )     return true;
     else  return false;
 
@@ -139,14 +162,16 @@ $(__run__)\
 
 std::ostream& operator<< (std::ostream& os, const $(id)& t)
 {
-$(__set__  NAMED_NOEND << "$(id): " << t.$(id) << ", "$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   << "$(id): " << t.$(id))\
-$(__run__)\
+$(__set__  FNAMED_NOEND << "$(id): " << t.$(id) << ", "$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   << "$(id): " << t.$(id))~
+$(__run__)~
     os  << " $(id) { " 
-           $(__lmargin__ $(FIELDS))
+           $(__lmargin__ $(RECORD_FIELDS))
         << " }";
     return os;
 }
+
+
 
 
 

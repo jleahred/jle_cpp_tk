@@ -3,37 +3,59 @@ MAIN
 MAIN   ::=  FRAME*               ##transf2->$(H_FILE)$(CPP_FILE)
 
 
-FRAME  ::= .__. STRUCT .__.            
+FRAME  ::= .__. MODULE .__.
+FRAME  ::= .__. TYPE .__.
 
-STRUCT ::= id .__. {  FIELDS  }        ##transf2->$(STRUCT)
-
-
-FIELDS ::=  NAMED  PROP                
-FIELDS ::=  NAMED                      
-FIELDS ::=  TUPLE                      
-FIELDS ::=  UNION
-FIELDS ::=  ENUMERATION
+TYPE   ::=  RECORD
+TYPE   ::=  TUPLE
 
 
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   NAMED    ##transf2-> $(NAMED_NOEND)
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   NAMED    ##transf2-> $(NAMED_NOEND)
-NAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                          ##transf2-> $(NAMED_END)
-NAMED ::=  NAMED_SUB
-NAMED ::=  NAMED_IMPL_SUB
+
+//  MODULE
+MODULE ::= module ._. MOD_ID ._.  { .__.  FRAME*  .__. }   ##transf2->$(MODULE)
+MOD_ID ::= id _. MOD_ID                                    ##transf2->$(MOD_IDS_)
+MOD_ID ::= id                                              ##transf2->$(MOD_ID_)
+module ::= 'module'
 
 
-NAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.   NAMED
-NAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.
-NAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.   NAMED
-NAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.
-ANON_STRUCT        ::= .__. {  FIELDS   }
+//  RECORD
+RECORD ::= id .__. {  RECORD_FIELDS  }        ##transf2->$(RECORD)
+
+RECORD_FIELDS ::=  FNAMED  PROP                
+RECORD_FIELDS ::=  FNAMED                      
 
 
-TUPLE ::=  .__.   TUPLE_TYPE   ._.   endl    .__.  TUPLE                         ##transf2-> "" : $(TUPLE_TYPE),$(__endl__)$(TUPLE)
-TUPLE ::=  .__.   TUPLE_TYPE   ._.   ,       .__.  TUPLE                         ##transf2-> "" : $(TUPLE_TYPE),$(__endl__)$(TUPLE)
-TUPLE ::=  .__.   TUPLE_TYPE   .__.                                              ##transf2-> "" : $(TUPLE_TYPE)
+FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
+FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
+FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                           ##transf2-> $(FNAMED_END)
+//FNAMED ::=  FNAMED_SUB
+//FNAMED ::=  FNAMED_IMPL_SUB
 
-TUPLE_TYPE  ::=  BASIC_TYPE                                                      
+
+//FNAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.   FNAMED
+//FNAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.
+//FNAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.   FNAMED
+//FNAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.
+//FANON_STRUCT        ::= .__. {  FIELDS   }
+
+
+
+//  TUPLE
+TUPLE ::= id .__. {  TUPLE_FIELDS  }        ##transf2->$(TUPLE)
+
+TUPLE_FIELDS ::=  F_NO_NAMED  PROP                
+TUPLE_FIELDS ::=  F_NO_NAMED
+
+
+F_NO_NAMED ::=  .__.   FULL_TYPE   ._.   endl    .__.   F_NO_NAMED    ##transf2-> $(F_NO_NAMED_NOEND)
+F_NO_NAMED ::=  .__.   FULL_TYPE   ._.   ,       .__.   F_NO_NAMED    ##transf2-> $(F_NO_NAMED_NOEND)
+F_NO_NAMED ::=  .__.   FULL_TYPE   .__.                               ##transf2-> $(F_NO_NAMED_END)
+
+
+
+
+
+
 
 UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   endl    .__.  UNION
 UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   ,       .__.  UNION
@@ -127,7 +149,7 @@ id  ::=  ([_A-Za-z][A-Za-z0-9_]*)
 !>] ::=  !'>]'
 #   ::=  ([0-9])
 -   ::=  '-'
-
+_.  ::=  '.'
 
 
 
