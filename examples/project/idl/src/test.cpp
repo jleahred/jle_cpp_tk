@@ -1,12 +1,15 @@
 #include "test.h"
-#include "core/tuple.hpp"
-  //-----------------------------------------------------------------
+
+
+namespace idl { namespace pr {
+//-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    t_simple
+//    (record)   t_simple
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
+
 t_simple::t_simple (
           int32_t _i,
           std::string _j,
@@ -16,6 +19,8 @@ t_simple::t_simple (
           j(_j),
           s(_s)
     {}
+
+
 //  comparison
 bool t_simple::operator==(const t_simple& r) const
 {
@@ -26,6 +31,7 @@ bool t_simple::operator==(const t_simple& r) const
     )     return true;
     else  return false;
 }
+
 bool t_simple::operator< (const t_simple& r) const
 {
     if(std::tie(
@@ -39,23 +45,29 @@ bool t_simple::operator< (const t_simple& r) const
           r.s)
     )     return true;
     else  return false;
+
 }
+
 std::ostream& operator<< (std::ostream& os, const t_simple& t)
 {
-    os  << " t_simple { " 
+    os  << " t_simple { "
            << "i: " << t.i << ", "
            << "j: " << t.j << ", "
            << "s: " << t.s
         << " }";
     return os;
 }
+
+
+
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    t_inline
+//    (record)   t_inline
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
+
 t_inline::t_inline (
           int32_t _i,
           std::string _s
@@ -63,6 +75,8 @@ t_inline::t_inline (
           i(_i),
           s(_s)
     {}
+
+
 //  comparison
 bool t_inline::operator==(const t_inline& r) const
 {
@@ -72,6 +86,7 @@ bool t_inline::operator==(const t_inline& r) const
     )     return true;
     else  return false;
 }
+
 bool t_inline::operator< (const t_inline& r) const
 {
     if(std::tie(
@@ -83,22 +98,86 @@ bool t_inline::operator< (const t_inline& r) const
           r.s)
     )     return true;
     else  return false;
+
 }
+
 std::ostream& operator<< (std::ostream& os, const t_inline& t)
 {
-    os  << " t_inline { " 
+    os  << " t_inline { "
            << "i: " << t.i << ", "
            << "s: " << t.s
         << " }";
     return os;
 }
+
+
+
+namespace nested {
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    t_inline2
+//    (record)   t_inline
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
+
+t_inline::t_inline (
+          int32_t _i,
+          std::string _s
+    )  :
+          i(_i),
+          s(_s)
+    {}
+
+
+//  comparison
+bool t_inline::operator==(const t_inline& r) const
+{
+    if(
+        i == r.i  &&
+        s == r.s
+    )     return true;
+    else  return false;
+}
+
+bool t_inline::operator< (const t_inline& r) const
+{
+    if(std::tie(
+          i,
+          s)
+       <
+       std::tie(
+          r.i,
+          r.s)
+    )     return true;
+    else  return false;
+
+}
+
+std::ostream& operator<< (std::ostream& os, const t_inline& t)
+{
+    os  << " t_inline { "
+           << "i: " << t.i << ", "
+           << "s: " << t.s
+        << " }";
+    return os;
+}
+
+
+
+
+}   //  namespace nested {
+
+
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (record)   t_inline2
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
 t_inline2::t_inline2 (
           int32_t _i,
           int64_t _i64,
@@ -108,6 +187,8 @@ t_inline2::t_inline2 (
           i64(_i64),
           s(_s)
     {}
+
+
 //  comparison
 bool t_inline2::operator==(const t_inline2& r) const
 {
@@ -118,6 +199,7 @@ bool t_inline2::operator==(const t_inline2& r) const
     )     return true;
     else  return false;
 }
+
 bool t_inline2::operator< (const t_inline2& r) const
 {
     if(std::tie(
@@ -131,13 +213,102 @@ bool t_inline2::operator< (const t_inline2& r) const
           r.s)
     )     return true;
     else  return false;
+
 }
+
 std::ostream& operator<< (std::ostream& os, const t_inline2& t)
 {
-    os  << " t_inline2 { " 
+    os  << " t_inline2 { "
            << "i: " << t.i << ", "
            << "i64: " << t.i64 << ", "
            << "s: " << t.s
         << " }";
     return os;
 }
+
+
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (tuple)  t_tuple
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+//  ctor
+t_tuple::t_tuple(
+          int32_t p0,
+          std::string p1
+)  :  tuple{ std::make_tuple (
+              p0,  
+              p1   
+        )} {};
+
+
+//  comparison
+bool t_tuple::operator==(const t_tuple& rhs) const
+{
+  return this->tuple == rhs.tuple;
+}
+bool t_tuple::operator< (const t_tuple& rhs) const
+{
+  return this->tuple < rhs.tuple;
+}
+
+std::ostream& operator<< (std::ostream& os, const t_tuple& t)
+{
+    using ::operator<<;
+    os << t.tuple;
+    return os;
+}
+
+
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (tuple)  t_tuple2
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+//  ctor
+t_tuple2::t_tuple2(
+          int32_t p0,
+          std::string p1
+)  :  tuple{ std::make_tuple (
+              p0,  
+              p1   
+        )} {};
+
+
+//  comparison
+bool t_tuple2::operator==(const t_tuple2& rhs) const
+{
+  return this->tuple == rhs.tuple;
+}
+bool t_tuple2::operator< (const t_tuple2& rhs) const
+{
+  return this->tuple < rhs.tuple;
+}
+
+std::ostream& operator<< (std::ostream& os, const t_tuple2& t)
+{
+    using ::operator<<;
+    os << t.tuple;
+    return os;
+}
+
+
+
+
+}  }   //  namespace idl { namespace pr {
+
+
+
+
+
+
+
+

@@ -35,7 +35,7 @@ void process_result(const std::string& result)
 {
     jle::shared_ptr<std::ofstream>  current_file;
 
-    auto lines = jle::s_split(result, "\n", true);
+    auto lines = jle::s_split(result, "\n", false);
     for(l : lines)
     {
         auto begin_file_indicator = std::string{"__BEGIN_FILE__::"};

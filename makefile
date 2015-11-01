@@ -83,12 +83,17 @@ cleanlibs:
 
 
 .PHONY : libs
-libs: prepare clean   lib_jle_core lib_jle_net
+libs: prepare clean   tools lib_jle_net
 
 
 .PHONY : lib_jle_core
 lib_jle_core: prepare
 	make -C src/core lib
+
+
+.PHONY : tools
+tools: prepare clean lib_jle_core
+	make -C tools/hpt release
 
 
 .PHONY : lib_jle_net

@@ -53,7 +53,7 @@ My aim is different from C++.
     - I don't like undefined behaviour
     - I don't like crashes due to programming mistakes
     - C++ is a dangerous language. It's easy to have crashes, I want a library protecting and helping the programmer.
-    - Reactive programming
+    - Message driven programming
     - If we have a fail processing a message, usually is better to inform about it and continue with next one.
 - KISS and YAGNI
     - Easy to use API (the implementation could be complex)
@@ -98,7 +98,7 @@ Crash and errors reasons and how to deal with them...
 
 Crash  | Deal with...
 ------------- | -------------
-Non trapped exception  | reactive programming with main message loop trapping all exceptions
+Non trapped exception  | message driven programming with main message loop trapping all exceptions
 Null pointer  | generate an exception is better to undefined behaviour (usually crash)
 Dangling pointers | smart pointers and signal slot. Please RAII everywhere <br> No arithmetic pointers
 Memory leaks | same as previous one
@@ -296,12 +296,11 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~tuples ostream <<~~
 - (50%) Http REST support (pending routes and client)
 - (done) ~~integer div 0 protection~~
-- (90%) Reactive message oriented: synchr, timers
+- (90%) Message driven programming oriented: synchr, timers
 - (done) ~~parallelism control helper~~
-- LL(n) parser
-- qt gui for LL(n)
-- .ini and .cfg parsing files
-- ashared_ptr. Destroy it ansynchronous way to avoid destroy when using it
+- (100%) LL(n) parser
+- (80%) qt gui for LL(n)
+- LL(n) parser documentation
 - IDL class generation
     - stream
     - yaml
@@ -310,6 +309,8 @@ In any case, I plan to follow next order (more or less)...
     - less operator
     - equal operator
     - ...
+- .ini and .cfg parsing files
+- ashared_ptr. Destroy it ansynchronous way to avoid destroy when using it
 - IDL fsm generation
 - async signals
 - soft-realtime facilities

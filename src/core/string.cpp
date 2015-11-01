@@ -404,15 +404,19 @@ std::string  align_cols(const std::string&  text)
     }
 
     std::ostringstream  result;
+    bool first = true;
     for(row : rows) {
         unsigned col = 0;
+        if(first)
+            first = false;
+        else
+            result << std::endl;
         for(cell : row) {
             result << std::setw(int(max_size_col[col])) << std::left << cell << "  ";
             ++col;
             if(col>=max_size_col.size())
                 break;
         }
-        result << std::endl;
     }
 
     return result.str();

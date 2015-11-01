@@ -7,12 +7,18 @@ __BEGIN_FILE__::$(__file_name__).h
 
 #include <cstdint>
 #include <string>
+#include "core/tuple.hpp"
 
-$(__set__  STRUCT  $(STRUCT_H))  $(__run__)
+$(__set__  MODULE  $(MODULE_CODE))~
+$(__set__  RECORD  $(RECORD_H))~
+$(__set__  TUPLE   $(TUPLE_H))~
+$(__run__)
+
 $(FRAME*)
-
-
+$(__endl__)$(__endl__)$(__endl__)
 __END_TEMPLATE__:: 
+
+
 
 
 
@@ -20,49 +26,65 @@ __BEGIN_TEMPLATE__:: CPP_FILE
 __BEGIN_FILE__::$(__file_name__).cpp
 #include "$(__file_name_no_path__).h"
 
-#include "core/tuple.hpp"
+$(__set__  MODULE  $(MODULE_CODE))~
+$(__set__  RECORD  $(RECORD_CPP))$(__run__)~
+$(__set__  TUPLE   $(TUPLE_CPP))$(__run__)~
 
-
-$(__set__  STRUCT  $(STRUCT_CPP))  $(__run__)\
 $(FRAME*)
-
-
-
-
+$(__endl__)$(__endl__)$(__endl__)
 __END_TEMPLATE__:: 
 
 
 
+__BEGIN_TEMPLATE__::MODULE_CODE
+$(__set__ BEGIN_MOD
+~            $(__set__ MOD_IDS_  namespace $(id) { $(MOD_ID))~
+~            $(__set__ MOD_ID_ namespace $(id) { )~
+~            $(__run__)~
+~            $(MOD_ID))~
+$(__set__ END_MOD
+~            $(__set__ MOD_IDS_  }  $(MOD_ID))~
+~            $(__set__ MOD_ID_  })~
+~            $(__run__)~
+~            $(MOD_ID))~
+~
+$(BEGIN_MOD)
+$(FRAME*)
+$(END_MOD)   //  $(BEGIN_MOD)$(__endl__)$(__endl__)
+$(__endl__)
+__END_TEMPLATE__:: 
 
-__BEGIN_TEMPLATE__:: STRUCT_H
+
+
+__BEGIN_TEMPLATE__:: RECORD_H
 
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    $(id)
+//    (record)   $(id)
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 
 struct $(id) {
 
-    //  fields  ·································
-$(__set__  NAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(NAMED))\
-$(__set__  NAMED_END    $(FULL_TYPE) $(id);)\
-$(__run__)\
+    //  fields  ...................................
+$(__set__  FNAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END    $(FULL_TYPE) $(id);)~
+$(__run__)~
 
-        $(__lmargin__  $(__alignc__ $(FIELDS)))\
+        $(__lmargin__  $(__alignc__ $(RECORD_FIELDS)))~
 
-    //  ·········································
+    //  ...........................................
 
 
     //  ctor
     $(id)() = delete;
     $(id) (
-$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
-$(__run__)\
-          $(__lmargin__ $(FIELDS))
+$(__set__  FNAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(FULL_TYPE) _$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
     );
     $(id) (const $(id)& ) = default;
     $(id) (      $(id)&&) = default;
@@ -76,62 +98,60 @@ $(__run__)\
     bool operator< (const $(id)& ) const;
 };
 std::ostream& operator<< (std::ostream& o, const $(id)& t);
-
-
-
+$(__endl__)$(__endl__)$(__endl__)
 __END_TEMPLATE__:: 
 
 
 
 
-__BEGIN_TEMPLATE__:: STRUCT_CPP
+__BEGIN_TEMPLATE__:: RECORD_CPP
 
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
-//    $(id)
+//    (record)   $(id)
 //
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 
 $(id)::$(id) (
-$(__set__  NAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(FULL_TYPE) _$(id))\
-$(__run__)\
-          $(__lmargin__ $(FIELDS))
+$(__set__  FNAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(FULL_TYPE) _$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
     )  :
-$(__set__  NAMED_NOEND $(id)(_$(id)$(__close_par__),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(id)(_$(id)$(__close_par__))\
-$(__run__)\
-          $(__lmargin__ $(FIELDS))
+$(__set__  FNAMED_NOEND $(id)(_$(id)$(__close_par__),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id)(_$(id)$(__close_par__))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
     {}
 
 
 //  comparison
 bool $(id)::operator==(const $(id)& r) const
 {
-$(__set__  NAMED_NOEND $(id) == r.$(id)  &&$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(id) == r.$(id))\
-$(__run__)\
+$(__set__  FNAMED_NOEND $(id) == r.$(id)  &&$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id) == r.$(id))~
+$(__run__)~
     if(
-        $(__lmargin__ $(FIELDS))
+        $(__lmargin__ $(RECORD_FIELDS))
     )     return true;
     else  return false;
 }
 
 bool $(id)::operator< (const $(id)& r) const
 {
-$(__set__  NAMED_NOEND $(id),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   $(id))\
-$(__run__)\
+$(__set__  FNAMED_NOEND $(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id))~
+$(__run__)~
     if(std::tie(
-          $(__lmargin__ $(FIELDS)))
+          $(__lmargin__ $(RECORD_FIELDS)))
        <
        std::tie(
-$(__set__  NAMED_NOEND r.$(id),$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   r.$(id))\
-$(__run__)\
-          $(__lmargin__ $(FIELDS)))
+$(__set__  FNAMED_NOEND r.$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   r.$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS)))
     )     return true;
     else  return false;
 
@@ -139,15 +159,132 @@ $(__run__)\
 
 std::ostream& operator<< (std::ostream& os, const $(id)& t)
 {
-$(__set__  NAMED_NOEND << "$(id): " << t.$(id) << ", "$(__endl__)$(NAMED))\
-$(__set__  NAMED_END   << "$(id): " << t.$(id))\
-$(__run__)\
+$(__set__  FNAMED_NOEND << "$(id): " << t.$(id) << ", "$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   << "$(id): " << t.$(id))~
+$(__run__)~
     os  << " $(id) { " 
-           $(__lmargin__ $(FIELDS))
+           $(__lmargin__ $(RECORD_FIELDS))
         << " }";
     return os;
 }
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
 
 
 
+
+
+
+
+__BEGIN_TEMPLATE__:: COUNT_TUPLE_FIELDS
+$(__nothing__     count number of fields)~
+$(__set_mut__  PCOUNTER  0)~
+$(__set__  F_NO_NAMED_NOEND $(__inc__ PCOUNTER)$(F_NO_NAMED))~
+$(__set__  F_NO_NAMED_END   $(__nothing__))~
+$(__run__)~
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: TUPLE_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (tuple)  $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct $(id) {
+
+    //  fields  ...................................
+$(__set__  F_NO_NAMED_NOEND  $(FULL_TYPE) ,$(__endl__)$(F_NO_NAMED))~
+$(__set__  F_NO_NAMED_END    $(FULL_TYPE) )~
+$(__run__)~
+    jle::tuple<
+                $(__lmargin__  $(__alignc__ $(TUPLE_FIELDS)))
+    >  tuple;
+    //  ...........................................
+
+
+    jle::tuple<
+                $(__lmargin__  $(__alignc__ $(TUPLE_FIELDS)))
+    >&
+    operator*() { return  tuple;  }
+
+    //  ctor
+    $(id)() = delete;
+    $(id) (
+$(COUNT_TUPLE_FIELDS)~
+$(__nothing__     write fields with counter)~
+$(__set__  F_NO_NAMED_NOEND $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER),$(__endl__)$(F_NO_NAMED))~
+$(__set__  F_NO_NAMED_END $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER))~
+$(__run__)
+          $(__lmargin__ $(TUPLE_FIELDS))
+    );
+    $(id) (const $(id)& ) = default;
+    $(id) (      $(id)&&) = default;
+
+    //  assign
+    $(id)& operator=(const $(id)& ) = default;
+    $(id)& operator=(      $(id)&&) = default;
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: TUPLE_CPP
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (tuple)  $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+//  ctor
+$(id)::$(id)(
+~    $(COUNT_TUPLE_FIELDS)~
+~    $(__nothing__     write fields with counter)~
+~    $(__set__  F_NO_NAMED_NOEND $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER),$(__endl__)$(F_NO_NAMED))~
+~    $(__set__  F_NO_NAMED_END   $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER))~
+~    $(__run__)
+          $(__lmargin__ $(TUPLE_FIELDS))
+)  :  tuple{ std::make_tuple (
+~             $(COUNT_TUPLE_FIELDS)~
+~             $(__nothing__     write fields with counter)~
+~             $(__set__  F_NO_NAMED_NOEND p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER),$(__endl__)$(F_NO_NAMED))~
+~             $(__set__  F_NO_NAMED_END   p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER))~
+~             $(__run__)
+              $(__lmargin__  $(__alignc__ $(TUPLE_FIELDS)))
+        )} {};
+
+
+//  comparison
+bool $(id)::operator==(const $(id)& rhs) const
+{
+  return this->tuple == rhs.tuple;
+}
+bool $(id)::operator< (const $(id)& rhs) const
+{
+  return this->tuple < rhs.tuple;
+}
+
+std::ostream& operator<< (std::ostream& os, const $(id)& t)
+{
+    using ::operator<<;
+    os << t.tuple;
+    return os;
+}
+$(__endl__)$(__endl__)$(__endl__)
 __END_TEMPLATE__:: 

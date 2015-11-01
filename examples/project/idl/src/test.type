@@ -2,7 +2,7 @@
     comment
 */
 
-
+module idl.pr {
 
 t_simple {
     i : int32
@@ -17,17 +17,31 @@ t_simple {
 
 t_inline {  i: int32,  s: string  }
 
+module nested {  t_inline {  i: int32,  s: string  }  }
+
+
 
 t_inline2 {
    i: int32,   i64: int64
    s: string
 }
 
-/*
+
+t_tuple {  int32,  string  }
+
+t_tuple2 {
+    int32
+    string
+}
+
+
+}  // module idl.pr {
+
+/****
 t_tuple {  int32,  string  }
 
 
-/****
+
 t_union
 {
     |  s : string
