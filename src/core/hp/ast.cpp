@@ -284,13 +284,62 @@ std::string replace_transf2(    AST_node_item&                                  
     auto ident = std::string("");
     std::string add;
 
-    auto add2result = [&add, &result, ident=ident](size_t col) {
+    auto remove_chars = [](const std::string& s) {
+        const char removing_symbol = '~';
+        std::string rc_result;
+        enum class  rc_status { normal, rem_symbol, removing };
+        rc_status status = rc_status::normal;
+        for(c : s) {
+            switch (status) {
+            case rc_status::normal:
+                if(c == removing_symbol)
+                    status = rc_status::rem_symbol;
+                else
+                    rc_result.push_back(c);
+                break;
+
+            case rc_status::rem_symbol:
+                if( c == removing_symbol) {
+                    status = rc_status::normal;
+                    rc_result.push_back(c);
+                } else if( c == ' ') {
+                    status = rc_status::removing;
+                } else if( c == '\n') {
+                    status = rc_status::normal;
+                } else {
+                    status = rc_status::normal;
+                    rc_result.push_back(c);
+                }
+                break;
+            case rc_status::removing:
+                if( c == removing_symbol) {
+                    status = rc_status::normal;
+                    rc_result.push_back(c);
+                } else if( c == ' ') {
+                    status = rc_status::removing;
+                } else if( c == '\n') {
+                    status = rc_status::normal;
+                    rc_result.push_back(c);
+                } else {
+                    status = rc_status::normal;
+                    rc_result.push_back(c);
+                }
+                break;
+            default:
+                break;  //  not possible
+            }
+        }
+        return rc_result;
+    };
+
+    auto add2result = [&add, &result, ident=ident, remove_chars=remove_chars](size_t col) {
         //if(add.empty()  ||  (add.find('\r') == std::string::npos  &&  add.find('\n') == std::string::npos))
         if(add.empty())
             return;
         auto full_ident = JLE_SS(ident << std::string(col, ' '));
         add  = replace_string(add, "\n", JLE_SS("\n" << full_ident));
-        add  = replace_string(add, "\\\n", "");
+        //add  = replace_string(add, "\\\n", "");
+        add = remove_chars(add);
         result = JLE_SS(result << add);
         add  = "";
     };

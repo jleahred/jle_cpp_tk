@@ -8,7 +8,7 @@
 int main()
 {
 
-    auto simple = t_simple{ 1, "one", "two" };
+    auto simple = idl::pr::jt_simple{ 1, "one", "two" };
 
     std::cout << simple << std::endl;
 

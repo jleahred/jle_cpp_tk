@@ -1,10 +1,11 @@
-//  generated on 2015-10-28 23:45:49.841
-//  generated on 2015-10-28 00:00:00.000
+//  generated on 2015-11-01 09:27:53.466
+//  generated on 2015-10-31 23:59:59.000
 //  this is a test
 
 
 #include <cstdint>
 #include <string>
+
 
 
 namespace idl { namespace pr {
@@ -18,13 +19,13 @@ namespace idl { namespace pr {
 
 struct jt_simple {
 
-    //  fields  ·································
+    //  fields  ...................................
 
         int32_t      i;  
         std::string  j;  
         std::string  s;  
         
-    //  ·········································
+    //  ...........................................
 
 
     //  ctor
@@ -60,12 +61,12 @@ std::ostream& operator<< (std::ostream& o, const jt_simple& t);
 
 struct jt_inline {
 
-    //  fields  ·································
+    //  fields  ...................................
 
         int32_t      i;  
         std::string  s;  
         
-    //  ·········································
+    //  ...........................................
 
 
     //  ctor
@@ -101,12 +102,12 @@ namespace nested {
 
 struct jt_inline {
 
-    //  fields  ·································
+    //  fields  ...................................
 
         int32_t      i;  
         std::string  s;  
         
-    //  ·········································
+    //  ...........................................
 
 
     //  ctor
@@ -132,7 +133,8 @@ std::ostream& operator<< (std::ostream& o, const jt_inline& t);
 
 
 
-} // namepace  nested {
+}   //  namespace nested {
+
 
 
 //-----------------------------------------------------------------
@@ -145,13 +147,13 @@ std::ostream& operator<< (std::ostream& o, const jt_inline& t);
 
 struct jt_inline2 {
 
-    //  fields  ·································
+    //  fields  ...................................
 
         int32_t      i;    
         int64_t      i64;  
         std::string  s;    
         
-    //  ·········································
+    //  ...........................................
 
 
     //  ctor
@@ -178,7 +180,9 @@ std::ostream& operator<< (std::ostream& o, const jt_inline2& t);
 
 
 
-} // namepace  idl { namespace pr {
+}  }   //  namespace idl { namespace pr {
+
+
 
 
 

@@ -3,7 +3,7 @@
 #include "core/tuple.hpp"
 
 
-  namespace idl { namespace pr {
+namespace idl { namespace pr {
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //
@@ -171,7 +171,8 @@ std::ostream& operator<< (std::ostream& os, const jt_inline& t)
 
 
 
-} // namepace  nested {
+}   //  namespace nested {
+
 
 
 //-----------------------------------------------------------------
@@ -234,7 +235,8 @@ std::ostream& operator<< (std::ostream& os, const jt_inline2& t)
 
 
 
-} // namepace  idl { namespace pr {
+}  }   //  namespace idl { namespace pr {
+
 
 
 
