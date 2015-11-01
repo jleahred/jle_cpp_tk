@@ -67,6 +67,7 @@
          expandPredefVar.setForeground(Qt::darkGreen);
          QStringList keywordPatterns;
          keywordPatterns << "\\$\\(__endl__\\)" << "\\$\\(__nothing__\\)"
+                         << "\\$\\(__endl__\\)" << "\\$\\(__prune__\\)"
                          << "\\$\\(__space__\\)" << "\\$\\(__counter__\\)"
                          << "\\$\\(__ident\\+__\\)"  << "\\$\\(__ident-__\\)"
                          <<  R"(\$\(__date_time__\))"  <<  R"(\$\(__date__\))"

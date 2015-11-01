@@ -107,17 +107,17 @@ int64  ::= 'int64'    ##transf2->int64_t
 
 
 
-.__.  ::=  __  MULTILINE_COMMENT  .__.    ##transf2->$(__nothing__)
-.__.  ::=  __  SINGLELINE_COMMENT .__.    ##transf2->$(__nothing__)
-.__.  ::=  __                             ##transf2->$(__nothing__)
-._.   ::=  _   MULTILINE_COMMENT  ._.     ##transf2->$(__nothing__)
-._.   ::=  _   SINGLELINE_COMMENT         ##transf2->$(__nothing__)
-._.   ::=  _                              ##transf2->$(__nothing__)
+.__.  ::=  __  MULTILINE_COMMENT  .__.    ##transf2->$(__prune__)
+.__.  ::=  __  SINGLELINE_COMMENT .__.    ##transf2->$(__prune__)
+.__.  ::=  __                             ##transf2->$(__prune__)
+._.   ::=  _   MULTILINE_COMMENT  ._.     ##transf2->$(__prune__)
+._.   ::=  _   SINGLELINE_COMMENT         ##transf2->$(__prune__)
+._.   ::=  _                              ##transf2->$(__prune__)
 
-SINGLELINE_COMMENT   ::=  _  /_/  !endl*              ##transf2->$(__nothing__)
-MULTILINE_COMMENT    ::=  /*_  IN_ML_COMMENT*  _*/    ##transf2->$(__nothing__)
-IN_ML_COMMENT        ::=  u__                         ##transf2->$(__nothing__)
-IN_ML_COMMENT        ::=  !_*/                        ##transf2->$(__nothing__)
+SINGLELINE_COMMENT   ::=  _  /_/  !endl*              ##transf2->$(__prune__)
+MULTILINE_COMMENT    ::=  /*_  IN_ML_COMMENT*  _*/    ##transf2->$(__prune__)
+IN_ML_COMMENT        ::=  u__                         ##transf2->$(__prune__)
+IN_ML_COMMENT        ::=  !_*/                        ##transf2->$(__prune__)
 
 
 /*_   ::=  '/*'

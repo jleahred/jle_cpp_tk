@@ -4,7 +4,7 @@
 
 module idl.pr {
 
-jt_simple {
+t_simple {
     i : int32
     j : string
     s : string
@@ -15,33 +15,41 @@ jt_simple {
 }
 
 
-jt_inline {  i: int32,  s: string  }
+t_inline {  i: int32,  s: string  }
 
-module nested {  jt_inline {  i: int32,  s: string  }  }
+module nested {  t_inline {  i: int32,  s: string  }  }
 
 
 
-jt_inline2 {
+t_inline2 {
    i: int32,   i64: int64
    s: string
+}
+
+
+t_tuple {  int32,  string  }
+
+t_tuple2 {
+    int32
+    string
 }
 
 
 }  // module idl.pr {
 
 /****
-jt_tuple {  int32,  string  }
+t_tuple {  int32,  string  }
 
 
 
-jt_union
+t_union
 {
     |  s : string
     |  i : int32
 }
 
 
-jt_color   //  enumeration
+t_color   //  enumeration
 {
     |  red
     |  blue
@@ -55,7 +63,7 @@ jt_color   //  enumeration
 
 
 //  type modifiers
-jt_example
+t_example
 {
     //  comentary
 
@@ -78,7 +86,7 @@ prop:
 }
 
 
-jt_composed
+t_composed
 {
     i : int32
     s : string

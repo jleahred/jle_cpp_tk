@@ -92,16 +92,18 @@ std::string AST_get_string_nodes(const jle::shared_ptr<AST_node_item>& node)
     Replace methods
 */
 
-std::string replace_transf2(    AST_node_item&                                      current_node,
+std::string replace_transf2(AST_node_item&                                          current_node,
                                 std::map<std::string, std::string>                  map_items_found,
                                 const std::string&                                  rule4replace,
                                 const jle::map<std::string /*name*/, std::string>&  templates,
-                                jle::map<std::string, std::string>                  declared_vars);
-std::string replace_transf2(    AST_node_item&                                      current_node,
+                                jle::map<std::string, std::string>                  declared_vars,
+                                jle::map<std::string, jle::shared_ptr<std::string>> mutable_vars);
+std::string replace_transf2(AST_node_item&                                          current_node,
                                 const std::string&                                  founded,
                                 const std::string&                                  rule4replace,
                                 const jle::map<std::string /*name*/, std::string>&  templates,
-                                jle::map<std::string, std::string>                  declared_vars);
+                                jle::map<std::string, std::string>                  declared_vars,
+                                jle::map<std::string, jle::shared_ptr<std::string>> mutable_vars);
 
 
 namespace {
@@ -138,12 +140,13 @@ namespace {
 
 
 void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::string>& templates,
-                                 jle::map<std::string, std::string> declared_vars)
+                                 jle::map<std::string, std::string> declared_vars,
+                                 jle::map<std::string, jle::shared_ptr<std::string>> mutable_vars)
 {
     //  first we look down and later to right (same level)
     if (this->down.expired()==false)
     {
-        this->down->exec_replace(templates, declared_vars);
+        this->down->exec_replace(templates, declared_vars, mutable_vars);
 //        if(this->down->rule4replace!="$(__nothing__)")
 //            this->down->exec_replace(templates, declared_vars);
 //        else
@@ -153,7 +156,7 @@ void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::strin
 
     if (this->next.expired()==false)
     {
-        this->next->exec_replace(templates, declared_vars);
+        this->next->exec_replace(templates, declared_vars, mutable_vars);
         //this->value += this->next->value;
     }
 
@@ -162,12 +165,12 @@ void AST_node_item::exec_replace(const jle::map<std::string /*name*/, std::strin
         if (this->down.expired())
         {
             if (rule4replace!="")
-                value = replace_transf2(*this, value, rule4replace, templates, declared_vars);
+                value = replace_transf2(*this, value, rule4replace, templates, declared_vars, mutable_vars);
             return;
         }
 
         if (rule4replace !="")
-            this->value = replace_transf2(*this, get_map_found(this->down), rule4replace, templates, declared_vars);
+            this->value = replace_transf2(*this, get_map_found(this->down), rule4replace, templates, declared_vars, mutable_vars);
         else
             this->value = exec_replace_no_vars(this->down, rule4replace);
     }
@@ -179,13 +182,14 @@ std::string replace_transf2(        AST_node_item&                              
                                     const std::string&                                  founded,
                                     const std::string&                                  rule4replace,
                                     const jle::map<std::string /*name*/, std::string>&  templates,
-                                    jle::map<std::string, std::string>                  declared_vars)
+                                    jle::map<std::string, std::string>                  declared_vars,
+                                    jle::map<std::string, jle::shared_ptr<std::string>> mutable_vars)
 {
     if (jle::s_trim(rule4replace, ' ') !="")
     {
         std::map<std::string, std::string> map_found;
         map_found["t"] = founded;
-        return replace_transf2(current_node, map_found, rule4replace, templates, declared_vars);
+        return replace_transf2(current_node, map_found, rule4replace, templates, declared_vars, mutable_vars);
     }
     else
         return founded;
@@ -257,7 +261,8 @@ std::string replace_transf2(    AST_node_item&                                  
                                 std::map<std::string, std::string>                  map_items_found,
                                 const std::string&                                  _rule4replace,
                                 const jle::map<std::string /*name*/, std::string>&  templates,
-                                jle::map<std::string, std::string>                  declared_vars)
+                                jle::map<std::string, std::string>                  declared_vars,
+                                jle::map<std::string, jle::shared_ptr<std::string>> mutable_vars)
 {
     static int replace_counter = 0;
     ++replace_counter;
@@ -391,12 +396,15 @@ std::string replace_transf2(    AST_node_item&                                  
             else if(var_name == "__run__") {
                 // update map_items_found
                 if(current_node.down.expired()==false)
-                    current_node.down->exec_replace(templates, declared_vars);
+                    current_node.down->exec_replace(templates, declared_vars, mutable_vars);
                 map_items_found = get_map_found(current_node.down);
             }
-            else if(var_name == "__nothing__") {
+            else if(var_name == "__prune__") {
                 current_node.down.reset();
                 //current_node.next.reset();
+            }
+            else if(var_name == "__nothing__") {
+                ;
             }
             else
             {
@@ -433,6 +441,80 @@ std::string replace_transf2(    AST_node_item&                                  
                     //add += replace_transf2(*(current_node.down), map_items_found, get_template_content(std::get<1>(command_and_params)[1], templates, declared_vars), templates, declared_vars);
                 }
             }
+            else if(id == "__set_mut__")
+            {
+                auto id_params_command = get_id(std::get<1>(id_params));
+                auto var_name = std::get<0>(id_params_command);
+                auto param  = std::get<1>(id_params_command);
+                if(var_name.empty())
+                    add += JLE_SS("invalid var_name on  (" << full_command << ")");
+                else if(param.empty())
+                {
+                    add += JLE_SS("empty param  (" << full_command << ")");
+                }
+                else
+                {
+                    mutable_vars[var_name] = jle::make_shared<std::string>(param);
+                }
+            }
+            else if(id == "__get_mut__")
+            {
+                auto id_params_command = get_id(std::get<1>(id_params));
+                auto var_name = std::get<0>(id_params_command);
+                auto param  = std::get<1>(id_params_command);
+                if(var_name.empty())
+                    add += JLE_SS("invalid var_name on  (" << full_command << ")");
+                else if(param.empty()==false)
+                {
+                    add += JLE_SS("INVALID param  (" << full_command << ")");
+                }
+                else
+                {
+                    add += *mutable_vars[var_name];
+                }
+            }
+            else if(id == "__inc__")
+            {
+                auto id_params_command = get_id(std::get<1>(id_params));
+                auto var_name = std::get<0>(id_params_command);
+                auto param  = std::get<1>(id_params_command);
+                if(var_name.empty())
+                    add += JLE_SS("invalid var_name on  (" << full_command << ")");
+                else if(param.empty() == false)
+                {
+                    add += JLE_SS("not valid param on __inc__ (" << full_command << ")");
+                }
+                else {
+                    auto current_val = jle::s_try_s2i(*mutable_vars[var_name], 0);
+                    if(std::get<1>(current_val) == false)
+                        add += JLE_SS("not valid value (" << full_command << ")" << "  value " << *mutable_vars[var_name]);
+                    else
+                    {
+                        *mutable_vars[var_name] =   JLE_SS(std::get<0>(current_val)+1);
+                    }
+                }
+            }
+            else if(id == "__dec__")
+            {
+                auto id_params_command = get_id(std::get<1>(id_params));
+                auto var_name = std::get<0>(id_params_command);
+                auto param  = std::get<1>(id_params_command);
+                if(var_name.empty())
+                    add += JLE_SS("invalid var_name on  (" << full_command << ")");
+                else if(param.empty() == false)
+                {
+                    add += JLE_SS("not valid param on __inc__ (" << full_command << ")");
+                }
+                else {
+                    auto current_val = jle::s_try_s2i(*mutable_vars[var_name], 0);
+                    if(std::get<1>(current_val) == false)
+                        add += JLE_SS("not valid value (" << full_command << ")" << "  value " << *mutable_vars[var_name]);
+                    else
+                    {
+                        *mutable_vars[var_name] =   JLE_SS(std::get<0>(current_val)-1);
+                    }
+                }
+            }
             else if(id == "__copy__")
             {
                 auto id_params_command = get_id(std::get<1>(id_params));
@@ -453,7 +535,7 @@ std::string replace_transf2(    AST_node_item&                                  
                 auto param = std::get<1>(id_params);
                 if(param.empty())     add += JLE_SS("empty param  (" << full_command << ")");
                 else
-                    add += jle::align_cols(replace_transf2(current_node, map_items_found, param, templates, declared_vars));
+                    add += jle::align_cols(replace_transf2(current_node, map_items_found, param, templates, declared_vars, mutable_vars));
             }
             else if(id == "__lmargin__")
             {
@@ -461,9 +543,17 @@ std::string replace_transf2(    AST_node_item&                                  
                 if(param.empty())    add += JLE_SS("empty param  (" << full_command << ")");
                 else {
                     add2result(0);
-                    add += replace_transf2(current_node, map_items_found, param, templates, declared_vars);
+                    add += replace_transf2(current_node, map_items_found, param, templates, declared_vars, mutable_vars);
                     add2result(col);
                 }
+            }
+            else if(id == "//")
+            {
+                ;
+            }
+            else if(id == "__nothing__")
+            {
+                ;
             }
             else
             {
