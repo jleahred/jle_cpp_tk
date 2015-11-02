@@ -251,7 +251,7 @@ namespace {
                 return fta->second;
             }
         }
-       return JLE_SS("TEMPLATE NOT FOUND (" << var_name << ")");
+        return JLE_SS("TEMPLATE NOT FOUND (" << var_name << ")");
     }
  }
 
@@ -527,7 +527,11 @@ std::string replace_transf2(    AST_node_item&                                  
                     add += JLE_SS("empty param  (" << full_command << ")");
                 }
                 else {
-                    declared_vars[var_name] = get_template_content(param, templates, declared_vars);
+                    auto it = map_items_found.find(param);
+                    if(it != map_items_found.end())
+                        declared_vars[var_name] = it->second;
+                    else
+                        declared_vars[var_name] = get_template_content(param, templates, declared_vars);
                 }
             }
             else if(id == "__alignc__")

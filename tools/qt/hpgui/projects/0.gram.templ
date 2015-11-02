@@ -9,9 +9,10 @@ __BEGIN_FILE__::$(__file_name__).h
 #include <string>
 #include "core/tuple.hpp"
 
-$(__set__  MODULE  $(MODULE_CODE))~
-$(__set__  RECORD  $(RECORD_H))~
-$(__set__  TUPLE   $(TUPLE_H))~
+$(__set__  MODULE      $(MODULE_CODE))~
+$(__set__  RECORD      $(RECORD_H))~
+$(__set__  TUPLE       $(TUPLE_H))~
+$(__set__  ENUMERATION $(ENUMERATION_H))~
 $(__run__)
 
 $(FRAME*)
@@ -26,9 +27,11 @@ __BEGIN_TEMPLATE__:: CPP_FILE
 __BEGIN_FILE__::$(__file_name__).cpp
 #include "$(__file_name_no_path__).h"
 
-$(__set__  MODULE  $(MODULE_CODE))~
-$(__set__  RECORD  $(RECORD_CPP))$(__run__)~
-$(__set__  TUPLE   $(TUPLE_CPP))$(__run__)~
+$(__set__  MODULE      $(MODULE_CODE))~
+$(__set__  RECORD      $(RECORD_CPP))~
+$(__set__  TUPLE       $(TUPLE_CPP))~
+$(__set__  ENUMERATION $(ENUMERATION_CPP))~
+$(__run__)
 
 $(FRAME*)
 $(__endl__)$(__endl__)$(__endl__)
@@ -288,3 +291,64 @@ std::ostream& operator<< (std::ostream& os, const $(id)& t)
 }
 $(__endl__)$(__endl__)$(__endl__)
 __END_TEMPLATE__:: 
+
+
+
+__BEGIN_TEMPLATE__:: ENUMERATION_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (enumeration)  $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+enum class $(id) {
+$(__set__  ENUM_ITEM_NOEND  $(id) ,$(__endl__)$(ENUM_ITEMS))~
+$(__set__  ENUM_ITEM_END    $(id) )~
+$(__run__)~
+                $(__lmargin__  $(__alignc__ $(ENUM_ITEMS)))
+};
+std::ostream& operator<< (std::ostream& os, const $(id)& t);
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+__BEGIN_TEMPLATE__:: ENUMERATION_CPP
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (enumeration)  $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+std::ostream& operator<< (std::ostream& os, const $(id)& t)
+{
+$(__copy__  ENUM_NAME id)~
+    os << "en(";
+    switch(t) {
+$(__set__  ENUM_ITEM_NOEND
+           case $(ENUM_NAME)::$(id):
+                      os << "$(id)";
+                      break;
+           $(ENUM_ITEMS))~
+$(__set__  ENUM_ITEM_END  
+           case $(ENUM_NAME)::$(id):
+                      os << "$(id)";
+                      break;)~
+$(__run__)~
+           $(ENUM_ITEMS)
+           default:
+                      throw "ERROR";
+    };
+    
+    os << ")";
+    return os;
+}
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+

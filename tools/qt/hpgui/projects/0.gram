@@ -8,6 +8,7 @@ FRAME  ::= .__. TYPE .__.
 
 TYPE   ::=  RECORD
 TYPE   ::=  TUPLE
+TYPE   ::=  ENUMERATION
 
 
 
@@ -46,12 +47,18 @@ TUPLE ::= id .__. {  TUPLE_FIELDS  }        ##transf2->$(TUPLE)
 TUPLE_FIELDS ::=  F_NO_NAMED  PROP                
 TUPLE_FIELDS ::=  F_NO_NAMED
 
-
 F_NO_NAMED ::=  .__.   FULL_TYPE   ._.   endl    .__.   F_NO_NAMED    ##transf2-> $(F_NO_NAMED_NOEND)
 F_NO_NAMED ::=  .__.   FULL_TYPE   ._.   ,       .__.   F_NO_NAMED    ##transf2-> $(F_NO_NAMED_NOEND)
 F_NO_NAMED ::=  .__.   FULL_TYPE   .__.                               ##transf2-> $(F_NO_NAMED_END)
 
 
+
+//  ENUMERATION
+ENUMERATION        ::= id .__. {  ENUM_ITEMS  }          ##transf2->$(ENUMERATION)
+
+ENUM_ITEMS ::=  .__.   | ._.  id   ._.   endl    .__.  ENUM_ITEMS   ##transf2-> $(ENUM_ITEM_NOEND)
+ENUM_ITEMS ::=  .__.   | ._.  id   ._.   ,       .__.  ENUM_ITEMS   ##transf2-> $(ENUM_ITEM_NOEND)
+ENUM_ITEMS ::=  .__.   | ._.  id   .__.                             ##transf2-> $(ENUM_ITEM_END)
 
 
 
@@ -61,9 +68,6 @@ UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   endl    .__.  UNION
 UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   ,       .__.  UNION
 UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   .__.
 
-ENUMERATION ::=  .__.   | ._.  id   ._.   endl    .__.  ENUMERATION
-ENUMERATION ::=  .__.   | ._.  id   ._.   ,       .__.  ENUMERATION
-ENUMERATION ::=  .__.   | ._.  id   .__.
 
 
 FULL_TYPE  ::=  TYPE_LIST

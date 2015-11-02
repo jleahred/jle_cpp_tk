@@ -1,5 +1,5 @@
-//  generated on 2015-11-01 23:10:47.706
-//  generated on 2015-10-31 23:59:59.000
+//  generated on 2015-11-02 21:31:16.980
+//  generated on 2015-11-02 00:00:00.000
 //  this is a test
 
 
@@ -259,6 +259,27 @@ struct t_tuple2 {
     bool operator< (const t_tuple2& ) const;
 };
 std::ostream& operator<< (std::ostream& o, const t_tuple2& t);
+
+
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (enumeration)  t_color
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+enum class t_color {
+                red     ,  
+                blue    ,  
+                green   ,  
+                orange  ,  
+                pink    ,  
+                white   ,  
+                black   
+};
+std::ostream& operator<< (std::ostream& os, const t_color& t);
 
 
 

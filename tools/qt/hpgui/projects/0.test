@@ -1,11 +1,13 @@
-jt_simple {
-    i : int32
-    j : string
-    s : string
+jt_color
+{
+    |  red
+    |  blue
+    |  green
+    |  orange
+    |  pink
+    |  white
+    |  black
 }
-
-
-jt_tuple {  int32,  string  }
 
 
 

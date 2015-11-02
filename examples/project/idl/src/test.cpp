@@ -1,6 +1,7 @@
 #include "test.h"
 
 
+
 namespace idl { namespace pr {
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
@@ -297,6 +298,49 @@ std::ostream& operator<< (std::ostream& os, const t_tuple2& t)
 {
     using ::operator<<;
     os << t.tuple;
+    return os;
+}
+
+
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (enumeration)  t_color
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+std::ostream& operator<< (std::ostream& os, const t_color& t)
+{
+    os << "en(";
+    switch(t) {
+           case t_color::red:
+                      os << "red";
+                      break;
+           case t_color::blue:
+                      os << "blue";
+                      break;
+           case t_color::green:
+                      os << "green";
+                      break;
+           case t_color::orange:
+                      os << "orange";
+                      break;
+           case t_color::pink:
+                      os << "pink";
+                      break;
+           case t_color::white:
+                      os << "white";
+                      break;
+           case t_color::black:
+                      os << "black";
+                      break;
+           default:
+                      throw "ERROR";
+    };
+
+    os << ")";
     return os;
 }
 

@@ -35,7 +35,21 @@ t_tuple2 {
 }
 
 
+t_color   //  enumeration
+{
+    |  red
+    |  blue
+    |  green
+    |  orange
+    |  pink
+    |  white
+    |  black
+}
+
+
 }  // module idl.pr {
+
+
 
 /****
 t_tuple {  int32,  string  }
@@ -48,17 +62,6 @@ t_union
     |  i : int32
 }
 
-
-t_color   //  enumeration
-{
-    |  red
-    |  blue
-    |  green
-    |  orange
-    |  pink
-    |  white
-    |  black
-}
 
 
 
