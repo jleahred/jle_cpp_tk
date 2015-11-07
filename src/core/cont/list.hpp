@@ -1021,7 +1021,6 @@ void list<T>::reverse ( )
 template<typename T>
 std::ostream& operator<< (std::ostream& os, const jle::list<T>& l)
 {
-    using ::operator<<;
     os << "list(";
 
     auto i=0;
