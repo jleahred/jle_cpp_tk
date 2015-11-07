@@ -109,7 +109,7 @@ prop ::= 'prop'
 
 
 string ::= 'string'   ##transf2->std::string
-double ::= 'double'   ##transf2->jle::double
+double ::= 'double'   ##transf2->jle::dbl
 int32  ::= 'int32'    ##transf2->int32_t
 int64  ::= 'int64'    ##transf2->int64_t
 

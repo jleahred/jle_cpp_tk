@@ -47,29 +47,11 @@ t_color   //  enumeration
 }
 
 
-}  // module idl.pr {
-
-
-
-/****
-t_tuple {  int32,  string  }
-
-
-
-t_union
-{
-    |  s : string
-    |  i : int32
-}
-
-
-
 
 //  type modifiers
 t_example
 {
     //  comentary
-
     int_field       :   int32       //  mandatory
     string_field    :   string
 
@@ -82,11 +64,27 @@ t_example
 
     string_list     :   string[]
     int_list        :   int32[]
-
-prop:
-    less
-    AMQP: EX/A.B
 }
+
+
+
+}  // module idl.pr {
+
+
+
+
+
+/****
+
+t_union
+{
+    |  s : string
+    |  i : int32
+}
+
+
+
+
 
 
 t_composed

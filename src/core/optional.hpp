@@ -582,6 +582,15 @@ namespace jle
     }
 
 
+template<typename _Tp>
+std::ostream& operator<< (std::ostream& os, const jle::optional<_Tp>& opt)
+{
+    if(!opt)    os << "null";
+    else        os << *opt;
+    return os;
+}
+
+
 }       //  namespace jle
 
 #endif // jle_optional__h

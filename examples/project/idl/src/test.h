@@ -1,11 +1,15 @@
-//  generated on 2015-11-02 21:31:16.980
-//  generated on 2015-11-02 00:00:00.000
+//  generated on 2015-11-07 08:45:55.256
+//  generated on 2015-11-06 23:59:59.000
 //  this is a test
 
 
 #include <cstdint>
 #include <string>
 #include "core/tuple.hpp"
+#include "core/optional.hpp"
+#include "core/dbl.h"
+#include "core/cont/list.hpp"
+
 
 
 
@@ -283,8 +287,59 @@ std::ostream& operator<< (std::ostream& os, const t_color& t);
 
 
 
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (record)   t_example
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct t_example {
+
+    //  fields  ...................................
+
+        int32_t                     int_field;     
+        std::string                 string_field;  
+        jle::optional<std::string>  opt_string;    
+        jle::optional<jle::dbl>     rec_float;     
+        std::string                 def_string0;   
+        std::string                 def_string1;   
+        jle::list<std::string>      string_list;   
+        jle::list<int32_t>          int_list;      
+    //  ...........................................
+
+
+    //  ctor
+    t_example() = delete;
+    t_example (
+          int32_t _int_field,
+          std::string _string_field,
+          jle::optional<std::string> _opt_string,
+          jle::optional<jle::dbl> _rec_float,
+          std::string _def_string0,
+          std::string _def_string1,
+          jle::list<std::string> _string_list,
+          jle::list<int32_t> _int_list
+    );
+    t_example (const t_example& ) = default;
+    t_example (      t_example&&) = default;
+
+    //  assign
+    t_example& operator=(const t_example& ) = default;
+    t_example& operator=(      t_example&&) = default;
+
+    //  comparison
+    bool operator==(const t_example& ) const;
+    bool operator< (const t_example& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const t_example& t);
+
+
+
 
 }  }   //  namespace idl { namespace pr {
+
 
 
 

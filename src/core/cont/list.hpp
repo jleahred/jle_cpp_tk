@@ -186,12 +186,12 @@ public:
     list<T>& operator=(list<T>&& l);
 
     //  comparison operators
-    bool operator==( const list<T>& rhs )   { return ilist == rhs.ilist; }
-    bool operator!=( const list<T>& rhs )   { return ilist != rhs.ilist; }
-    bool operator< ( const list<T>& rhs )   { return ilist < rhs.ilist; }
-    bool operator<=( const list<T>& rhs )   { return ilist <= rhs.ilist; }
-    bool operator> ( const list<T>& rhs )   { return ilist > rhs.ilist; }
-    bool operator>=( const list<T>& rhs )   { return ilist >= rhs.ilist; }
+    bool operator==( const list<T>& rhs ) const   { return ilist == rhs.ilist; }
+    bool operator!=( const list<T>& rhs ) const  { return ilist != rhs.ilist; }
+    bool operator< ( const list<T>& rhs ) const  { return ilist < rhs.ilist; }
+    bool operator<=( const list<T>& rhs ) const  { return ilist <= rhs.ilist; }
+    bool operator> ( const list<T>& rhs ) const  { return ilist > rhs.ilist; }
+    bool operator>=( const list<T>& rhs ) const  { return ilist >= rhs.ilist; }
 
 
 

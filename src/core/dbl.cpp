@@ -25,11 +25,11 @@ dbl exp (const dbl& d                       )
 }
 
 
-int get_decimals10(const jle::dbl& d)
+int get_decimals10(const dbl& d)
 {
     int sign=  d<0. ? -1  : 1;
 
-    auto pow10= jle::dbl{1};
+    auto pow10= dbl{1};
     for(int i=0; i<15; ++i, pow10*=10.)
     {
         if(static_cast<double>(
@@ -43,62 +43,57 @@ int get_decimals10(const jle::dbl& d)
 }
 
 
-};      //  namespace jle {
-
-
-
-
-std::ostream& operator<< (std::ostream& os, const jle::dbl& d)
+std::ostream& operator<< (std::ostream& os, const dbl& d)
 {
     os << double(d);
     return os;
 }
 
-jle::dbl operator+ (const jle::dbl& d1, const jle::dbl& d2)
+dbl operator+ (const dbl& d1, const dbl& d2)
 {
     return double(d1) + double(d2);
 }
 
-jle::dbl operator- (const jle::dbl& d1, const jle::dbl& d2)
+dbl operator- (const dbl& d1, const dbl& d2)
 {
     return double(d1) - double(d2);
 }
 
-jle::dbl operator* (const jle::dbl& d1, const jle::dbl& d2)
+dbl operator* (const dbl& d1, const dbl& d2)
 {
     return double(d1) * double(d2);
 }
 
-jle::dbl operator/ (const jle::dbl& d1, const jle::dbl& d2)
+dbl operator/ (const dbl& d1, const dbl& d2)
 {
     return double(d1) / double(d2);
 }
 
-jle::dbl& operator+= (jle::dbl& d1, const jle::dbl& d2)
+dbl& operator+= (dbl& d1, const dbl& d2)
 {
     d1 = double(d1) + double(d2);
     return d1;
 }
 
-jle::dbl& operator-= (jle::dbl& d1, const jle::dbl& d2)
+dbl& operator-= (dbl& d1, const dbl& d2)
 {
     d1 = double(d1) - double(d2);
     return d1;
 }
 
-jle::dbl& operator*= (jle::dbl& d1, const jle::dbl& d2)
+dbl& operator*= (dbl& d1, const dbl& d2)
 {
     d1 = double(d1) * double(d2);
     return d1;
 }
 
-jle::dbl& operator/= (jle::dbl& d1, const jle::dbl& d2)
+dbl& operator/= (dbl& d1, const dbl& d2)
 {
     d1 = double(d1) / double(d2);
     return d1;
 }
 
-bool     operator    ==  (const jle::dbl&  _d1, const jle::dbl&  _d2)
+bool     operator    ==  (const dbl&  _d1, const dbl&  _d2)
 {
     auto d1 = double(_d1);
     auto d2 = double(_d2);
@@ -128,32 +123,35 @@ bool     operator    ==  (const jle::dbl&  _d1, const jle::dbl&  _d2)
         return false;
 }
 
-bool     operator    !=  (const jle::dbl&  d1, const jle::dbl&  d2)
+bool     operator    !=  (const dbl&  d1, const dbl&  d2)
 {
     return !(d1==d2);
 }
 
-bool     operator    <   (const jle::dbl&  d1, const jle::dbl&  d2)
+bool     operator    <   (const dbl&  d1, const dbl&  d2)
 {
     if(d1==d2)  return false;
     else        return double(d1)<double(d2);
 }
 
-bool     operator    <=  (const jle::dbl&  d1, const jle::dbl&  d2)
+bool     operator    <=  (const dbl&  d1, const dbl&  d2)
 {
     if(d1==d2)  return true;
     else        return double(d1)<double(d2);
 }
 
-bool     operator    >   (const jle::dbl&  d1, const jle::dbl&  d2)
+bool     operator    >   (const dbl&  d1, const dbl&  d2)
 {
     if(d1==d2)  return false;
     else        return double(d1)>double(d2);
 }
 
-bool     operator    >=  (const jle::dbl&  d1, const jle::dbl&  d2)
+bool     operator    >=  (const dbl&  d1, const dbl&  d2)
 {
     if(d1==d2)  return true;
     else        return double(d1)>double(d2);
 }
 
+
+
+};      //  namespace jle {
