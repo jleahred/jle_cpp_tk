@@ -26,9 +26,9 @@ struct t_simple {
 
     //  fields  ...................................
 
-        int32_t      i;  
-        std::string  j;  
-        std::string  s;  
+        int32_t      i;
+        std::string  j;
+        std::string  s;
     //  ...........................................
 
 
@@ -66,8 +66,8 @@ struct t_inline {
 
     //  fields  ...................................
 
-        int32_t      i;  
-        std::string  s;  
+        int32_t      i;
+        std::string  s;
     //  ...........................................
 
 
@@ -105,8 +105,8 @@ struct t_inline {
 
     //  fields  ...................................
 
-        int32_t      i;  
-        std::string  s;  
+        int32_t      i;
+        std::string  s;
     //  ...........................................
 
 
@@ -148,9 +148,9 @@ struct t_inline2 {
 
     //  fields  ...................................
 
-        int32_t      i;    
-        int64_t      i64;  
-        std::string  s;    
+        int32_t      i;
+        int64_t      i64;
+        std::string  s;
     //  ...........................................
 
 
@@ -188,15 +188,15 @@ struct t_tuple {
 
     //  fields  ...................................
     jle::tuple<
-                int32_t      ,  
-                std::string  
+                int32_t      ,
+                std::string
     >  tuple;
     //  ...........................................
 
 
     jle::tuple<
-                int32_t      ,  
-                std::string  
+                int32_t      ,
+                std::string
     >&
     operator*() { return  tuple;  }
 
@@ -233,15 +233,15 @@ struct t_tuple2 {
 
     //  fields  ...................................
     jle::tuple<
-                int32_t      ,  
-                std::string  
+                int32_t      ,
+                std::string
     >  tuple;
     //  ...........................................
 
 
     jle::tuple<
-                int32_t      ,  
-                std::string  
+                int32_t      ,
+                std::string
     >&
     operator*() { return  tuple;  }
 
@@ -275,13 +275,13 @@ std::ostream& operator<< (std::ostream& o, const t_tuple2& t);
 //-----------------------------------------------------------------
 
 enum class t_color {
-                red     ,  
-                blue    ,  
-                green   ,  
-                orange  ,  
-                pink    ,  
-                white   ,  
-                black   
+                red     ,
+                blue    ,
+                green   ,
+                orange  ,
+                pink    ,
+                white   ,
+                black
 };
 std::ostream& operator<< (std::ostream& os, const t_color& t);
 
@@ -299,14 +299,14 @@ struct t_example {
 
     //  fields  ...................................
 
-        int32_t                     int_field;     
-        std::string                 string_field;  
-        jle::optional<std::string>  opt_string;    
-        jle::optional<jle::dbl>     rec_float;     
-        std::string                 def_string0;   
-        std::string                 def_string1;   
-        jle::list<std::string>      string_list;   
-        jle::list<int32_t>          int_list;      
+        int32_t                     int_field;
+        std::string                 string_field;
+        jle::optional<std::string>  opt_string;
+        jle::optional<jle::dbl>     rec_float;
+        std::string                 def_string0;
+        std::string                 def_string1;
+        jle::list<std::string>      string_list;
+        jle::list<int32_t>          int_list;
     //  ...........................................
 
 

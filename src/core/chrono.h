@@ -95,7 +95,7 @@ namespace jle {
 template<typename T, typename __p>
 std::ostream& operator<<(std::ostream& out, const std::chrono::duration<T, __p> &d)
 {
-    return operator<<(out, std::chrono::duration_cast<std::chrono::milliseconds>(d));
+    return operator<<(out, jle::chrono::duration(std::chrono::duration_cast<std::chrono::milliseconds>(d)));
 }
 
 
