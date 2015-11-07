@@ -1018,7 +1018,27 @@ void list<T>::reverse ( )
 
 
 
+template<typename T>
+std::ostream& operator<< (std::ostream& os, const jle::list<T>& l)
+{
+    using ::operator<<;
+    os << "list(";
 
+    auto i=0;
+    for(auto it=l.cbegin(); it!=l.cend(); ++it) {
+        ++i;
+        if(i>=7)
+        {
+            os << "...";
+            break;
+        }
+
+        os << *it << ", ";
+    }
+
+    os << ")";
+    return os;
+}
 
 
 

@@ -9,10 +9,6 @@
 
 int main()
 {
-    auto d1 = jle::optional<jle::dbl>{1.0};
-    auto d2 = jle::optional<jle::dbl>{1.0};
-    std::cout << int(d1 == d2) << std::endl;
-
     {   //  record
         auto simple = idl::pr::t_simple{ 1, "one", "two" };
 
