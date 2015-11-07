@@ -9,9 +9,9 @@ void test_expresion_ok(void)
 {
     JLE_TEST_INIT
 
-    jle::Humble_parser  hparser;
+    jle::hp::Humble_parser  hparser;
 
-    hparser.load_rules_from_string(
+    hparser.add_rules_from_string(
     R"(
         EXPR    ::=    _ unaryoperator _ ADDS _
         EXPR    ::=    ADDS
@@ -42,7 +42,7 @@ void test_expresion_ok(void)
 
     bool result;
     std::string result_test;
-    jle::AST_node_item ast_root("");
+    jle::hp::AST_node_item ast_root("");
 
     std::tie(result, result_test, ast_root) =
                 hparser.parse(      "+1+2-53*(-sin(x))+(5-(-(-a)+cos(56))+4)+5",
@@ -58,9 +58,9 @@ void test_expresion_error(void)
 {
     JLE_TEST_INIT
 
-    jle::Humble_parser  hparser;
+    jle::hp::Humble_parser  hparser;
 
-    hparser.load_rules_from_string(
+    hparser.add_rules_from_string(
     R"(
         EXPR    ::=    _ unaryoperator _ ADDS _
         EXPR    ::=    ADDS
@@ -91,7 +91,7 @@ void test_expresion_error(void)
 
     bool result;
     std::string result_test;
-    jle::AST_node_item ast_root("");
+    jle::hp::AST_node_item ast_root("");
 
     std::tie(result, result_test, ast_root) =
                 hparser.parse(      "+1+2-53*(-sin(x x))+(5-(-(-a)+cos(56))+4)+5",
@@ -119,3 +119,4 @@ int main(void)
 void jle::alarm_msg(const jle::alarm& al) {
     std::cout << al << std::endl;
 }
+

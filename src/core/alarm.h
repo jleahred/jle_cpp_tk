@@ -204,10 +204,10 @@ extern void alarm_msg (const alarm& error);
                                 jle::al::priority::critic));                    \
                 }
 
+std::ostream& operator<< (std::ostream& os, const jle::alarm& a);
 
 };   // end namespace jle {
 
-std::ostream& operator<< (std::ostream& os, const jle::alarm& a);
 
 
 

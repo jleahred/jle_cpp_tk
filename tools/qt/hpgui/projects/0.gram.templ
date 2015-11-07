@@ -1,3 +1,23 @@
+__BEGIN_TEMPLATE__:: GENERATE_CODE
+$(__set__ FRAME_TYPE
+~    $(__set__ TYPE_OPTIONAL          jle::optional<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_RECOMENDED        jle::optional<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_LIST              jle::list<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_WITH_DEFAULT_DATE $(BASIC_TYPE))~
+~    $(__set__ TYPE_WITH_DEFAULT      $(BASIC_TYPE))~
+~    $(__set__ COMP_TYPE_NO_END       $(id)::$(COMPOSED_TYPE))~
+~    $(__set__ COMP_TYPE_END          $(id))~
+~    $(__run__)~
+~    $(TYPE))~
+~
+$(H_FILE)
+$(CPP_FILE)
+__END_TEMPLATE__:: 
+
+
+
+
+
 __BEGIN_TEMPLATE__:: H_FILE
 __BEGIN_FILE__::$(__file_name__).h
 //  generated on $(__date_time__)
@@ -8,6 +28,8 @@ __BEGIN_FILE__::$(__file_name__).h
 #include <cstdint>
 #include <string>
 #include "core/tuple.hpp"
+#include "core/optional.hpp"
+
 
 $(__set__  MODULE      $(MODULE_CODE))~
 $(__set__  RECORD      $(RECORD_H))~
@@ -350,5 +372,7 @@ $(__run__)~
 }
 $(__endl__)$(__endl__)$(__endl__)
 __END_TEMPLATE__:: 
+
+
 
 

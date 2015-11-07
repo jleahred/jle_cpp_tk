@@ -18,7 +18,19 @@ namespace jle {
     //! Here we have helpers and functions for time_point and durations
     namespace  chrono {
 
-    using  duration   = std::chrono::milliseconds;
+    //using  duration   = std::chrono::milliseconds;
+    struct duration : public std::chrono::milliseconds
+    {
+        duration(const std::chrono::milliseconds& cms) : std::chrono::milliseconds(cms) {};
+
+        template<typename T, typename __p>
+        duration(const std::chrono::duration<T, __p> &d)
+            : std::chrono::milliseconds(std::chrono::duration_cast<std::chrono::milliseconds>(d))
+        {
+        }
+
+    };
+
 
     struct year  {  int __value;  };
     struct month {  int __value;  };
@@ -73,26 +85,18 @@ namespace jle {
     std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp);
 
 
+    std::ostream& operator<<(std::ostream& out, const jle::chrono::time_point &);
+    std::ostream& operator<<(std::ostream& out, const jle::chrono::duration &);
+
 
 }; };       //  namespace jle {  namespace  chrono {
 
 
-
-
-namespace jle {  namespace  chrono { namespace  stream {
-
-    std::ostream& operator<<(std::ostream& out, const ::jle::chrono::time_point &);
-    std::ostream& operator<<(std::ostream& out, const ::jle::chrono::duration &);
-
-    template<typename T, typename __p>
-    std::ostream& operator<<(std::ostream& out, const ::std::chrono::duration<T, __p> &d)
-    {
-        return operator<<(out, std::chrono::duration_cast<std::chrono::milliseconds>(d));
-    }
-
-}; }; };
-using namespace jle::chrono::stream;
-
+template<typename T, typename __p>
+std::ostream& operator<<(std::ostream& out, const std::chrono::duration<T, __p> &d)
+{
+    return operator<<(out, jle::chrono::duration(std::chrono::duration_cast<std::chrono::milliseconds>(d)));
+}
 
 
 

@@ -186,12 +186,12 @@ public:
     list<T>& operator=(list<T>&& l);
 
     //  comparison operators
-    bool operator==( const list<T>& rhs )   { return ilist == rhs.ilist; }
-    bool operator!=( const list<T>& rhs )   { return ilist != rhs.ilist; }
-    bool operator< ( const list<T>& rhs )   { return ilist < rhs.ilist; }
-    bool operator<=( const list<T>& rhs )   { return ilist <= rhs.ilist; }
-    bool operator> ( const list<T>& rhs )   { return ilist > rhs.ilist; }
-    bool operator>=( const list<T>& rhs )   { return ilist >= rhs.ilist; }
+    bool operator==( const list<T>& rhs ) const   { return ilist == rhs.ilist; }
+    bool operator!=( const list<T>& rhs ) const  { return ilist != rhs.ilist; }
+    bool operator< ( const list<T>& rhs ) const  { return ilist < rhs.ilist; }
+    bool operator<=( const list<T>& rhs ) const  { return ilist <= rhs.ilist; }
+    bool operator> ( const list<T>& rhs ) const  { return ilist > rhs.ilist; }
+    bool operator>=( const list<T>& rhs ) const  { return ilist >= rhs.ilist; }
 
 
 
@@ -1018,7 +1018,26 @@ void list<T>::reverse ( )
 
 
 
+template<typename T>
+std::ostream& operator<< (std::ostream& os, const jle::list<T>& l)
+{
+    os << "list(";
 
+    auto i=0;
+    for(auto it=l.cbegin(); it!=l.cend(); ++it) {
+        ++i;
+        if(i>=7)
+        {
+            os << "...";
+            break;
+        }
+
+        os << *it << ", ";
+    }
+
+    os << ")";
+    return os;
+}
 
 
 

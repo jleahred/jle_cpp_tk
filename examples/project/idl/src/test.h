@@ -1,11 +1,15 @@
-//  generated on 2015-11-02 21:31:16.980
-//  generated on 2015-11-02 00:00:00.000
+//  generated on 2015-11-07 13:06:28.209
+//  generated on 2015-11-06 23:59:59.000
 //  this is a test
 
 
 #include <cstdint>
 #include <string>
 #include "core/tuple.hpp"
+#include "core/optional.hpp"
+#include "core/dbl.h"
+#include "core/cont/list.hpp"
+
 
 
 
@@ -283,8 +287,59 @@ std::ostream& operator<< (std::ostream& os, const t_color& t);
 
 
 
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (record)   t_type_modifiers
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct t_type_modifiers {
+
+    //  fields  ...................................
+
+        int32_t                     int_field;     
+        std::string                 string_field;  
+        jle::optional<std::string>  opt_string;    
+        jle::optional<jle::dbl>     rec_float;     
+        std::string                 def_string0;   
+        std::string                 def_string1;   
+        jle::list<std::string>      string_list;   
+        jle::list<int32_t>          int_list;      
+    //  ...........................................
+
+
+    //  ctor
+    t_type_modifiers() = delete;
+    t_type_modifiers (
+          int32_t _int_field,
+          std::string _string_field,
+          jle::optional<std::string> _opt_string,
+          jle::optional<jle::dbl> _rec_float,
+          std::string _def_string0,
+          std::string _def_string1,
+          jle::list<std::string> _string_list,
+          jle::list<int32_t> _int_list
+    );
+    t_type_modifiers (const t_type_modifiers& ) = default;
+    t_type_modifiers (      t_type_modifiers&&) = default;
+
+    //  assign
+    t_type_modifiers& operator=(const t_type_modifiers& ) = default;
+    t_type_modifiers& operator=(      t_type_modifiers&&) = default;
+
+    //  comparison
+    bool operator==(const t_type_modifiers& ) const;
+    bool operator< (const t_type_modifiers& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const t_type_modifiers& t);
+
+
+
 
 }  }   //  namespace idl { namespace pr {
+
 
 
 

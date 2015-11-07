@@ -30,11 +30,27 @@ int main()
         std::cout << color << std::endl;
     }
 
+    {   //  record with type modifiers
+        auto type = idl::pr::t_type_modifiers {
+                    32,
+                    "string32",
+                    jle::optional<std::string>{},
+                    jle::optional<jle::dbl>{},
+                    "default1",
+                    "new mandatory",
+                    jle::list<std::string>{},
+                    jle::list<int32_t>{}
+        };
+        std::cout << type << std::endl;
+    }
+
+
     return 0;
 }
 
 
 void jle::alarm_msg(const jle::alarm&  al)
 {
+    using ::operator<<;
     std::cerr << al << std::endl;
 }

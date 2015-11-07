@@ -78,11 +78,6 @@ std::ostream& operator<< (std::ostream& os, const base_alarm&  a)
 }  // namespace al
 
 
-//---------------------------------------------------------------------------
-};      //  namespace jle {
-
-
-
 std::ostream& operator<< (std::ostream& os, const ::jle::alarm& a)
 {
     os << static_cast<const jle::al::base_alarm&>(a);
@@ -101,4 +96,10 @@ std::ostream& operator<< (std::ostream& os, const ::jle::alarm& a)
 
     return os;
 };
+
+//---------------------------------------------------------------------------
+};      //  namespace jle {
+
+
+
 

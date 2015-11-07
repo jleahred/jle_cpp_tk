@@ -346,6 +346,94 @@ std::ostream& operator<< (std::ostream& os, const t_color& t)
 
 
 
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (record)   t_type_modifiers
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+t_type_modifiers::t_type_modifiers (
+          int32_t _int_field,
+          std::string _string_field,
+          jle::optional<std::string> _opt_string,
+          jle::optional<jle::dbl> _rec_float,
+          std::string _def_string0,
+          std::string _def_string1,
+          jle::list<std::string> _string_list,
+          jle::list<int32_t> _int_list
+    )  :
+          int_field(_int_field),
+          string_field(_string_field),
+          opt_string(_opt_string),
+          rec_float(_rec_float),
+          def_string0(_def_string0),
+          def_string1(_def_string1),
+          string_list(_string_list),
+          int_list(_int_list)
+    {}
+
+
+//  comparison
+bool t_type_modifiers::operator==(const t_type_modifiers& r) const
+{
+    if(
+        int_field == r.int_field  &&
+        string_field == r.string_field  &&
+        opt_string == r.opt_string  &&
+        rec_float == r.rec_float  &&
+        def_string0 == r.def_string0  &&
+        def_string1 == r.def_string1  &&
+        string_list == r.string_list  &&
+        int_list == r.int_list
+    )     return true;
+    else  return false;
+}
+
+bool t_type_modifiers::operator< (const t_type_modifiers& r) const
+{
+    if(std::tie(
+          int_field,
+          string_field,
+          opt_string,
+          rec_float,
+          def_string0,
+          def_string1,
+          string_list,
+          int_list)
+       <
+       std::tie(
+          r.int_field,
+          r.string_field,
+          r.opt_string,
+          r.rec_float,
+          r.def_string0,
+          r.def_string1,
+          r.string_list,
+          r.int_list)
+    )     return true;
+    else  return false;
+
+}
+
+std::ostream& operator<< (std::ostream& os, const t_type_modifiers& t)
+{
+    os  << " t_type_modifiers { "
+           << "int_field: " << t.int_field << ", "
+           << "string_field: " << t.string_field << ", "
+           << "opt_string: " << t.opt_string << ", "
+           << "rec_float: " << t.rec_float << ", "
+           << "def_string0: " << t.def_string0 << ", "
+           << "def_string1: " << t.def_string1 << ", "
+           << "string_list: " << t.string_list << ", "
+           << "int_list: " << t.int_list
+        << " }";
+    return os;
+}
+
+
+
 
 }  }   //  namespace idl { namespace pr {
 

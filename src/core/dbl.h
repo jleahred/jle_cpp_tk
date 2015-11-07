@@ -52,32 +52,33 @@ dbl exp (const dbl& d                       );
  *
  * This is not exact but quit accurate
  */
-int get_decimals10(const jle::dbl& d);
+int get_decimals10(const dbl& d);
+
+std::ostream& operator<< (std::ostream& os, const dbl& d);
+
+dbl operator+ (const dbl& d1, const dbl& d2);
+dbl operator- (const dbl& d1, const dbl& d2);
+dbl operator* (const dbl& d1, const dbl& d2);
+dbl operator/ (const dbl& d1, const dbl& d2);
+
+dbl& operator+= (dbl& d1, const dbl& d2);
+dbl& operator-= (dbl& d1, const dbl& d2);
+dbl& operator*= (dbl& d1, const dbl& d2);
+dbl& operator/= (dbl& d1, const dbl& d2);
+
+
+bool     operator    ==  (const dbl&  d1, const dbl&  d2);
+bool     operator    !=  (const dbl&  d1, const dbl&  d2);
+bool     operator    <   (const dbl&  d1, const dbl&  d2);
+bool     operator    <=  (const dbl&  d1, const dbl&  d2);
+bool     operator    >   (const dbl&  d1, const dbl&  d2);
+bool     operator    >=  (const dbl&  d1, const dbl&  d2);
 
 
 //---------------------------------------------------------------------------
 };      //namespace jle {
 
 
-std::ostream& operator<< (std::ostream& os, const jle::dbl& d);
-
-jle::dbl operator+ (const jle::dbl& d1, const jle::dbl& d2);
-jle::dbl operator- (const jle::dbl& d1, const jle::dbl& d2);
-jle::dbl operator* (const jle::dbl& d1, const jle::dbl& d2);
-jle::dbl operator/ (const jle::dbl& d1, const jle::dbl& d2);
-
-jle::dbl& operator+= (jle::dbl& d1, const jle::dbl& d2);
-jle::dbl& operator-= (jle::dbl& d1, const jle::dbl& d2);
-jle::dbl& operator*= (jle::dbl& d1, const jle::dbl& d2);
-jle::dbl& operator/= (jle::dbl& d1, const jle::dbl& d2);
-
-
-bool     operator    ==  (const jle::dbl&  d1, const jle::dbl&  d2);
-bool     operator    !=  (const jle::dbl&  d1, const jle::dbl&  d2);
-bool     operator    <   (const jle::dbl&  d1, const jle::dbl&  d2);
-bool     operator    <=  (const jle::dbl&  d1, const jle::dbl&  d2);
-bool     operator    >   (const jle::dbl&  d1, const jle::dbl&  d2);
-bool     operator    >=  (const jle::dbl&  d1, const jle::dbl&  d2);
 
 
 #endif // JLE_DBL_H__

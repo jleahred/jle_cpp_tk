@@ -55,7 +55,7 @@ namespace jle {  namespace  chrono {
 
     duration  time_point::operator -   (const time_point& _tp)  const
     {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(this->tp - _tp.tp);
+        return jle::chrono::duration(std::chrono::duration_cast<std::chrono::milliseconds>(this->tp - _tp.tp));
     }
 
     bool        time_point::operator ==  (const time_point& rhs)  const
@@ -174,15 +174,7 @@ std::tuple<std::tm, int>  get_tm_millisecs(const jle::chrono::time_point& tp)
 
 
 
-}; };
-
-
-
-
-
-namespace jle {  namespace  chrono { namespace  stream {
-
-std::ostream& operator<<(std::ostream& out, const ::jle::chrono::time_point &tp)
+std::ostream& operator<<(std::ostream& out, const jle::chrono::time_point &tp)
 {
     std::tm _tm;
     int milliseconds;
@@ -209,7 +201,7 @@ std::ostream& operator<<(std::ostream& out, const ::jle::chrono::time_point &tp)
     return out;
 }
 
-std::ostream& operator<<(std::ostream& out, const ::jle::chrono::duration &d)
+std::ostream& operator<<(std::ostream& out, const jle::chrono::duration &d)
 {
     long pending = d.count();
     std::string  sign = pending < 0 ? "-" : "";
@@ -257,5 +249,7 @@ std::ostream& operator<<(std::ostream& out, const ::jle::chrono::duration &d)
 }
 
 
-}; }; };       //  namespace jle {  namespace  chrono {  namespace  stream {
+
+
+}; };
 
