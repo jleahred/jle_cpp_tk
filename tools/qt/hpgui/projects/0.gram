@@ -1,10 +1,10 @@
 MAIN
 
-MAIN   ::=  FRAME*               ##transf2->$(H_FILE)$(CPP_FILE)
+MAIN   ::=  FRAME*               ##transf2->$(GENERATE_CODE)
 
 
 FRAME  ::= .__. MODULE .__.
-FRAME  ::= .__. TYPE .__.
+FRAME  ::= .__. TYPE .__.        ##transf2->$(FRAME_TYPE)
 
 TYPE   ::=  RECORD
 TYPE   ::=  TUPLE
@@ -22,7 +22,7 @@ module ::= 'module'
 //  RECORD
 RECORD ::= id .__. {  RECORD_FIELDS  }        ##transf2->$(RECORD)
 
-RECORD_FIELDS ::=  FNAMED  PROP                
+//RECORD_FIELDS ::=  FNAMED  PROP                
 RECORD_FIELDS ::=  FNAMED                      
 
 
@@ -44,7 +44,7 @@ FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                           #
 //  TUPLE
 TUPLE ::= id .__. {  TUPLE_FIELDS  }        ##transf2->$(TUPLE)
 
-TUPLE_FIELDS ::=  F_NO_NAMED  PROP                
+//TUPLE_FIELDS ::=  F_NO_NAMED  PROP                
 TUPLE_FIELDS ::=  F_NO_NAMED
 
 F_NO_NAMED ::=  .__.   FULL_TYPE   ._.   endl    .__.   F_NO_NAMED    ##transf2-> $(F_NO_NAMED_NOEND)
@@ -70,12 +70,12 @@ UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   .__.
 
 
 
-FULL_TYPE  ::=  TYPE_LIST
-FULL_TYPE  ::=  TYPE_OPTIONAL
-FULL_TYPE  ::=  TYPE_RECOMENDED
-FULL_TYPE  ::=  TYPE_WITH_DEFAULT_DATE
-FULL_TYPE  ::=  TYPE_WITH_DEFAULT
-FULL_TYPE  ::=  BASIC_TYPE                    
+FULL_TYPE  ::=  TYPE_LIST                  
+FULL_TYPE  ::=  TYPE_OPTIONAL              
+FULL_TYPE  ::=  TYPE_RECOMENDED            
+FULL_TYPE  ::=  TYPE_WITH_DEFAULT_DATE     
+FULL_TYPE  ::=  TYPE_WITH_DEFAULT          
+FULL_TYPE  ::=  BASIC_TYPE                 
 
 
 B_L_TYPE  ::=  BASIC_TYPE
@@ -85,14 +85,19 @@ BASIC_TYPE  ::= string
 BASIC_TYPE  ::= double  
 BASIC_TYPE  ::= int32   
 BASIC_TYPE  ::= int64   
+BASIC_TYPE  ::= COMPOSED_TYPE
 
-TYPE_LIST  ::= BASIC_TYPE [ ]
+COMPOSED_TYPE ::= id _. COMPOSED_TYPE   ##transf2->$(COMP_TYPE_NO_END)
+COMPOSED_TYPE ::= id                    ##transf2->$(COMP_TYPE_END)
 
-TYPE_OPTIONAL   ::= BASIC_TYPE ?
-TYPE_RECOMENDED ::= BASIC_TYPE !
 
-TYPE_WITH_DEFAULT_DATE  ::= BASIC_TYPE [< !>]* >] [<   # # # # - # # - # #   >]
-TYPE_WITH_DEFAULT       ::= BASIC_TYPE [< !>]* >]
+TYPE_LIST  ::= BASIC_TYPE [ ]        ##transf2->$(TYPE_LIST)
+
+TYPE_OPTIONAL   ::= BASIC_TYPE ?     ##transf2->$(TYPE_OPTIONAL)
+TYPE_RECOMENDED ::= BASIC_TYPE !     ##transf2->$(TYPE_RECOMENDED)
+
+TYPE_WITH_DEFAULT_DATE  ::= BASIC_TYPE [< !>]* >] [<   # # # # - # # - # #   >]  ##transf2->$(TYPE_WITH_DEFAULT_DATE)
+TYPE_WITH_DEFAULT       ::= BASIC_TYPE [< !>]* >]                                ##transf2->$(TYPE_WITH_DEFAULT)
 
 PROP  ::=  .__.  prop : _ endl  PROP_LINE*
 PROP_LINE ::=  !} !endl* endl
@@ -104,7 +109,7 @@ prop ::= 'prop'
 
 
 string ::= 'string'   ##transf2->std::string
-double ::= 'double'   ##transf2->double
+double ::= 'double'   ##transf2->jle::double
 int32  ::= 'int32'    ##transf2->int32_t
 int64  ::= 'int64'    ##transf2->int64_t
 

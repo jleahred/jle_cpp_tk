@@ -1,13 +1,21 @@
-jt_color
+jt_example
 {
-    |  red
-    |  blue
-    |  green
-    |  orange
-    |  pink
-    |  white
-    |  black
+    //  comentary
+
+    int_field       :   int32       //  mandatory
+    string_field    :   string
+
+    opt_string      :   string?     //  optional
+    rec_float       :   double!     //  recomended
+
+    def_string0     :   string[<"hi">]                      //  default value
+    def_string1     :   string[<"there">][<2015-10-23>]     //  new mandatory since...
+
+
+    string_list     :   string[]    
+    int_list        :   jle.test[]    
 }
+
 
 
 
