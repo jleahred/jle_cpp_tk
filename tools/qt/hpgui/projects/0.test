@@ -1,3 +1,12 @@
+t_union 
+{
+    |  s : string
+    |  i : int32
+}
+
+
+
+/*************
 module idl.pr {
 
 jt_simple {
@@ -53,15 +62,4 @@ jt_example
 
 }  // module idl.pr {
 
-/****
-
-
-
-jt_union 
-{
-    |  s : string
-    |  i : int32
-}
-
-
-***/
+************/

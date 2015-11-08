@@ -9,6 +9,7 @@ FRAME  ::= .__. TYPE .__.        ##transf2->$(FRAME_TYPE)
 TYPE   ::=  RECORD
 TYPE   ::=  TUPLE
 TYPE   ::=  ENUMERATION
+TYPE   ::=  UNION
 
 
 
@@ -25,21 +26,9 @@ RECORD ::= id .__. {  RECORD_FIELDS  }        ##transf2->$(RECORD)
 //RECORD_FIELDS ::=  FNAMED  PROP                
 RECORD_FIELDS ::=  FNAMED                      
 
-
-FNAMED ::=  FNAMED_SUB
 FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
 FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
 FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                           ##transf2-> $(FNAMED_END)
-//FNAMED ::=  FNAMED_IMPL_SUB
-
-
-FNAMED_SUB          ::= .__.   id   ._. : .__. TYPE .__.  FNAMED       ##transf2-> $(FNAMED_SUB_NOEND)
-FNAMED_SUB          ::= .__.   id   ._. : .__. TYPE .__.               ##transf2-> $(FNAMED_SUB_END)
-//FNAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.
-//FNAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.   FNAMED
-//FNAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.
-//FANON_STRUCT        ::= .__. {  FIELDS   }
-
 
 
 //  TUPLE
@@ -62,12 +51,12 @@ ENUM_ITEMS ::=  .__.   | ._.  id   ._.   ,       .__.  ENUM_ITEMS   ##transf2-> 
 ENUM_ITEMS ::=  .__.   | ._.  id   .__.                             ##transf2-> $(ENUM_ITEM_END)
 
 
+//  UNION
+UNION ::= id .__. {  UNION_FIELDS  }        ##transf2->$(UNION)
 
-
-
-UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   endl    .__.  UNION
-UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   ,       .__.  UNION
-UNION ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   .__.
+UNION_FIELDS ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   endl    .__.  UNION_FIELDS  ##transf2-> $(FUNION_NOEND)
+UNION_FIELDS ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   ,       .__.  UNION_FIELDS  ##transf2-> $(FUNION_NOEND)
+UNION_FIELDS ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   .__.                              ##transf2-> $(FUNION_END)
 
 
 

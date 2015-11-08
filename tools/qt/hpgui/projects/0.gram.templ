@@ -1,3 +1,51 @@
+__BEGIN_TEMPLATE__:: UNION_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (union)   $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+$(__copy__ UNION_NAME  id)~
+
+struct $(UNION_NAME) {
+
+    //  fields  ...................................
+$(__set__  FUNION_NOEND  const jle::optional<$(B_L_TYPE)> $(id);$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    const jle::optional<$(B_L_TYPE)> $(id);)~
+$(__run__)~
+
+        $(__lmargin__  $(__alignc__ $(UNION_FIELDS)))~
+
+    //  ...........................................
+
+
+    //  ctor
+    $(id)() = delete;
+$(__set__  FUNION_NOEND  $(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__) : $(id)(p$(__close_par__) {};$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    $(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__) : $(id)(p$(__close_par__) {};$(__endl__))~
+$(__run__)~
+    $(__lmargin__ $(UNION_FIELDS))
+
+    $(id) (const $(id)& ) = default;
+    $(id) (      $(id)&&) = default;
+
+    //  assign
+    $(id)& operator=(const $(id)& ) = default;
+    $(id)& operator=(      $(id)&&) = default;
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
 __BEGIN_TEMPLATE__:: GENERATE_CODE
 $(__set__ FRAME_TYPE
 ~    $(__set__ TYPE_OPTIONAL          jle::optional<$(BASIC_TYPE)>)~
@@ -37,6 +85,7 @@ $(__set__  MODULE      $(MODULE_CODE))~
 $(__set__  RECORD      $(RECORD_H))~
 $(__set__  TUPLE       $(TUPLE_H))~
 $(__set__  ENUMERATION $(ENUMERATION_H))~
+$(__set__  UNION       $(UNION_H))~
 $(__run__)
 
 $(FRAME*)
@@ -55,6 +104,7 @@ $(__set__  MODULE      $(MODULE_CODE))~
 $(__set__  RECORD      $(RECORD_CPP))~
 $(__set__  TUPLE       $(TUPLE_CPP))~
 $(__set__  ENUMERATION $(ENUMERATION_CPP))~
+$(__set__  UNION       $(UNION_CPP))~
 $(__run__)
 
 $(FRAME*)
