@@ -2,6 +2,7 @@ t_union
 {
     |  s : string
     |  i : int32
+    |  d : double
 }
 
 
