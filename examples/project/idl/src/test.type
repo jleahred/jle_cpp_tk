@@ -71,6 +71,10 @@ t_type_modifiers
 }  // module idl.pr {
 
 
+t_composed {
+    i2    :  int32
+    comp  :  idl.pr.t_simple
+}
 
 
 

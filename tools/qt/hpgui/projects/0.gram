@@ -26,14 +26,15 @@ RECORD ::= id .__. {  RECORD_FIELDS  }        ##transf2->$(RECORD)
 RECORD_FIELDS ::=  FNAMED                      
 
 
+FNAMED ::=  FNAMED_SUB
 FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
 FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
 FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                           ##transf2-> $(FNAMED_END)
-//FNAMED ::=  FNAMED_SUB
 //FNAMED ::=  FNAMED_IMPL_SUB
 
 
-//FNAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.   FNAMED
+FNAMED_SUB          ::= .__.   id   ._. : .__. TYPE .__.  FNAMED       ##transf2-> $(FNAMED_SUB_NOEND)
+FNAMED_SUB          ::= .__.   id   ._. : .__. TYPE .__.               ##transf2-> $(FNAMED_SUB_END)
 //FNAMED_SUB          ::= .__.   id   ._. : .__.   STRUCT       .__.
 //FNAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.   FNAMED
 //FNAMED_IMPL_SUB     ::= .__.   id   ._. :        ANON_STRUCT  .__.

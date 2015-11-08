@@ -1,4 +1,4 @@
-//  generated on 2015-11-07 13:06:28.209
+//  generated on 2015-11-07 13:25:42.326
 //  generated on 2015-11-06 23:59:59.000
 //  this is a test
 
@@ -339,6 +339,44 @@ std::ostream& operator<< (std::ostream& o, const t_type_modifiers& t);
 
 
 }  }   //  namespace idl { namespace pr {
+
+
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (record)   t_composed
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct t_composed {
+
+    //  fields  ...................................
+
+        int32_t            i2;    
+        idl::pr::t_simple  comp;  
+    //  ...........................................
+
+
+    //  ctor
+    t_composed() = delete;
+    t_composed (
+          int32_t _i2,
+          idl::pr::t_simple _comp
+    );
+    t_composed (const t_composed& ) = default;
+    t_composed (      t_composed&&) = default;
+
+    //  assign
+    t_composed& operator=(const t_composed& ) = default;
+    t_composed& operator=(      t_composed&&) = default;
+
+    //  comparison
+    bool operator==(const t_composed& ) const;
+    bool operator< (const t_composed& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const t_composed& t);
 
 
 

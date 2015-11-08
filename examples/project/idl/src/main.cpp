@@ -44,6 +44,14 @@ int main()
         std::cout << type << std::endl;
     }
 
+    {   //  record composed simple
+        auto type = t_composed {
+                    32,
+                    idl::pr::t_simple{ 1, "one", "two" }
+        };
+        std::cout << type << std::endl;
+    }
+
 
     return 0;
 }

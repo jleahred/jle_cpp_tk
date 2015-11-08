@@ -439,6 +439,58 @@ std::ostream& operator<< (std::ostream& os, const t_type_modifiers& t)
 
 
 
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (record)   t_composed
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+t_composed::t_composed (
+          int32_t _i2,
+          idl::pr::t_simple _comp
+    )  :
+          i2(_i2),
+          comp(_comp)
+    {}
+
+
+//  comparison
+bool t_composed::operator==(const t_composed& r) const
+{
+    if(
+        i2 == r.i2  &&
+        comp == r.comp
+    )     return true;
+    else  return false;
+}
+
+bool t_composed::operator< (const t_composed& r) const
+{
+    if(std::tie(
+          i2,
+          comp)
+       <
+       std::tie(
+          r.i2,
+          r.comp)
+    )     return true;
+    else  return false;
+
+}
+
+std::ostream& operator<< (std::ostream& os, const t_composed& t)
+{
+    os  << " t_composed { "
+           << "i2: " << t.i2 << ", "
+           << "comp: " << t.comp
+        << " }";
+    return os;
+}
+
+
+
 
 
 
