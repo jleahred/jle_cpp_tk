@@ -435,6 +435,67 @@ std::ostream& operator<< (std::ostream& os, const t_type_modifiers& t)
 
 
 
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (union)   t_union
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+t_union::t_union (const std::string& p)
+      : s(p), field(en_field::s) {};
+
+t_union::t_union (const int32_t& p)
+      : i(p), field(en_field::i) {};
+
+t_union::t_union (const jle::dbl& p)
+      : d(p), field(en_field::d) {};
+
+
+
+
+//  comparison
+bool t_union::operator==(const t_union& r) const
+{
+    if(
+        s == r.s  &&
+        i == r.i  &&
+        d == r.d
+    )     return true;
+    else  return false;
+}
+
+bool t_union::operator< (const t_union& r) const
+{
+    if(std::tie(
+          s,
+          i,
+          d)
+       <
+       std::tie(
+          r.s,
+          r.i,
+          r.d)
+    )     return true;
+    else  return false;
+
+}
+
+std::ostream& operator<< (std::ostream& os, const t_union& t)
+{
+    os  << " t_union { ";
+           if(false) {;}
+           else if(t.s)  os << "s: " << t.s;
+           else if(t.i)  os << "i: " << t.i;
+           else if(t.d)  os << "d: " << t.d;
+    os  << " }";
+    return os;
+}
+
+
+
+
 }  }   //  namespace idl { namespace pr {
 
 

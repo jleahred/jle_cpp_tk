@@ -52,6 +52,24 @@ int main()
         std::cout << type << std::endl;
     }
 
+    {   //  union
+        using idl::pr::t_union;
+        auto type = t_union {32};
+        switch(type.field) {
+            case  t_union::en_field::s :
+                    std::cout << *type.s;
+                    break;
+            case  t_union::en_field::i :
+                    std::cout << *type.i;
+                    break;
+            case  t_union::en_field::d :
+                    std::cout << *type.d;
+                    break;
+            default:    ;
+        }
+        std::cout << type << std::endl;
+    }
+
 
     return 0;
 }
