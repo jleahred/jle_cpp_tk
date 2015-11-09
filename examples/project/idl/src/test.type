@@ -67,6 +67,13 @@ t_type_modifiers
 }
 
 
+t_union
+{
+    |  s : string
+    |  i : int32
+    |  d : double
+}
+
 
 }  // module idl.pr {
 
@@ -76,47 +83,3 @@ t_composed {
     comp  :  idl.pr.t_simple
 }
 
-
-
-/****
-
-t_union
-{
-    |  s : string
-    |  i : int32
-}
-
-
-
-
-
-
-t_composed
-{
-    i : int32
-    s : string
-
-    composed_field : sub_struct_type_name
-    {
-        i   :   int32
-        s   :   string
-
-        composed_field2 : sub_struct_type_name
-        {
-            i   :   int32
-            s   :   string
-        }
-    }
-
-    i2 : int32
-    s2 : string
-
-
-    composed_field2 :    //  anonymous struct, implicit name
-    {
-        i   :   int32
-        s   :   string
-    }
-
-}
-***/

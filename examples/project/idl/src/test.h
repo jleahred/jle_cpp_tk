@@ -1,5 +1,5 @@
-//  generated on 2015-11-07 13:25:42.326
-//  generated on 2015-11-06 23:59:59.000
+//  generated on 2015-11-09 18:14:00.178
+//  generated on 2015-11-08 23:59:59.000
 //  this is a test
 
 
@@ -334,6 +334,54 @@ struct t_type_modifiers {
     bool operator< (const t_type_modifiers& ) const;
 };
 std::ostream& operator<< (std::ostream& o, const t_type_modifiers& t);
+
+
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (union)   t_union
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct t_union {
+
+    enum class  en_field {
+        s,  
+        i,  
+        d   
+    };
+
+    //  fields  ...................................
+
+        const  jle::optional<std::string>  s;  
+        const  jle::optional<int32_t>      i;  
+        const  jle::optional<jle::dbl>     d;  
+
+        const  en_field   field;
+
+    //  ...........................................
+
+
+    //  ctor
+    t_union() = delete;
+    t_union (const std::string& p);
+    t_union (const int32_t& p);
+    t_union (const jle::dbl& p);
+
+    t_union (const t_union& ) = default;
+    t_union (      t_union&&) = default;
+
+    //  assign
+    t_union& operator=(const t_union& ) = default;
+    t_union& operator=(      t_union&&) = default;
+
+    //  comparison
+    bool operator==(const t_union& ) const;
+    bool operator< (const t_union& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const t_union& t);
 
 
 

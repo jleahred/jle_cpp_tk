@@ -37,6 +37,7 @@ $(__set__  MODULE      $(MODULE_CODE))~
 $(__set__  RECORD      $(RECORD_H))~
 $(__set__  TUPLE       $(TUPLE_H))~
 $(__set__  ENUMERATION $(ENUMERATION_H))~
+$(__set__  UNION       $(UNION_H))~
 $(__run__)
 
 $(FRAME*)
@@ -55,6 +56,7 @@ $(__set__  MODULE      $(MODULE_CODE))~
 $(__set__  RECORD      $(RECORD_CPP))~
 $(__set__  TUPLE       $(TUPLE_CPP))~
 $(__set__  ENUMERATION $(ENUMERATION_CPP))~
+$(__set__  UNION       $(UNION_CPP))~
 $(__run__)
 
 $(FRAME*)
@@ -378,3 +380,126 @@ __END_TEMPLATE__::
 
 
 
+__BEGIN_TEMPLATE__:: UNION_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (union)   $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+$(__copy__ UNION_NAME  id)~
+
+struct $(UNION_NAME) {
+    
+    enum class  en_field { 
+$(__set__  FUNION_NOEND  $(id),$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    $(id))~
+$(__run__)~
+        $(__lmargin__  $(__alignc__ $(UNION_FIELDS)))
+    };
+
+    //  fields  ...................................
+$(__set__  FUNION_NOEND  const jle::optional<$(B_L_TYPE)> $(id);$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    const jle::optional<$(B_L_TYPE)> $(id);)~
+$(__run__)~
+
+        $(__lmargin__  $(__alignc__ $(UNION_FIELDS)))
+
+        const  en_field   field;
+
+    //  ...........................................
+
+
+    //  ctor
+    $(id)() = delete;
+$(__set__  FUNION_NOEND  $(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__);$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    $(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__);)~
+$(__run__)~
+    $(__lmargin__ $(UNION_FIELDS))
+
+    $(id) (const $(id)& ) = default;
+    $(id) (      $(id)&&) = default;
+
+    //  assign
+    $(id)& operator=(const $(id)& ) = default;
+    $(id)& operator=(      $(id)&&) = default;
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+
+
+
+__BEGIN_TEMPLATE__:: UNION_CPP
+$(__copy__ UNION_NAME  id)~
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (union)   $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+$(__set__  FUNION_NOEND  $(UNION_NAME)::$(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__) 
+      : $(id)(p$(__close_par__), field(en_field::$(id)$(__close_par__) {};$(__endl__)$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    $(UNION_NAME)::$(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__) 
+      : $(id)(p$(__close_par__), field(en_field::$(id)$(__close_par__) {};$(__endl__))~
+$(__run__)~
+$(UNION_FIELDS)
+
+
+
+//  comparison
+bool $(id)::operator==(const $(id)& r) const
+{
+$(__set__  FUNION_NOEND $(id) == r.$(id)  &&$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END   $(id) == r.$(id))~
+$(__run__)~
+    if(
+        $(__lmargin__ $(UNION_FIELDS))
+    )     return true;
+    else  return false;
+}
+
+bool $(id)::operator< (const $(id)& r) const
+{
+$(__set__  FUNION_NOEND $(id),$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END   $(id))~
+$(__run__)~
+    if(std::tie(
+          $(__lmargin__ $(UNION_FIELDS)))
+       <
+       std::tie(
+$(__set__  FUNION_NOEND r.$(id),$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END   r.$(id))~
+$(__run__)~
+          $(__lmargin__ $(UNION_FIELDS)))
+    )     return true;
+    else  return false;
+
+}
+
+std::ostream& operator<< (std::ostream& os, const $(id)& t)
+{
+$(__set__  FUNION_NOEND else if(t.$(id)$(__close_par__)  os << "$(id): " << t.$(id);$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END   else if(t.$(id)$(__close_par__)  os << "$(id): " << t.$(id);)~
+$(__run__)~
+    os  << " $(id) { "; 
+           if(false) {;}
+           $(__lmargin__ $(UNION_FIELDS))
+    os  << " }";
+    return os;
+}
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
