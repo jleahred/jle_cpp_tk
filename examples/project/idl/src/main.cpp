@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "test_forward.h"
 #include "test.h"
 #include "core/alarm.h"
 #include "core/tuple.hpp"

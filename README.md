@@ -298,10 +298,10 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~integer div 0 protection~~
 - (90%) Message driven programming oriented: synchr, timers
 - (done) ~~parallelism control helper~~
-- (100%) LL(n) parser
-- (80%) qt gui for LL(n)
+- (done) LL(n) parser
+- (done) qt gui for LL(n)
 - LL(n) parser documentation
-- IDL class generation
+- (done) IDL class generation
     - stream
     - yaml
     - json
@@ -309,6 +309,7 @@ In any case, I plan to follow next order (more or less)...
     - less operator
     - equal operator
     - ...
+- IDL documentation
 - .ini and .cfg parsing files
 - ashared_ptr. Destroy it ansynchronous way to avoid destroy when using it
 - IDL fsm generation

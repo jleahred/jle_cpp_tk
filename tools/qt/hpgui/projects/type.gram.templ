@@ -10,10 +10,28 @@ $(__set__ FRAME_TYPE
 ~    $(__run__)~
 ~    $(TYPE))~
 ~
+$(H_FORWARD_FILE)
 $(H_FILE)
 $(CPP_FILE)
 __END_TEMPLATE__::
 
+
+
+__BEGIN_TEMPLATE__:: H_FORWARD_FILE
+__BEGIN_FILE__::$(__file_name__)_forward.h
+//  generated on $(__date_time__)
+
+
+$(__set__  MODULE      $(MODULE_CODE))~
+$(__set__  RECORD      struct $(id);$(__endl__))~
+$(__set__  TUPLE       struct $(id);$(__endl__))~
+$(__set__  ENUMERATION enum class $(id);$(__endl__))~
+$(__set__  UNION       struct $(id);$(__endl__))~
+$(__run__)
+
+$(FRAME*)
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__::
 
 
 
@@ -21,8 +39,6 @@ __END_TEMPLATE__::
 __BEGIN_TEMPLATE__:: H_FILE
 __BEGIN_FILE__::$(__file_name__).h
 //  generated on $(__date_time__)
-//  generated on $(__date__)
-//  this is a test
 
 
 #include <cstdint>
@@ -77,10 +93,12 @@ $(__set__ END_MOD
 ~            $(__run__)~
 ~            $(MOD_ID))~
 ~
+
+
 $(BEGIN_MOD)
-$(FRAME*)
+    $(__lmargin__  $(FRAME*))
 $(END_MOD)   //  $(BEGIN_MOD)$(__endl__)$(__endl__)
-$(__endl__)
+
 __END_TEMPLATE__::
 
 
