@@ -77,7 +77,8 @@ That's the main reason why I build this lib, and in these cases, the game consis
 on getting a text, validate it, and generating a different text.
 
 
-
 ## Defining a grammar
 
 Let's start with a common and simple exercise, parsing a math equation.
+
+Lets start validating numbers in float precision.

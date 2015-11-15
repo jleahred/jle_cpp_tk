@@ -13,7 +13,7 @@ $(__set__ FRAME_TYPE
 $(H_FORWARD_FILE)
 $(H_FILE)
 $(CPP_FILE)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -31,7 +31,7 @@ $(__run__)
 
 $(FRAME*)
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -58,7 +58,7 @@ $(__run__)
 
 $(FRAME*)
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -77,7 +77,7 @@ $(__run__)
 
 $(FRAME*)
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -99,7 +99,7 @@ $(BEGIN_MOD)
     $(__lmargin__  $(FRAME*))
 $(END_MOD)   //  $(BEGIN_MOD)$(__endl__)$(__endl__)
 
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -146,7 +146,7 @@ $(__run__)~
 };
 std::ostream& operator<< (std::ostream& o, const $(id)& t);
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -209,13 +209,13 @@ std::ostream& operator<< (std::ostream& os, const $(id)& t)
 $(__set__  FNAMED_NOEND << "$(id): " << t.$(id) << ", "$(__endl__)$(FNAMED))~
 $(__set__  FNAMED_END   << "$(id): " << t.$(id))~
 $(__run__)~
-    os  << " $(id) { "
+    os  << " $(id) { " 
            $(__lmargin__ $(RECORD_FIELDS))
         << " }";
     return os;
 }
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -229,7 +229,7 @@ $(__set_mut__  PCOUNTER  0)~
 $(__set__  F_NO_NAMED_NOEND $(__inc__ PCOUNTER)$(F_NO_NAMED))~
 $(__set__  F_NO_NAMED_END   $(__nothing__))~
 $(__run__)~
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -284,7 +284,7 @@ $(__run__)
 };
 std::ostream& operator<< (std::ostream& o, const $(id)& t);
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -334,7 +334,7 @@ std::ostream& operator<< (std::ostream& os, const $(id)& t)
     return os;
 }
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -356,7 +356,7 @@ $(__run__)~
 };
 std::ostream& operator<< (std::ostream& os, const $(id)& t);
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 __BEGIN_TEMPLATE__:: ENUMERATION_CPP
@@ -379,7 +379,7 @@ $(__set__  ENUM_ITEM_NOEND
                       os << "$(id)";
                       break;
            $(ENUM_ITEMS))~
-$(__set__  ENUM_ITEM_END
+$(__set__  ENUM_ITEM_END  
            case $(ENUM_NAME)::$(id):
                       os << "$(id)";
                       break;)~
@@ -388,12 +388,12 @@ $(__run__)~
            default:
                       throw "ERROR";
     };
-
+    
     os << ")";
     return os;
 }
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -410,8 +410,8 @@ __BEGIN_TEMPLATE__:: UNION_H
 $(__copy__ UNION_NAME  id)~
 
 struct $(UNION_NAME) {
-
-    enum class  en_field {
+    
+    enum class  en_field { 
 $(__set__  FUNION_NOEND  $(id),$(__endl__)$(UNION_FIELDS))~
 $(__set__  FUNION_END    $(id))~
 $(__run__)~
@@ -450,7 +450,7 @@ $(__run__)~
 };
 std::ostream& operator<< (std::ostream& o, const $(id)& t);
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 
 
 
 
@@ -469,9 +469,9 @@ $(__copy__ UNION_NAME  id)~
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 
-$(__set__  FUNION_NOEND  $(UNION_NAME)::$(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__)
+$(__set__  FUNION_NOEND  $(UNION_NAME)::$(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__) 
       : $(id)(p$(__close_par__), field(en_field::$(id)$(__close_par__) {};$(__endl__)$(__endl__)$(UNION_FIELDS))~
-$(__set__  FUNION_END    $(UNION_NAME)::$(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__)
+$(__set__  FUNION_END    $(UNION_NAME)::$(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__) 
       : $(id)(p$(__close_par__), field(en_field::$(id)$(__close_par__) {};$(__endl__))~
 $(__run__)~
 $(UNION_FIELDS)
@@ -513,11 +513,11 @@ std::ostream& operator<< (std::ostream& os, const $(id)& t)
 $(__set__  FUNION_NOEND else if(t.$(id)$(__close_par__)  os << "$(id): " << t.$(id);$(__endl__)$(UNION_FIELDS))~
 $(__set__  FUNION_END   else if(t.$(id)$(__close_par__)  os << "$(id): " << t.$(id);)~
 $(__run__)~
-    os  << " $(id) { ";
+    os  << " $(id) { "; 
            if(false) {;}
            $(__lmargin__ $(UNION_FIELDS))
     os  << " }";
     return os;
 }
 $(__endl__)$(__endl__)$(__endl__)
-__END_TEMPLATE__::
+__END_TEMPLATE__:: 

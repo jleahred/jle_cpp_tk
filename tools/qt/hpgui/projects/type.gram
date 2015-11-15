@@ -23,8 +23,8 @@ module ::= 'module'
 //  RECORD
 RECORD ::= id .__. {  RECORD_FIELDS  }        ##transf2->$(RECORD)
 
-//RECORD_FIELDS ::=  FNAMED  PROP
-RECORD_FIELDS ::=  FNAMED
+//RECORD_FIELDS ::=  FNAMED  PROP                
+RECORD_FIELDS ::=  FNAMED                      
 
 FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
 FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
@@ -34,7 +34,7 @@ FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                           #
 //  TUPLE
 TUPLE ::= id .__. {  TUPLE_FIELDS  }        ##transf2->$(TUPLE)
 
-//TUPLE_FIELDS ::=  F_NO_NAMED  PROP
+//TUPLE_FIELDS ::=  F_NO_NAMED  PROP                
 TUPLE_FIELDS ::=  F_NO_NAMED
 
 F_NO_NAMED ::=  .__.   FULL_TYPE   ._.   endl    .__.   F_NO_NAMED    ##transf2-> $(F_NO_NAMED_NOEND)
@@ -60,21 +60,21 @@ UNION_FIELDS ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   .__.                
 
 
 
-FULL_TYPE  ::=  TYPE_LIST
-FULL_TYPE  ::=  TYPE_OPTIONAL
-FULL_TYPE  ::=  TYPE_RECOMENDED
-FULL_TYPE  ::=  TYPE_WITH_DEFAULT_DATE
-FULL_TYPE  ::=  TYPE_WITH_DEFAULT
-FULL_TYPE  ::=  BASIC_TYPE
+FULL_TYPE  ::=  TYPE_LIST                  
+FULL_TYPE  ::=  TYPE_OPTIONAL              
+FULL_TYPE  ::=  TYPE_RECOMENDED            
+FULL_TYPE  ::=  TYPE_WITH_DEFAULT_DATE     
+FULL_TYPE  ::=  TYPE_WITH_DEFAULT          
+FULL_TYPE  ::=  BASIC_TYPE                 
 
 
 B_L_TYPE  ::=  BASIC_TYPE
 B_L_TYPE  ::=  TYPE_LIST
 
-BASIC_TYPE  ::= string
-BASIC_TYPE  ::= double
-BASIC_TYPE  ::= int32
-BASIC_TYPE  ::= int64
+BASIC_TYPE  ::= string  
+BASIC_TYPE  ::= double  
+BASIC_TYPE  ::= int32   
+BASIC_TYPE  ::= int64   
 BASIC_TYPE  ::= COMPOSED_TYPE
 
 COMPOSED_TYPE ::= id _. COMPOSED_TYPE   ##transf2->$(COMP_TYPE_NO_END)
@@ -125,7 +125,7 @@ _*/   ::=  '*/'
 /_/   ::=  '//'
 
 
-_      ::=  ([ \t]*)
+_      ::=  ([ \t]*)  
 __     ::=  __isspace*__
 u__    ::=  __isspace__
 endl   ::=  __endl__
@@ -149,5 +149,8 @@ id  ::=  ([_A-Za-z][A-Za-z0-9_]*)
 #   ::=  ([0-9])
 -   ::=  '-'
 _.  ::=  '.'
+
+
+
 
 
