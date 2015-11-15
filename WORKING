@@ -1,6 +1,9 @@
 hp/ide
 doc
 
+remove non_copiable
+
+
 
 dsl/idl
 finish

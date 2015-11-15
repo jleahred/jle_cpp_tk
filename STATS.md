@@ -2,13 +2,13 @@
 
 _ | lines | files
 ------------- | -------------: | -------------:
-/ |  18342  |  81
-src/ |  12067  |  38
-src/core/ |  9148  |  35
+/ |  19175  |  82
+src/ |  12258  |  38
+src/core/ |  9339  |  35
 src/net/ |  460  |  2
-examples/ |  1766  |  20
-test/ |  1785  |  10
-tools/ |  2390  |  12
+examples/ |  2618  |  21
+test/ |  1786  |  10
+tools/ |  2392  |  12
 
 
 extern | lines | files
