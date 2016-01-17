@@ -14,7 +14,7 @@ I'm also interested on *methaprograming*. One one to do it, and sometimes
 the only correct one, is creating *DSLs*.
 
 In most cases, these *DSLs* has to be external. Working with external *DSLs*
-you have full freedom.
+give you full freedom.
 
 
 
@@ -59,7 +59,7 @@ will return a *template*
 
 ## Transforming text
 
-Validating files is quite intereseting.
+Validating files is quite interesting.
 
 Parsing files and generating *AST* is even better.
 
@@ -79,6 +79,217 @@ on getting a text, validate it, and generating a different text.
 
 ## Defining a grammar
 
+
+### Basic grammars
+
 Let's start with a common and simple exercise, parsing a math equation.
 
-Lets start validating numbers in float precision.
+Lets start with hello world on grammars...
+
+![Image](hello_world1.png)
+
+This grammar, accepts one or several 'a' char. Simple.
+
+The first line, defines the initial *non terminal* symbol
+
+**NON Terminal symbols** will be on upper case
+
+**Terminal symbols** will be on lower case
+
+As you can see, it derives by left.
+
+Now, let's have a sequence of 'a' followed by 'b' and a sequence of 'a' again
+Lets try next one, parenthesis...
+
+It has to accept things like...
+
+```
+abaaa
+aaaabaa
+aba
+```
+
+```
+B
+
+B ::= A  b  A
+
+A ::= a A
+A ::= a
+
+a ::= 'a'
+b ::= 'b'
+```
+Great.
+
+
+But now, we want same quantity of 'a' at the beginning and at the end.
+
+It has to accept things like...
+
+```
+aaabaaa
+aaaabaaa
+aba
+```
+
+But not...
+
+```
+aabaaa
+aaaaba
+ab
+```
+Let's try
+
+```
+B
+
+B ::= a  b  a
+B ::= aa  b  aa
+B ::= aaa  b  aaa
+
+
+a ::= 'a'
+b ::= 'b'
+aa ::= 'aa'
+aaa ::= 'aaa'
+```
+
+From now on, lasts lines will indicate a valid input, rest of lines will be the grammar
+
+This is not a full solution, and it's not an elegant one either.
+
+```
+B
+
+B ::= a  B  a
+B ::= b
+
+a ::= 'a'
+b ::= 'b'
+
+input: aaabaaa
+input: aba
+```
+
+This looks great. Generic, concise, simple.
+
+We can move it to parenthesis...
+
+```
+B
+
+B ::= ( B )
+B ::= b
+
+b ::= 'b'
+( ::= '('
+) ::= ')'
+
+input: (((b)))
+input: (b)
+```
+
+### Expressions grammar
+
+Let's start with numbers.
+
+```
+EXPR
+
+EXPR ::=  NUM
+
+NUM  ::=  d NUM
+NUM  ::=  d
+
+d ::= ([0-9])
+input: 123456
+```
+
+Terminal symbols can be defined as *regular expressions* in order to simplify the rule.
+
+To keep the example simple, we will let numbers of any size and just integers.
+
+If terminal symbols can be written as *regular expressions*, then we can simplify...
+
+```
+EXPR
+
+EXPR ::=  num
+
+num ::= ([0-9]+)
+
+input: 123456
+```
+
+Added one operator
+```
+EXPR
+
+EXPR ::=  num operator num
+
+num ::= ([0-9]+)
+operator ::= ([\+|\-|\*|\/])
+
+input: 1+2
+```
+
+But expressions has to accept multiple operators and numbers...
+
+```
+EXPR
+
+EXPR ::=  num operator EXPR
+EXPR ::=  num
+
+num ::= ([0-9]+)
+operator ::= ([\+|\-|\*|\/])
+
+input: 1+2*3
+```
+
+
+And what about the parenthesis?...
+```
+EXPR
+
+EXPR ::=  ( EXPR ) operator EXPR
+EXPR ::=  ( EXPR )
+EXPR ::=  num operator EXPR
+EXPR ::=  num
+
+num      ::= ([0-9]+)
+operator ::= ([\+|\-|\*|\/])
+(        ::= '('
+)        ::= ')'
+
+input: (1+2)*3
+input: (1*(3+2))*3+(8*9)
+```
+
+We could want to let spaces between elements.
+
+```
+EXPR
+
+EXPR ::=  _ ( _ EXPR _ ) _ operator _ EXPR
+EXPR ::=  ( _ EXPR _ )
+EXPR ::=  num _ operator _ EXPR
+EXPR ::=  num
+
+num      ::= ([0-9]+)
+operator ::= ([\+|\-|\*|\/])
+(        ::= '('
+)        ::= ')'
+_        ::= ([ |\t]*)
+
+input: ( 1+2 ) *3
+input: (1* (3  +2 ) )* 3+( 8* 9  )
+```
+
+This grammar will produce next tree for entrance ```(1* (3  +2 ) )* 3+( 8* 9  )```
+
+![Image](expression_simple.png)
+
+Fantastic, but, what if we want to consider operator priority?...
