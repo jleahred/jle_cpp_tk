@@ -20,29 +20,29 @@
 ## About
 ### Why
 
-C++ is not the safest programing language in the world. In fact, it's easy to produce *undefined behaviour* working with C++.
-In several cases, it would be interesting to work in a safe way (no body like crashes).
-Working in a team (generally different levels), it's also desirable to have safety in mind.
+C++ is growing incredible fast and it will continue in next future.
+A more complete library, variadic templates, lambdas, string-view, smart-pointers, move semantic, concurrency, files, initializer lists, type inference...
+
+To learn, to practice new features from C++, to have a toolset to complete c++ library, to program in c++ with less "undefined behavior"
 
 
-Some years ago I wrote a C++ toolkit with regular expressions, tuples, class definition IDL, fsm IDL, config files. LL(n) parser, signal-slot, monotonic date time with adjustments...
+Once upon a time...
 
-These last years, C++'s world has moved a lot.
+I wrote some rules and c++ tools to help colleagues with no experience in C++ to survive with it.
 
-Now gcc and other compilers run a lot of features from C++11, C++14 and partially from C++17
+But later, I discover It was pleasant to work with these tools, safe, easy to use, low dependencies... I'm also very interested in doing safe programs (no crashes)
 
-Some of the tools I wrote or added to my library, are not necessary any more.
-The implementation and API can also be improved.
+This toolset compiles with modern C++ (and will be, c++ feature), but is not fully idiomatic. Some of the tools has been added to C++ (regular expressions, tuples, date time...), and there are new ways to solve most of the problems.
 
-For example... I wrote a smart_pointer called CountPtr. I also wrote code to manage tuples,
-I wrote a beautiful, platform independent, safe, and easy to use classes to deal with date_time and durations,
-I added a small wrapper library for PCRE regular expressions. These features have been added to C++
+Let's enjoy and learn new C++. Let's have toolkit working with new C++. Let's create your basic tools to develop from scratch. It's a great excuse!!!
 
-Now, we also have type inference, lambdas, variadic templates, initializer lists...
+I loved my CountPtr implementation, I did with tuples what was possible and having my own tuples has been very interesting, now all this things... will be replaced by std implementation or a new development using new c++.
 
-It's time to enjoy and write a new set of tools based on modern C++ (more reduced than previous one, but with a better language)
+I know It will be necessary to rewrite some parts of the library in order to be updated to last versions of C++. It's part of the game.
 
-Previously I wrote the documentation with **asciidoc**, muse over emacs and doxys. Now I'm going to do it with doxygen (I'm not a fan of these kind of tools, I prefer something like asciidoc or muse, but it's a standard).
+Previously I wrote the documentation with **asciidoc**, muse over emacs and doxys on some projects. Now I'm going to do it with doxygen (I'm not a fan of these kind of tools, I prefer something like asciidoc or emacs/muse, but it's a standard).
+
+
 
 
 ### Directives
@@ -51,8 +51,7 @@ My aim is different from C++.
 
 - Safety
     - I don't like undefined behaviour
-    - I don't like crashes due to programming mistakes
-    - C++ is a dangerous language. It's easy to have crashes, I want a library protecting and helping the programmer.
+    - I don't like crashes due to programming mistakes. C++ is a dangerous language. It's easy to have crashes, I want a library protecting and helping the programmer.
     - Message driven programming
     - If we have a fail processing a message, usually is better to inform about it and continue with next one.
 - KISS and YAGNI
@@ -76,6 +75,13 @@ Performance is desired but not over safety, easy api...
 ## Safety
 
 > Note: Important working on a team.
+
+C++ is not the safest programing language in the world. In fact, it's easy to produce *undefined behaviour* working with C++.
+
+> undefined behavior is all arround you...
+
+Working in a team (generally different levels), it's desirable to have safety in mind.
+
 
 C++ is focused on performance and low level abstractions.
 

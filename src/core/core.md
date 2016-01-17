@@ -375,8 +375,7 @@ If you use a third party library with other thread callbacks, or if you want to 
 Also you have here the way to start and stop the jle mail loop.
 
  links:
-  - see: core/synchr.h
-  - example: @link /core/ex_synchr.cpp @endlink
+  - see: core/synchr.h - example: @link /core/ex_synchr.cpp @endlink
 
 
   \section int_div0
@@ -385,7 +384,7 @@ Also you have here the way to start and stop the jle mail loop.
 
   On x86, it stops the program without exception or any warning.
 
-  To avoid this "undefined behaviour" with bad result, you can use
+  To avoid this "undefined behavior" with bad result, you can use
 
   JLE_HANDLE_INTDIV0 macros. See the example.
 
