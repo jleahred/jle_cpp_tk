@@ -187,7 +187,7 @@
            </property>
            <property name="font">
             <font>
-             <family>Monospace</family>
+             <family>DejaVu Sans Mono</family>
              <pointsize>12</pointsize>
              <weight>50</weight>
              <italic>false</italic>
@@ -198,7 +198,7 @@
             <enum>Qt::ActionsContextMenu</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt &quot;Monospace&quot;;</string>
+            <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
@@ -277,7 +277,7 @@ endl            ::=  __endl__
            </property>
            <property name="font">
             <font>
-             <family>Monospace</family>
+             <family>DejaVu Sans Mono</family>
              <pointsize>12</pointsize>
              <weight>50</weight>
              <italic>false</italic>
@@ -288,7 +288,7 @@ endl            ::=  __endl__
             <enum>Qt::ActionsContextMenu</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt &quot;Monospace&quot;;</string>
+            <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
@@ -341,7 +341,7 @@ endl            ::=  __endl__
              <widget class="QPlainTextEdit" name="pteCompilerOut">
               <property name="font">
                <font>
-                <family>Monospace</family>
+                <family>DejaVu Sans Mono</family>
                 <pointsize>10</pointsize>
                 <weight>50</weight>
                 <italic>false</italic>
@@ -349,7 +349,7 @@ endl            ::=  __endl__
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">font: 10pt &quot;Monospace&quot;;
+               <string notr="true">font: 10pt &quot;DejaVu Sans Mono&quot;;
 
 </string>
               </property>
@@ -532,7 +532,7 @@ endl            ::=  __endl__
              <widget class="QPlainTextEdit" name="pteInput">
               <property name="font">
                <font>
-                <family>Monospace</family>
+                <family>DejaVu Sans Mono</family>
                 <pointsize>12</pointsize>
                 <weight>50</weight>
                 <italic>false</italic>
@@ -543,7 +543,7 @@ endl            ::=  __endl__
                <enum>Qt::ActionsContextMenu</enum>
               </property>
               <property name="styleSheet">
-               <string notr="true">font: 12pt &quot;Monospace&quot;;</string>
+               <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -669,7 +669,7 @@ DBLOCALPR
              <widget class="QPlainTextEdit" name="pteParsed">
               <property name="font">
                <font>
-                <family>Monospace</family>
+                <family>DejaVu Sans Mono</family>
                 <pointsize>12</pointsize>
                 <weight>50</weight>
                 <italic>false</italic>
@@ -677,7 +677,7 @@ DBLOCALPR
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">font: 12pt &quot;Monospace&quot;;</string>
+               <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -708,7 +708,7 @@ DBLOCALPR
           </property>
           <property name="font">
            <font>
-            <family>Monospace</family>
+            <family>DejaVu Sans Mono</family>
             <pointsize>10</pointsize>
             <weight>50</weight>
             <italic>false</italic>
@@ -716,7 +716,7 @@ DBLOCALPR
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 10pt &quot;Monospace&quot;;
+           <string notr="true">font: 10pt &quot;DejaVu Sans Mono&quot;;
 
 </string>
           </property>
@@ -753,7 +753,7 @@ DBLOCALPR
             <enum>Qt::ActionsContextMenu</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt &quot;Monospace&quot;;</string>
+            <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
@@ -775,7 +775,7 @@ DBLOCALPR
             <enum>Qt::ActionsContextMenu</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt &quot;Monospace&quot;;</string>
+            <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>

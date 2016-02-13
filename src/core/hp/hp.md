@@ -57,26 +57,6 @@ will return a *template*
 
 
 
-## Transforming text
-
-Validating files is quite interesting.
-
-Parsing files and generating *AST* is even better.
-
-Once you have the *AST*, you can do things depending of the input file.
-
-Great!!!!
-
-But many times, the result will be text, perhaps, another file.
-
-Even when is not the case, generating a normalized text is an interesting option (some times a very good one) to process the input.
-
-Generating *DSLs* is a good example.
-
-That's the main reason why I build this lib, and in these cases, the game consists
-on getting a text, validate it, and generating a different text.
-
-
 ## Defining a grammar
 
 
@@ -293,3 +273,66 @@ This grammar will produce next tree for entrance ```(1* (3  +2 ) )* 3+( 8* 9  )`
 ![Image](expression_simple.png)
 
 Fantastic, but, what if we want to consider operator priority?...
+
+Here it is...
+
+~~~~~~~
+EXPR
+
+EXPR    ::=    _ unaryoperator _ ADDS _
+EXPR    ::=    ADDS
+ADDS    ::=    FACTS _ add_operator _ ADDS
+ADDS    ::=    FACTS
+FACTS   ::=    VAL _ mult_operator _ ADDS
+FACTS   ::=    VAL
+
+VAL     ::=    FUNC _ ( _ EXPR _ )
+VAL     ::=    _ num
+VAL     ::=    VAR
+VAR     ::=    _ id
+FUNC    ::=    _ id
+
+FACTS   ::=    _ ( _ EXPR _ )
+
+
+num           ::=    ([0-9]+)
+id            ::=    ([a-z|A-Z][0-9|a-z|A-Z|_]*)
+id            ::=    (_+[0-9|a-z|A-Z]+[0-9|a-z|A-Z|_]*)
+mult_operator ::=    ([\*|\\])
+add_operator  ::=    ([\+|\-])
+unaryoperator ::=    ([\+|\-])
+_             ::=    ([ |\t]*)
+(             ::=    (\()
+)             ::=    (\))
+~~~~~~~
+
+And here is the tree with correct priority for input ```1+2*3```...
+
+![Image](expresion_priority.png)
+
+
+
+## Transforming text
+
+Validating files is quite interesting.
+
+Parsing files and generating *AST* is even better.
+
+Once you have the *AST*, you can do things depending of the input file.
+
+Great!!!!
+
+But many times, the result will be text, perhaps, another file.
+
+Even when is not the case, generating a normalized text is an interesting option (some times a very good one) to process the input.
+
+Generating *DSLs* is a good example.
+
+That's the main reason why I build this lib, and in these cases, the game consists
+on getting a text, validate it, and generating a different text.
+
+The output could be also... a program in pcode or c++, or embedded language.
+
+Yes! this is external DSL
+
+Lets see one example with the expression grammar.
