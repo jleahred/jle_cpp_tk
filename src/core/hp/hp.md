@@ -109,7 +109,7 @@ aaaabaa
 aba
 ~~~~~~~
 
-```
+~~~~~~~
 B
 
 B ::= A  b  A
@@ -119,7 +119,7 @@ A ::= a
 
 a ::= 'a'
 b ::= 'b'
-```
+~~~~~~~
 Great.
 
 
@@ -127,22 +127,22 @@ But now, we want same quantity of 'a' at the beginning and at the end.
 
 It has to accept things like...
 
-```
+~~~~~~~
 aaabaaa
 aaaabaaa
 aba
-```
+~~~~~~~
 
 But not...
 
-```
+~~~~~~~
 aabaaa
 aaaaba
 ab
-```
+~~~~~~~
 Let's try
 
-```
+~~~~~~~
 B
 
 B ::= a  b  a
@@ -154,13 +154,13 @@ a ::= 'a'
 b ::= 'b'
 aa ::= 'aa'
 aaa ::= 'aaa'
-```
+~~~~~~~
 
 From now on, lasts lines will indicate a valid input, rest of lines will be the grammar
 
 This is not a full solution, and it's not an elegant one either.
 
-```
+~~~~~~~
 B
 
 B ::= a  B  a
@@ -171,13 +171,13 @@ b ::= 'b'
 
 input: aaabaaa
 input: aba
-```
+~~~~~~~
 
 This looks great. Generic, concise, simple.
 
 We can move it to parenthesis...
 
-```
+~~~~~~~
 B
 
 B ::= ( B )
@@ -189,13 +189,13 @@ b ::= 'b'
 
 input: (((b)))
 input: (b)
-```
+~~~~~~~
 
 ### Expressions grammar
 
 Let's start with numbers.
 
-```
+~~~~~~~
 EXPR
 
 EXPR ::=  NUM
@@ -205,7 +205,7 @@ NUM  ::=  d
 
 d ::= ([0-9])
 input: 123456
-```
+~~~~~~~
 
 Terminal symbols can be defined as *regular expressions* in order to simplify the rule.
 
@@ -213,7 +213,7 @@ To keep the example simple, we will let numbers of any size and just integers.
 
 If terminal symbols can be written as *regular expressions*, then we can simplify...
 
-```
+~~~~~~~
 EXPR
 
 EXPR ::=  num
@@ -221,10 +221,10 @@ EXPR ::=  num
 num ::= ([0-9]+)
 
 input: 123456
-```
+~~~~~~~
 
 Added one operator
-```
+~~~~~~~
 EXPR
 
 EXPR ::=  num operator num
@@ -233,11 +233,11 @@ num ::= ([0-9]+)
 operator ::= ([\+|\-|\*|\/])
 
 input: 1+2
-```
+~~~~~~~
 
 But expressions has to accept multiple operators and numbers...
 
-```
+~~~~~~~
 EXPR
 
 EXPR ::=  num operator EXPR
@@ -247,11 +247,11 @@ num ::= ([0-9]+)
 operator ::= ([\+|\-|\*|\/])
 
 input: 1+2*3
-```
+~~~~~~~
 
 
 And what about the parenthesis?...
-```
+~~~~~~~
 EXPR
 
 EXPR ::=  ( EXPR ) operator EXPR
@@ -266,11 +266,11 @@ operator ::= ([\+|\-|\*|\/])
 
 input: (1+2)*3
 input: (1*(3+2))*3+(8*9)
-```
+~~~~~~~
 
 We could want to let spaces between elements.
 
-```
+~~~~~~~
 EXPR
 
 EXPR ::=  _ ( _ EXPR _ ) _ operator _ EXPR
@@ -286,7 +286,7 @@ _        ::= ([ |\t]*)
 
 input: ( 1+2 ) *3
 input: (1* (3  +2 ) )* 3+( 8* 9  )
-```
+~~~~~~~
 
 This grammar will produce next tree for entrance ```(1* (3  +2 ) )* 3+( 8* 9  )```
 

@@ -18,5 +18,3 @@ HEADERS += *.h
 INCLUDEPATH += ../../../../src/
 FORMS += hpgui.ui
 RESOURCES += 
-
-#LIBS = -L../../../../../mtk/lib
