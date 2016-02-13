@@ -224,7 +224,7 @@ jle::tuple<bool, int/*, jle::shared_ptr<AST_node_item> */> Humble_parser::execut
     Lo malo es que no permitiría hacer transformaciones individuales
     Sería aplicable si no se hacen transformaciones
     Otra opción es poner la estrella de klein en el lado derecho de la definición de una regla terminal
-jle::tuple<bool, int, jle::shared_ptr<AST_node_item> > HumbleParser::ExecuteTerminalKlein( int str2parse_pos, const std::string& non_terminal_code, shared_ptr<AST_node_item> _ast_node) const
+jle::tuple<bool, int, jle::shared_ptr<AST_node_item> > Humble_parser::ExecuteTerminalKlein( int str2parse_pos, const std::string& non_terminal_code, shared_ptr<AST_node_item> _ast_node) const
 {
     int added_items = -1;
     bool result=true;

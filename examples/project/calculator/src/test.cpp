@@ -1,14 +1,12 @@
 #include <iostream>
 
-#include "support/hp/humbleparser.h"
-#include "support/date_time.h"
+#include "core/hp/humbleparser.h"
+#include "core/chrono.h"
 
 
 #include "arithmachine.h"
 
 
-
-//#include "support/debug/checkscopetime.h"
 
 
 
@@ -17,42 +15,43 @@ int main()
 
 
 
-    //  ejemplo escribiendo un programa directamente en la memoria
+    //  small example writting directly on memory
 
     try
     {
 
-        //  creamos una instancia de la máquina virtual
+        //  creating an instance of the virtual machine
         ArithMachine amachine;
 
-        //  creamos y conectamos una instancia de funciones basicorras
+        //  basic functions connections
         Functions_Basic fb(amachine);
 
-        //  instancia de humbleParser para verificación sintáctica y compilación parcial
-        mtk::HumbleParser  hParser;
+        //  partial compilation with humbel_parser
+        jle::hp::Humble_parser  hParser;
         bool parseResult;
         std::string parseMessage;
-        hParser.LoadRulesFromFile("arithm.rul").assign(parseResult, parseMessage);
+        std::tie(parseResult, parseMessage) =
+            hParser.add_rules_from_file("arithm.rul");
         if (parseResult == false){
             std::cout << std::endl << "ERROR parsing  " << parseMessage << std::endl;
             return -1;
         }
 
-        //  instancia del segundo paso de compilación
+        //  instance for second compilation step
         AM_Asembler asembler;
         asembler.signalCompiledProgram.connect(&amachine, &ArithMachine::AddProgram);
 
 
         //  --------------------------------------------
         {
-            //  primer paso de compilación
+            //  first compilation step
             std::string asmCode;
             {
-                mtk::AST_Node_Item astRoot("");
+                jle::hp::AST_node_item astRoot("");
                 bool result=false;
                 std::string resultTest;
-                hParser.MultiParse(      "y=x=-1+2*(j=3)"
-                                        ).assign(result, resultTest, astRoot);
+                std::tie(result, resultTest, astRoot) =
+                        hParser.multi_parse("y=x=-1+2*(j=3)");
                 if (result == false)
                 {
                     std::cout << std::endl << "FALLO sintáctico " << resultTest;
@@ -61,12 +60,12 @@ int main()
                 asmCode = astRoot.value;
             }
 
-            //  terminamos la compilación
+            //  finishing compilation
             asembler.Compile(asmCode);
 
 
-            //  evaluación
-            mtk::Double result = amachine.Eval();
+            //  evaluation
+            jle::dbl result = amachine.Eval();
 
             std::cout << std::endl << "RESULTADO... " << result;
 
@@ -81,18 +80,18 @@ int main()
 
         //  --------------------------------------------
 
-        //  otra compilación...
-        //  ahora y vale 5
+        //  another compilation...
+        //  current value 5
 
-        //  primer paso de compilación
+        //  first compilation step
         {
             std::string asmCode;
             {
-                mtk::AST_Node_Item astRoot("");
+                jle::hp::AST_node_item astRoot("");
                 bool result=false;
                 std::string resultTest;
-                hParser.MultiParse(      "y*2.5"
-                                        ).assign(result, resultTest, astRoot);
+                std::tie(result, resultTest, astRoot) =
+                hParser.multi_parse("y*2.5");
                 if (result == false)
                 {
                     std::cout << std::endl << "FALLO sintáctico " << resultTest;
@@ -101,12 +100,12 @@ int main()
                 asmCode = astRoot.value;
             }
 
-            //  terminamos la compilación
+            //  finishing compilation
             asembler.Compile(asmCode);
 
 
-            //  evaluación
-            mtk::Double result = amachine.Eval();
+            //  evaluation
+            jle::dbl result = amachine.Eval();
 
             std::cout << std::endl << "RESULTADO2... " << result;
         }
@@ -115,15 +114,15 @@ int main()
 
         //  --------------------------------------------
 
-        //  otra compilación...  ahora con un bucle y cambio de variable
+        //  another comiplation... now with a loop and variable modificaition
         {
             std::string asmCode;
             {
-                mtk::AST_Node_Item astRoot("");
+                jle::hp::AST_node_item astRoot("");
                 bool result=false;
                 std::string resultTest;
-                hParser.MultiParse(      "-7*9+(7-3*4+(5*x+1)-x/2)/y"
-                                        ).assign(result, resultTest, astRoot);
+                std::tie(result, resultTest, astRoot) =
+                    hParser.multi_parse(      "-7*9+(7-3*4+(5*x+1)-x/2)/y");
                 if (result == false)
                 {
                     std::cout << std::endl << "FALLO sintáctico " << resultTest;
@@ -132,37 +131,36 @@ int main()
                 asmCode = astRoot.value;
             }
 
-            //  terminamos la compilación
+            //  finishing compilation
             asembler.Compile(asmCode);
 
 
             for (int x=0; x<1000; ++x)
             {
                 amachine.SetValueInHeap("x", x);
-                //  evaluación
-                mtk::Double result = amachine.Eval();
+                //  evaluation
+                jle::dbl result = amachine.Eval();
                 std::cout << std::endl << "RESULTADO (" << x << ") =  " << result << std::endl;
             }
 
-            //mtk::CheckScopeTime csBucle("10000 iteraciones");
-            //  ahora hacemos lo mismo para contar el tiempo transcurrido
-	    const int iterations = 1000000; 
-	    mtk::DateTime start = mtk::dtNowLocal();
+	    const int iterations = 1000000;
+	    auto start = jle::chrono::now();
 	    std::cout << "__NR__:  " << start << std::endl << "Empezamos iteraciones... " << iterations << std::endl;
             for (int x=0; x<iterations; ++x)
             {
                 amachine.SetValueInHeap("x", x);
-                //  evaluación
-                /*mtk::Double result = */amachine.Eval();
+                //  evaluation
+                /*jle::dbl result = */amachine.Eval();
             }
-	    mtk::DateTime stop = mtk::dtNowLocal();
+	    auto stop = jle::chrono::now();
 	    std::cout << "__NR__:  " << stop << std::endl;
 
-	    mtk::dtTimeQuantity interval = stop - start;
+	    auto interval = stop - start;
 
-	    std::cout << std::endl << "__NR__:  "  << "time: "<< interval  << "  iterations/milliseconds:  " <<  iterations / mtk::ARE_YOU_SURE_YOU_WANT_GetMillisecsDay(interval) << std::endl << std::endl;
-            //csBucle.Stop();
-            //csBucle.PrintTimes();
+	    std::cout << std::endl << "__NR__:  "  << "time: "<< interval
+                << "  iterations/milliseconds:  "
+                <<  iterations / std::chrono::duration_cast<std::chrono::milliseconds>(interval).count()
+                << std::endl << std::endl;
         }
 
 
@@ -173,11 +171,10 @@ int main()
 
     }
 
-    #include "support/release_on_exit.hpp"
     return 0;
 }
 
-void mtk::AlarmMsg(const mtk::Alarm& al)
+void jle::alarm_msg(const jle::alarm& al)
 {
     std::cout << "ouch...: "  << al << std::endl;
 

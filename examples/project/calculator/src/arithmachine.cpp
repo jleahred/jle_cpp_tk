@@ -1,11 +1,11 @@
 #include "arithmachine.h"
 
 
-#include "support/mtk_string.h"
+#include "core/string.h"
 
 
 
-//  gramática y transformación en  aritheval.gra
+//  grammar and trasnsformation in aritheval.gra
 
 
 
@@ -17,17 +17,17 @@
 
 Data::Data()
     :     dataType  ( dtValue )
-        , value     (mtk::Double::InvalidValue())
+        , value     (jle::dbl::InvalidValue())
 {};
 
-Data::Data(const mtk::Double& val)
+Data::Data(const jle::dbl& val)
     :     dataType   ( dtValue)
         , value(val)
 {};
 
 Data::Data(const std::string& ref)
     :     dataType  ( dtReference )
-        , value     (mtk::Double::InvalidValue())
+        , value     (jle::dbl::InvalidValue())
         , reference (ref)
 {
 };
@@ -45,7 +45,7 @@ Data::Data(const std::string& ref)
 
 void ArithMachine::AddInstruction   (const Instruction&     instruction )
 {
-    //  si es una función, verificar que esta existe para la paridad indicada
+    //  if it's a function, verify it exits with valid arity
     bool  result = false;
     int   arity  = 0;
     if (instruction.operatorCode == ocFunct1)
@@ -62,7 +62,7 @@ void ArithMachine::AddInstruction   (const Instruction&     instruction )
     }
 
     if (result == false   &&  arity > 0)
-        throw MTK_SS("ERROR...  function " <<  instruction.data.reference << "/" << arity << " non existent");
+        throw JLE_SS("ERROR...  function " <<  instruction.data.reference << "/" << arity << " non existent");
 
     program.push_back( instruction );
 
@@ -81,7 +81,7 @@ void ArithMachine::ResetMachine(void)
     stack = std::stack<Data>();
     heap.clear();
 }
-void ArithMachine::PartialReset(void)        //  no borra el montículo
+void ArithMachine::PartialReset(void)        //  it doesn't delte the heap
 {
     program.clear();
     stack = std::stack<Data>();
@@ -91,11 +91,11 @@ void ArithMachine::PartialReset(void)        //  no borra el montículo
 
 
 
-mtk::Double ArithMachine::Eval(void)
+jle::dbl ArithMachine::Eval(void)
 {
-    //  ejecutar todas las instrucciones
-    //  verificar que al final queda sólo 1 elemento en la pila
-    //  scarlo y devolverlo como resultado
+    //  execute all instructions
+    //  check at end... only one element on stack
+    //  take it and return as result
 
     for(auto itInstruction = program.begin(); itInstruction != program.end(); ++itInstruction)
     {
@@ -107,8 +107,8 @@ mtk::Double ArithMachine::Eval(void)
 
             case ocFunct1:
                     {
-                        mtk::Double par1   = StackPop();
-                        mtk::Double result = mtk::Double::InvalidValue();
+                        jle::dbl par1   = StackPop();
+                        jle::dbl result = jle::dbl::InvalidValue();
                         functions1[itInstruction->data.reference]->emit(par1, result);
                         stack.push(result);
                     }
@@ -116,9 +116,9 @@ mtk::Double ArithMachine::Eval(void)
 
             case ocFunct2:
                     {
-                        mtk::Double par2   = StackPop();
-                        mtk::Double par1   = StackPop();
-                        mtk::Double result = mtk::Double::InvalidValue();
+                        jle::dbl par2   = StackPop();
+                        jle::dbl par1   = StackPop();
+                        jle::dbl result = jle::dbl::InvalidValue();
                         functions2[itInstruction->data.reference]->emit(par1, par2, result);
                         stack.push(result);
                     }
@@ -126,31 +126,31 @@ mtk::Double ArithMachine::Eval(void)
 
             case ocCopyStackTop2Heap:
                     {
-                        mtk::Double top = StackTop();
+                        jle::dbl top = StackTop();
                         SetValueInHeap(itInstruction->data.reference, top);
                     }
                     break;
 
             default:
-		throw MTK_SS("Unknown operator code "  <<  int(itInstruction->operatorCode));
+		throw JLE_SS("Unknown operator code "  <<  int(itInstruction->operatorCode));
 
         };
     }
     if (stack.size() == 0)
-        return mtk::Double::InvalidValue();
+        return jle::dbl::InvalidValue();
     if (stack.size() != 1)
-        throw MTK_SS("ERROR... stack is not empty  " << stack.size());
+        throw JLE_SS("ERROR... stack is not empty  " << stack.size());
 
     return StackPop();
 
 
 }
 
-//  si es una referencia, la resuelve y devuelve siempre un dato
-mtk::Double ArithMachine::StackTop(void)
+//  if it's a referenci, result it and return a data
+jle::dbl ArithMachine::StackTop(void)
 {
     if (stack.size()==0)
-        throw MTK_SS("ERROR... empty stack");
+        throw JLE_SS("ERROR... empty stack");
 
     Data result;
 
@@ -161,7 +161,7 @@ mtk::Double ArithMachine::StackTop(void)
         return result.value;
 }
 
-mtk::Double ArithMachine::StackPop(void)
+jle::dbl ArithMachine::StackPop(void)
 {
     Data result = StackTop();
     stack.pop();
@@ -169,37 +169,37 @@ mtk::Double ArithMachine::StackPop(void)
 }
 
 
-mtk::Double ArithMachine::GetValueFromHeap(const std::string& refName) const
+jle::dbl ArithMachine::GetValueFromHeap(const std::string& refName) const
 {
-    std::map<std::string, mtk::Double>::const_iterator it = heap.find(refName);
+    std::map<std::string, jle::dbl>::const_iterator it = heap.find(refName);
     if (it == heap.end())
-        return mtk::Double::InvalidValue();
+        return jle::dbl::InvalidValue();
     else
         return it->second;
 }
 
-void  ArithMachine::SetValueInHeap  (const std::string& refName, const mtk::Double& val)
+void  ArithMachine::SetValueInHeap  (const std::string& refName, const jle::dbl& val)
 {
-    std::map<std::string, mtk::Double>::iterator it = heap.find(refName);
+    std::map<std::string, jle::dbl>::iterator it = heap.find(refName);
     if ( it == heap.end() )
-        heap.insert(std::pair<std::string, mtk::Double>(refName, val));
+        heap.insert(std::pair<std::string, jle::dbl>(refName, val));
     else
         it->second = val;
 }
 
 
-mtk::CountPtr<ArithMachine::t_signalFunction1arity>
+jle::shared_ptr<ArithMachine::t_signalFunction1arity>
 ArithMachine::RegisterFunction1Arity (const std::string& name)
 {
-    functions1[name] = mtk::make_cptr( new t_signalFunction1arity());
+    functions1[name] = jle::make_cptr( new t_signalFunction1arity());
 
     return functions1[name];
 }
 
-mtk::CountPtr<ArithMachine::t_signalFunction2arity>
+jle::shared_ptr<ArithMachine::t_signalFunction2arity>
 ArithMachine::RegisterFunction2Arity (const std::string& name)
 {
-    functions2[name] = mtk::make_cptr( new t_signalFunction2arity());
+    functions2[name] = jle::make_cptr( new t_signalFunction2arity());
 
     return functions2[name];
 }
@@ -215,48 +215,48 @@ ArithMachine::RegisterFunction2Arity (const std::string& name)
 
 Functions_Basic::Functions_Basic(ArithMachine& am)
 {
-    MTK_CONNECT_THIS( (*(am.RegisterFunction1Arity("-"))) , UnnaryMinus );
-    MTK_CONNECT_THIS( (*(am.RegisterFunction2Arity("+"))) , Add         );
-    MTK_CONNECT_THIS( (*(am.RegisterFunction2Arity("-"))) , Minus       );
-    MTK_CONNECT_THIS( (*(am.RegisterFunction2Arity("*"))) , Multiply    );
-    MTK_CONNECT_THIS( (*(am.RegisterFunction2Arity("/"))) , Divide      );
+    JLE_CONNECT_THIS( (*(am.RegisterFunction1Arity("-"))) , UnnaryMinus );
+    JLE_CONNECT_THIS( (*(am.RegisterFunction2Arity("+"))) , Add         );
+    JLE_CONNECT_THIS( (*(am.RegisterFunction2Arity("-"))) , Minus       );
+    JLE_CONNECT_THIS( (*(am.RegisterFunction2Arity("*"))) , Multiply    );
+    JLE_CONNECT_THIS( (*(am.RegisterFunction2Arity("/"))) , Divide      );
 }
 
-void Functions_Basic::Add (const mtk::Double& par1,
-                        const mtk::Double& par2,
-                        mtk::Double& result)
+void Functions_Basic::Add (const jle::dbl& par1,
+                        const jle::dbl& par2,
+                        jle::dbl& result)
 {
     result = par1 + par2;
 }
 
-void Functions_Basic::Minus (const mtk::Double& par1,
-                        const mtk::Double& par2,
-                        mtk::Double& result)
+void Functions_Basic::Minus (const jle::dbl& par1,
+                        const jle::dbl& par2,
+                        jle::dbl& result)
 {
     result = par1 - par2;
 }
 
 
-void Functions_Basic::Multiply (const mtk::Double& par1,
-                        const mtk::Double& par2,
-                        mtk::Double& result)
+void Functions_Basic::Multiply (const jle::dbl& par1,
+                        const jle::dbl& par2,
+                        jle::dbl& result)
 {
     result = par1 * par2;
 }
 
-void Functions_Basic::Divide (const mtk::Double& par1,
-                        const mtk::Double& par2,
-                        mtk::Double& result)
+void Functions_Basic::Divide (const jle::dbl& par1,
+                        const jle::dbl& par2,
+                        jle::dbl& result)
 {
     try {
         result = par1 / par2;
     }
-    catch(...) {  result = mtk::Double::InvalidValue();  }
+    catch(...) {  result = jle::dbl::InvalidValue();  }
 }
 
 
-void Functions_Basic::UnnaryMinus(       const mtk::Double& par,
-                        mtk::Double& result)
+void Functions_Basic::UnnaryMinus(       const jle::dbl& par,
+                        jle::dbl& result)
 {
     result = -1. * par;
 }
@@ -270,13 +270,13 @@ void AM_Asembler::Compile(std::string& code)
 {
     t_program generatedProgram;
 
-    mtk::vector<std::string> lines = mtk::s_split(code, "\n");
+    jle::vector<std::string> lines = jle::s_split(code, "\n");
 
     for (unsigned i=0; i<lines.size(); ++i)
     {
-        if ( mtk::s_trim(lines[i], ' ') != "")
+        if ( jle::s_trim(lines[i], ' ') != "")
         {
-            //  separar el código de los datos
+            //  code and data separated
             std::string::size_type codeTill = lines[i].find_first_of(':');
             std::string _code = lines[i].substr(0, codeTill);
             std::string data = lines[i].substr(codeTill+1);
@@ -298,19 +298,19 @@ Instruction AM_Asembler::Compile(const std::string& code, const std::string& dat
         if (data.find("var:") == 0)
             return Instruction (   ocCopyStackTop2Heap, data.substr(4));
         else
-            throw MTK_SS("copy2 ???  unknown destination " << data);
+            throw JLE_SS("copy2 ???  unknown destination " << data);
     }
     else if (code == "num")
     {
         double value;  bool result;
-        mtk::s_TRY_stod(data, 0).assign(value, result);
+        jle::s_TRY_stod(data, 0).assign(value, result);
         if (result)
-            return Instruction (   ocPush  , mtk::Double(value) );
+            return Instruction (   ocPush  , jle::dbl(value) );
         else
-            return Instruction (   ocPush  , mtk::Double::InvalidValue() );
+            return Instruction (   ocPush  , jle::dbl::InvalidValue() );
     }
     else if (code == "var")
         return Instruction (   ocPush, data );
     else
-        throw MTK_SS("ERROR... invalid code  " << code);
+        throw JLE_SS("ERROR... invalid code  " << code);
 }

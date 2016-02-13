@@ -8,8 +8,8 @@
 #include <map>
 
 
-#include "support/signalslot.hpp"
-#include "support/mtk_double.h"
+#include "core/signal_slot.hpp"
+#include "core/dbl.h"
 
 
 
@@ -18,14 +18,14 @@
     A r i t h M a c h i n e
     ______________________________
 
-        * Trabaja con datos tipo Double
-        * Puede trabajar por valor o por referencia
-        * Tiene una pila donde se pueden añadir los valores o referencias
-        * El montículo se accede por un string con el nombre de la variable
-        * Tiene un método para modificar de forma eficiente el montículo
-        * Cuando se escriba una referencia en el montículo y esta no exista
-          se asignará un espacio automáticamente.
-          No es necesaria ni permitida la reserva explícita previa
+        * It works with double data types
+        * It can work by value or by reference
+        * It has a stack where add values and references
+        * The heap is accesible by string with the var name
+        * It has a method to fast modification of heap
+        * When writting a reference and it will not exists
+          a space for it will be reserverd.
+          It's not possible to explicitly reserve the memory
 
 
 */
@@ -46,12 +46,12 @@ struct Data
 
     enDataType      dataType        ;
 
-    mtk::Double     value           ;
+     jle::dbl       value           ;
     std::string     reference       ;
 
 
     Data();
-    Data(const mtk::Double& val);
+    Data(const jle::dbl& val);
     Data(const std::string& ref);
 
 };
@@ -66,7 +66,7 @@ struct Data
 enum enOperatorCode {         ocPush
                             , ocFunct1
                             , ocFunct2
-                            , ocCopyStackTop2Heap   //  copia el valor top del la pila en el montículo, no saca de la pila
+                            , ocCopyStackTop2Heap   //  copy value from stack top, it continues on stack
                     };
 struct Instruction
 {
@@ -90,17 +90,17 @@ typedef std::vector<Instruction>  t_program;
 
 // -----------------------------------
 
-class ArithMachine  : public mtk::SignalReceptor
+class ArithMachine  : public jle::signal_receptor
 {
-        typedef     mtk::Signal<
-                            const mtk::Double&      /*param 1  */,
-                            const mtk::Double&      /*param 2  */,
-                            mtk::Double&            /*result   */>
+        typedef     jle::signal<
+                            const jle::dbl&      /*param 1  */,
+                            const jle::dbl&      /*param 2  */,
+                            jle::dbl&            /*result   */>
                     t_signalFunction2arity;
 
-        typedef     mtk::Signal<
-                            const mtk::Double&      /*param 1  */,
-                            mtk::Double&            /*result   */>
+        typedef     jle::signal<
+                            const jle::dbl&      /*param 1  */,
+                            jle::dbl&            /*result   */>
                     t_signalFunction1arity;
 
 
@@ -109,27 +109,27 @@ class ArithMachine  : public mtk::SignalReceptor
 public:
 
     void ResetMachine(void);
-    void PartialReset(void);        //  no borra el montículo
+    void PartialReset(void);        //  keeps the heap
 
-    //  para añadir instrucciones directamente
+    //  to add functions directly
     void AddInstruction     (const Instruction& instruction );
     void AddProgram         (const t_program&   _program);
 
-    //  escribir directamente en la memoria
-    void WriteValueOnStack  (const std::string& refName, const mtk::Double& val);
+    //  write on memory directly
+    void WriteValueOnStack  (const std::string& refName, const jle::dbl& val);
 
-    mtk::Double Eval(void);
+    jle::dbl Eval(void);
     void        Run (void);
 
 
-    mtk::CountPtr<t_signalFunction1arity> RegisterFunction1Arity (const std::string& name);
-    mtk::CountPtr<t_signalFunction2arity> RegisterFunction2Arity (const std::string& name);
+    jle::shared_ptr<t_signalFunction1arity> RegisterFunction1Arity (const std::string& name);
+    jle::shared_ptr<t_signalFunction2arity> RegisterFunction2Arity (const std::string& name);
 
 
 
-    //  se permite el acceso directo (externo) a la memoria por rendimiento y sencillez
-    mtk::Double GetValueFromHeap(const std::string& refName) const;
-    void        SetValueInHeap  (const std::string& refName, const mtk::Double& val);
+    //  Direct access to memory allowed by performance and simplicity
+    jle::dbl GetValueFromHeap(const std::string& refName) const;
+    void        SetValueInHeap  (const std::string& refName, const jle::dbl& val);
 
 
 
@@ -140,14 +140,14 @@ private:
 
     std::vector<Instruction>                        program     ;
     std::stack<Data>                                stack       ;
-    std::map<std::string, mtk::Double>              heap        ;
+    std::map<std::string, jle::dbl>              heap        ;
 
-    std::map<std::string, mtk::CountPtr<t_signalFunction1arity> >   functions1  ;
-    std::map<std::string, mtk::CountPtr<t_signalFunction2arity> >   functions2  ;
+    std::map<std::string, jle::shared_ptr<t_signalFunction1arity> >   functions1  ;
+    std::map<std::string, jle::shared_ptr<t_signalFunction2arity> >   functions2  ;
 
 
-    mtk::Double StackTop(void);    //  si es una referencia, la resuelve y devuelve siempre un dato
-    mtk::Double StackPop(void);    //  además de devolver el dato, lo elimina de la pila
+    jle::dbl StackTop(void);    //  If it's a reference, it will be solved and data will be returned
+    jle::dbl StackPop(void);    //  It will return the data and it will remove from stack
 
 };
 
@@ -161,7 +161,7 @@ private:
 // -----------------------------------
 //      F u n c t i o n s _ B a s i c
 // -----------------------------------
-class Functions_Basic : public mtk::SignalReceptor
+class Functions_Basic : public jle::signal_receptor
 {
 public:
 
@@ -170,24 +170,24 @@ public:
 
 private:
 
-    void UnnaryMinus(       const mtk::Double& par,
-                            mtk::Double& result);
+    void UnnaryMinus(       const jle::dbl& par,
+                            jle::dbl& result);
 
-    void Add        (       const mtk::Double& par1,
-                            const mtk::Double& par2,
-                            mtk::Double& result);
+    void Add        (       const jle::dbl& par1,
+                            const jle::dbl& par2,
+                            jle::dbl& result);
 
-    void Minus      (       const mtk::Double& par1,
-                            const mtk::Double& par2,
-                            mtk::Double& result);
+    void Minus      (       const jle::dbl& par1,
+                            const jle::dbl& par2,
+                            jle::dbl& result);
 
-    void Multiply   (       const mtk::Double& par1,
-                            const mtk::Double& par2,
-                            mtk::Double& result);
+    void Multiply   (       const jle::dbl& par1,
+                            const jle::dbl& par2,
+                            jle::dbl& result);
 
-    void Divide     (       const mtk::Double& par1,
-                            const mtk::Double& par2,
-                            mtk::Double& result);
+    void Divide     (       const jle::dbl& par1,
+                            const jle::dbl& par2,
+                            jle::dbl& result);
 };
 
 
@@ -198,14 +198,14 @@ private:
 //      A M _ A s e m b l e r
 
 
-//    * Le pasamos en una cadena de texto, o varias,
-//    el programa parcialmente compilado
+//    * We gave in one or more strings, the
+//      compiled program
+
+//    * This string is produced by Humble_parser (first compile step)
 //
-//    * Esta entrada es la salida de humbleParser (1er paso compilación)
+//    * It translate each string line to an ArithMachine sentence
 //
-//    * Traduce cada línea de texto a una sentencia de ArithMachine
-//
-//    * Lanza una señal con el programa generado para ArithMachine
+//    * It throws a signal with the program generated for ArithMachine
 
 // ------------------------------------------------
 
@@ -214,7 +214,7 @@ class AM_Asembler
 public:
     void Compile(std::string& code);
 
-    mtk::Signal<const t_program&>  signalCompiledProgram;
+    jle::signal<const t_program&>  signalCompiledProgram;
 
 private:
     Instruction Compile(const std::string& code, const std::string& data) const;
