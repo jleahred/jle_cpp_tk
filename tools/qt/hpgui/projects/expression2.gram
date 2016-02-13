@@ -1,0 +1,51 @@
+MAIN
+
+MAIN ::= EXPR
+
+EXPR    ::=    _ VAR _ = _ EXPR                                 ##transf2-> $(EXPR)$(__endl__)copy2:$(VAR)
+EXPR    ::=    _ VAL _ EXPR'                                    ##transf2-> $(VAL)$(__endl__)$(EXPR')
+EXPR    ::=    _ unaryoperator VAL _ EXPR'                      ##transf2-> $(VAL)$(__endl__)$(unaryoperator)$(__endl__)$(EXPR')
+EXPR    ::=    _ ( _ EXPR _ ) _ EXPR'                           ##transf2-> $(EXPR)$(__endl__)$(EXPR')
+EXPR    ::=    _ unaryoperator ( _ EXPR _ ) _ EXPR'             ##transf2-> $(EXPR)$(__endl__)$(unaryoperator)$(__endl__)$(EXPR')
+EXPR'   ::=    POWER
+EXPR'   ::=    FACTOR
+EXPR'   ::=    SUM
+
+POWER   ::=    _ powerop _ VAL _ POWER                          ##transf2-> $(VAL)$(__endl__)$(POWER)$(__endl__)$(powerop)
+POWER   ::=    _ powerop _ VAL _ FACTOR                         ##transf2-> $(VAL)$(__endl__)$(powerop)$(__endl__)$(FACTOR)
+POWER   ::=    _ powerop _ VAL _ SUM                            ##transf2-> $(VAL)$(__endl__)$(powerop)$(__endl__)$(SUM)
+POWER   ::=    _ powerop _ ( _ EXPR _ ) _ EXPR'                 ##transf2-> $(EXPR)$(__endl__)$(mult_operator)$(__endl__)$(EXPR')
+
+FACTOR  ::=    _ mult_operator _ VAL _ POWER                    ##transf2-> $(VAL)$(__endl__)$(POWER)$(__endl__)$(mult_operator)
+FACTOR  ::=    _ mult_operator _ VAL _ FACTOR                   ##transf2-> $(VAL)$(__endl__)$(mult_operator)$(__endl__)$(FACTOR)
+FACTOR  ::=    _ mult_operator _ VAL _ SUM                      ##transf2-> $(VAL)$(__endl__)$(mult_operator)$(__endl__)$(SUM)
+FACTOR  ::=    _ mult_operator _ ( _ EXPR _ ) _ EXPR'           ##transf2-> $(EXPR)$(__endl__)$(mult_operator)$(__endl__)$(EXPR')
+
+SUM     ::=    _ add_operator _ VAL _ POWER                     ##transf2-> $(VAL)$(__endl__)$(POWER)$(__endl__)$(add_operator)
+SUM     ::=    _ add_operator _ VAL _ FACTOR                    ##transf2-> $(VAL)$(__endl__)$(FACTOR)$(__endl__)$(add_operator)
+SUM     ::=    _ add_operator _ VAL _ SUM                       ##transf2-> $(VAL)$(__endl__)$(add_operator)$(__endl__)$(SUM)
+SUM     ::=    _ add_operator _ ( _ EXPR _ ) _ EXPR'            ##transf2-> $(EXPR)$(__endl__)$(add_operator)$(__endl__)$(EXPR')
+SUM     ::=    _                 
+
+VAL     ::=    FUNC _ ( _ EXPR _ ) _                            ##transf2-> $(EXPR)fun/1:$(FUNC)
+VAL     ::=    FUNC _ ( _ EXPR _ , _ EXPR _ ) _                 ##transf2-> $(EXPR)$(__endl__)$(EXPR#1)fun/2:$(FUNC)
+
+VAL     ::=    num                            
+VAL     ::=    VAR                              
+VAR     ::=    id                                               ##transf2-> var:$(id)
+FUNC    ::=    id                             
+
+num           ::=    ([0-9]*\.[0-9]+)                           ##transf2-> num:$(t)
+num           ::=    ([0-9]+\.[0-9]*)                           ##transf2-> num:$(t)
+num           ::=    ([0-9]+)                                   ##transf2-> num:$(t)
+id            ::=    ([a-z|A-Z][0-9|a-z|A-Z|_]*)  
+id            ::=    (_+[0-9|a-z|A-Z]+[0-9|a-z|A-Z|_]*)
+powerop       ::=    (\^)                                      ##transf2-> fun/2:$(t)
+mult_operator ::=    ([\*|\/])                                 ##transf2-> fun/2:$(t)
+add_operator  ::=    ([\+|\-])                                 ##transf2-> fun/2:$(t)
+unaryoperator ::=    ([\+|\-])                                 ##transf2-> fun/1:$(t)
+_             ::=    ([ |\t]*)                                 ##transf2-> $(__nothing__)
+(             ::=    (\()                        
+)             ::=    (\))                        
+,             ::=    (,)                          
+=             ::=    (=)                          
