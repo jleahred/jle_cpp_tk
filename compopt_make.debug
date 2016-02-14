@@ -3,7 +3,7 @@ CXXFLAGS_DEBUG = -std=c++1z -g -O0 -Werror -Wall -W -Wundef -Wpointer-arith  -Wf
 
 CXXFLAGS_DEBUG += -Wclobbered  -Wempty-body  -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -Wno-unused-result
 
-CXXFLAGS_DEBUG += -Wnon-virtual-dtor -Wreorder -Woverloaded-virtual -Wsign-promo -Winit-self -Wignored-qualifiers -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wshadow -Wcast-qual -Wwrite-strings
+CXXFLAGS_DEBUG += -Wnon-virtual-dtor -Wreorder -Woverloaded-virtual -Wsign-promo -Winit-self -Wignored-qualifiers -Wmissing-include-dirs -Wswitch-enum -Wshadow -Wcast-qual -Wwrite-strings
 
 
 

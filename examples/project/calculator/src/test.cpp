@@ -21,7 +21,7 @@ int main()
     {
 
         //  creating an instance of the virtual machine
-        ArithMachine amachine;
+        Arith_machine amachine;
 
         //  basic functions connections
         Functions_Basic fb(amachine);
@@ -39,7 +39,7 @@ int main()
 
         //  instance for second compilation step
         AM_Asembler asembler;
-        asembler.signalCompiledProgram.connect(&amachine, &ArithMachine::AddProgram);
+        asembler.signalCompiledProgram.connect(&amachine, &Arith_machine::AddProgram);
 
 
         //  --------------------------------------------
@@ -54,7 +54,7 @@ int main()
                         hParser.multi_parse("y=x=-1+2*(j=3)");
                 if (result == false)
                 {
-                    std::cout << std::endl << "FALLO sintáctico " << resultTest;
+                    std::cout << std::endl << "FALLO sintáctico " << resultTest << std::endl;
                     return 0;
                 }
                 asmCode = astRoot.value;
@@ -65,17 +65,16 @@ int main()
 
 
             //  evaluation
-            jle::dbl result = amachine.Eval();
+            auto result = amachine.Eval();
 
-            std::cout << std::endl << "RESULTADO... " << result;
+            std::cout << std::endl << "RESULTADO... " << result << std::endl;
 
             std::cout << std::endl << std::endl << "x == " << amachine.GetValueFromHeap("x");
             std::cout << std::endl <<              "y == " << amachine.GetValueFromHeap("y");
             std::cout << std::endl <<              "z == " << amachine.GetValueFromHeap("z");
-            std::cout << std::endl <<              "j == " << amachine.GetValueFromHeap("j");
+            std::cout << std::endl <<              "j == " << amachine.GetValueFromHeap("j") << std::endl;
 
         }
-
 
 
         //  --------------------------------------------
@@ -94,22 +93,22 @@ int main()
                 hParser.multi_parse("y*2.5");
                 if (result == false)
                 {
-                    std::cout << std::endl << "FALLO sintáctico " << resultTest;
+                    std::cout << std::endl << "FALLO sintáctico " << resultTest << std::endl;
                     return 0;
                 }
                 asmCode = astRoot.value;
             }
 
+            std::cout << asmCode << std::endl;
             //  finishing compilation
             asembler.Compile(asmCode);
 
 
             //  evaluation
-            jle::dbl result = amachine.Eval();
+            auto result = amachine.Eval();
 
-            std::cout << std::endl << "RESULTADO2... " << result;
+            std::cout << std::endl << "RESULTADO2... " << result << std::endl;
         }
-
 
 
         //  --------------------------------------------
@@ -125,7 +124,7 @@ int main()
                     hParser.multi_parse(      "-7*9+(7-3*4+(5*x+1)-x/2)/y");
                 if (result == false)
                 {
-                    std::cout << std::endl << "FALLO sintáctico " << resultTest;
+                    std::cout << std::endl << "FALLO sintáctico " << resultTest << std::endl;
                     return 0;
                 }
                 asmCode = astRoot.value;
@@ -137,27 +136,27 @@ int main()
 
             for (int x=0; x<1000; ++x)
             {
-                amachine.SetValueInHeap("x", x);
+                amachine.SetValueInHeap("x", Odbl(x));
                 //  evaluation
-                jle::dbl result = amachine.Eval();
+                auto result = amachine.Eval();
                 std::cout << std::endl << "RESULTADO (" << x << ") =  " << result << std::endl;
             }
 
 	    const int iterations = 1000000;
 	    auto start = jle::chrono::now();
-	    std::cout << "__NR__:  " << start << std::endl << "Empezamos iteraciones... " << iterations << std::endl;
+	    std::cout << start << std::endl << "Empezamos iteraciones... " << iterations << std::endl;
             for (int x=0; x<iterations; ++x)
             {
-                amachine.SetValueInHeap("x", x);
-                //  evaluation
+                amachine.SetValueInHeap("x", Odbl(x));
+                //  evaluationf
                 /*jle::dbl result = */amachine.Eval();
             }
 	    auto stop = jle::chrono::now();
-	    std::cout << "__NR__:  " << stop << std::endl;
+	    std::cout << stop << std::endl;
 
 	    auto interval = stop - start;
 
-	    std::cout << std::endl << "__NR__:  "  << "time: "<< interval
+	    std::cout << std::endl << "time: "<< interval
                 << "  iterations/milliseconds:  "
                 <<  iterations / std::chrono::duration_cast<std::chrono::milliseconds>(interval).count()
                 << std::endl << std::endl;

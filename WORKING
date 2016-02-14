@@ -1,7 +1,7 @@
 hp/ide
 doc
 
-remove non_copiable
+remove non_copiable  =delete
 
 
 

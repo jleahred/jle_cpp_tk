@@ -9,6 +9,32 @@
 
 
 
+std::ostream& operator<< (std::ostream& os, const Odbl& v)
+{
+    os  << v.value;
+    return os;
+}
+
+std::ostream& operator<< (std::ostream& os, const Data& d)
+{
+    switch(d.dataType)
+    {
+        case Data::dtValue:
+            os << "v·" << d.value;
+            break;
+        case Data::dtReference:
+            os << "r·" << d.reference;
+            break;
+    }
+
+    return os;
+}
+
+std::ostream& operator<< (std::ostream& os, const Instruction& i)
+{
+    os << int(i.operatorCode) << ": " << i.data;
+    return os;
+}
 
 
 // -----------------------------------
@@ -17,17 +43,17 @@
 
 Data::Data()
     :     dataType  ( dtValue )
-        , value     (jle::dbl::InvalidValue())
+        , value     ()
 {};
 
-Data::Data(const jle::dbl& val)
+Data::Data(const Odbl& val)
     :     dataType   ( dtValue)
         , value(val)
 {};
 
 Data::Data(const std::string& ref)
     :     dataType  ( dtReference )
-        , value     (jle::dbl::InvalidValue())
+        , value     ()
         , reference (ref)
 {
 };
@@ -43,7 +69,7 @@ Data::Data(const std::string& ref)
 
 // -----------------------------------
 
-void ArithMachine::AddInstruction   (const Instruction&     instruction )
+void Arith_machine::AddInstruction   (const Instruction&     instruction )
 {
     //  if it's a function, verify it exits with valid arity
     bool  result = false;
@@ -68,20 +94,22 @@ void ArithMachine::AddInstruction   (const Instruction&     instruction )
 
 }
 
-void ArithMachine::AddProgram(const t_program&   _program)
+void Arith_machine::AddProgram(const t_program&   _program)
 {
     PartialReset();
     for(auto itInstruction = _program.begin(); itInstruction != _program.end(); ++itInstruction)
+    {
         AddInstruction(*itInstruction);
+    }
 }
 
-void ArithMachine::ResetMachine(void)
+void Arith_machine::reset_machine(void)
 {
     program.clear();
     stack = std::stack<Data>();
     heap.clear();
 }
-void ArithMachine::PartialReset(void)        //  it doesn't delte the heap
+void Arith_machine::PartialReset(void)        //  it doesn't delte the heap
 {
     program.clear();
     stack = std::stack<Data>();
@@ -91,7 +119,7 @@ void ArithMachine::PartialReset(void)        //  it doesn't delte the heap
 
 
 
-jle::dbl ArithMachine::Eval(void)
+Odbl Arith_machine::Eval(void)
 {
     //  execute all instructions
     //  check at end... only one element on stack
@@ -107,8 +135,8 @@ jle::dbl ArithMachine::Eval(void)
 
             case ocFunct1:
                     {
-                        jle::dbl par1   = StackPop();
-                        jle::dbl result = jle::dbl::InvalidValue();
+                        Odbl par1   = StackPop();
+                        auto result = Odbl();
                         functions1[itInstruction->data.reference]->emit(par1, result);
                         stack.push(result);
                     }
@@ -116,9 +144,9 @@ jle::dbl ArithMachine::Eval(void)
 
             case ocFunct2:
                     {
-                        jle::dbl par2   = StackPop();
-                        jle::dbl par1   = StackPop();
-                        jle::dbl result = jle::dbl::InvalidValue();
+                        Odbl par2   = StackPop();
+                        Odbl par1   = StackPop();
+                        auto result = Odbl();
                         functions2[itInstruction->data.reference]->emit(par1, par2, result);
                         stack.push(result);
                     }
@@ -126,7 +154,7 @@ jle::dbl ArithMachine::Eval(void)
 
             case ocCopyStackTop2Heap:
                     {
-                        jle::dbl top = StackTop();
+                        Odbl top = StackTop();
                         SetValueInHeap(itInstruction->data.reference, top);
                     }
                     break;
@@ -137,17 +165,15 @@ jle::dbl ArithMachine::Eval(void)
         };
     }
     if (stack.size() == 0)
-        return jle::dbl::InvalidValue();
+        return Odbl();
     if (stack.size() != 1)
         throw JLE_SS("ERROR... stack is not empty  " << stack.size());
 
     return StackPop();
-
-
 }
 
 //  if it's a referenci, result it and return a data
-jle::dbl ArithMachine::StackTop(void)
+Odbl Arith_machine::StackTop(void)
 {
     if (stack.size()==0)
         throw JLE_SS("ERROR... empty stack");
@@ -161,7 +187,7 @@ jle::dbl ArithMachine::StackTop(void)
         return result.value;
 }
 
-jle::dbl ArithMachine::StackPop(void)
+Odbl Arith_machine::StackPop(void)
 {
     Data result = StackTop();
     stack.pop();
@@ -169,37 +195,37 @@ jle::dbl ArithMachine::StackPop(void)
 }
 
 
-jle::dbl ArithMachine::GetValueFromHeap(const std::string& refName) const
+Odbl Arith_machine::GetValueFromHeap(const std::string& refName) const
 {
-    std::map<std::string, jle::dbl>::const_iterator it = heap.find(refName);
+    std::map<std::string, Odbl>::const_iterator it = heap.find(refName);
     if (it == heap.end())
-        return jle::dbl::InvalidValue();
+        return Odbl();
     else
         return it->second;
 }
 
-void  ArithMachine::SetValueInHeap  (const std::string& refName, const jle::dbl& val)
+void  Arith_machine::SetValueInHeap  (const std::string& refName, const Odbl& val)
 {
-    std::map<std::string, jle::dbl>::iterator it = heap.find(refName);
+    std::map<std::string, Odbl>::iterator it = heap.find(refName);
     if ( it == heap.end() )
-        heap.insert(std::pair<std::string, jle::dbl>(refName, val));
+        heap.insert(std::pair<std::string, Odbl>(refName, val));
     else
         it->second = val;
 }
 
 
-jle::shared_ptr<ArithMachine::t_signalFunction1arity>
-ArithMachine::RegisterFunction1Arity (const std::string& name)
+jle::shared_ptr<Arith_machine::t_signalFunction1arity>
+Arith_machine::RegisterFunction1Arity (const std::string& name)
 {
-    functions1[name] = jle::make_cptr( new t_signalFunction1arity());
+    functions1[name] = jle::make_shared<Arith_machine::t_signalFunction1arity>();
 
     return functions1[name];
 }
 
-jle::shared_ptr<ArithMachine::t_signalFunction2arity>
-ArithMachine::RegisterFunction2Arity (const std::string& name)
+jle::shared_ptr<Arith_machine::t_signalFunction2arity>
+Arith_machine::RegisterFunction2Arity (const std::string& name)
 {
-    functions2[name] = jle::make_cptr( new t_signalFunction2arity());
+    functions2[name] = jle::make_shared<Arith_machine::t_signalFunction2arity>();
 
     return functions2[name];
 }
@@ -213,7 +239,7 @@ ArithMachine::RegisterFunction2Arity (const std::string& name)
 // -----------------------------------
 
 
-Functions_Basic::Functions_Basic(ArithMachine& am)
+Functions_Basic::Functions_Basic(Arith_machine& am)
 {
     JLE_CONNECT_THIS( (*(am.RegisterFunction1Arity("-"))) , UnnaryMinus );
     JLE_CONNECT_THIS( (*(am.RegisterFunction2Arity("+"))) , Add         );
@@ -222,43 +248,42 @@ Functions_Basic::Functions_Basic(ArithMachine& am)
     JLE_CONNECT_THIS( (*(am.RegisterFunction2Arity("/"))) , Divide      );
 }
 
-void Functions_Basic::Add (const jle::dbl& par1,
-                        const jle::dbl& par2,
-                        jle::dbl& result)
+void Functions_Basic::Add ( const Odbl& par1,
+                            const Odbl& par2,
+                            Odbl& result)
 {
     result = par1 + par2;
 }
 
-void Functions_Basic::Minus (const jle::dbl& par1,
-                        const jle::dbl& par2,
-                        jle::dbl& result)
+void Functions_Basic::Minus (const Odbl& par1,
+                        const Odbl& par2,
+                        Odbl& result)
 {
     result = par1 - par2;
 }
 
 
-void Functions_Basic::Multiply (const jle::dbl& par1,
-                        const jle::dbl& par2,
-                        jle::dbl& result)
+void Functions_Basic::Multiply (const Odbl& par1,
+                        const Odbl& par2,
+                        Odbl& result)
 {
     result = par1 * par2;
 }
 
-void Functions_Basic::Divide (const jle::dbl& par1,
-                        const jle::dbl& par2,
-                        jle::dbl& result)
+void Functions_Basic::Divide (const Odbl& par1,
+                        const Odbl& par2,
+                        Odbl& result)
 {
     try {
         result = par1 / par2;
     }
-    catch(...) {  result = jle::dbl::InvalidValue();  }
+    catch(...) {  result = Odbl();  }
 }
 
 
-void Functions_Basic::UnnaryMinus(       const jle::dbl& par,
-                        jle::dbl& result)
+void Functions_Basic::UnnaryMinus(const Odbl& par, Odbl& result)
 {
-    result = -1. * par;
+    result = Odbl(-1.) * par;
 }
 
 // ------------------------------------------------
@@ -303,11 +328,11 @@ Instruction AM_Asembler::Compile(const std::string& code, const std::string& dat
     else if (code == "num")
     {
         double value;  bool result;
-        jle::s_TRY_stod(data, 0).assign(value, result);
+        std::tie(value, result) = jle::s_try_s2d(data, 0.);
         if (result)
-            return Instruction (   ocPush  , jle::dbl(value) );
+            return Instruction (   ocPush  , Odbl(value) );
         else
-            return Instruction (   ocPush  , jle::dbl::InvalidValue() );
+            return Instruction (   ocPush  , Odbl() );
     }
     else if (code == "var")
         return Instruction (   ocPush, data );

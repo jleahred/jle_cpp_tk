@@ -1,5 +1,5 @@
-#ifndef ARITHMACHINE_H
-#define ARITHMACHINE_H
+#ifndef ARITH_MACHINE__H
+#define ARITH_MACHINE__H
 
 
 #include <string>
@@ -10,6 +10,7 @@
 
 #include "core/signal_slot.hpp"
 #include "core/dbl.h"
+#include "core/optional.hpp"
 
 
 
@@ -34,6 +35,39 @@
 
 
 
+class Odbl {
+public:
+        explicit Odbl() : value() {};
+        explicit Odbl(double val) : value(val) {};
+        explicit Odbl(const jle::dbl& val) : value(val) {};
+
+        Odbl(const Odbl&)=default;
+        Odbl(Odbl&&) =default;
+
+        Odbl& operator=(const Odbl&) = default;
+        Odbl& operator=(Odbl&&) = default;
+
+        #define DEF_OPERATOR(__OP__)  \
+        Odbl operator __OP__(const Odbl& v) const  \
+        {  \
+            if(value.has_value()  &&  v.value.has_value())  \
+            {  \
+                return Odbl(*value __OP__ *(v.value));  \
+            }  \
+            else  \
+                return Odbl();  \
+        }
+        DEF_OPERATOR(+)
+        DEF_OPERATOR(-)
+        DEF_OPERATOR(*)
+        DEF_OPERATOR(/)
+        #undef DEF_OPERATOR
+
+private:
+    jle::optional<jle::dbl>  value;
+    friend std::ostream& operator<< (std::ostream& os, const Odbl& v);
+};
+std::ostream& operator<< (std::ostream& os, const Odbl& v);
 
 
 // -----------------------------------
@@ -46,15 +80,16 @@ struct Data
 
     enDataType      dataType        ;
 
-     jle::dbl       value           ;
+    Odbl            value           ;
     std::string     reference       ;
 
 
     Data();
-    Data(const jle::dbl& val);
+    Data(const Odbl& val);
     Data(const std::string& ref);
 
 };
+std::ostream& operator<< (std::ostream& os, const Data& d);
 
 
 
@@ -78,6 +113,8 @@ struct Instruction
     Instruction(enOperatorCode _opcode, const Data& _data)
         :  operatorCode (_opcode), data(_data)  {};
 };
+std::ostream& operator<< (std::ostream& os, const Instruction& i);
+
 
 typedef std::vector<Instruction>  t_program;
 
@@ -90,17 +127,17 @@ typedef std::vector<Instruction>  t_program;
 
 // -----------------------------------
 
-class ArithMachine  : public jle::signal_receptor
+class Arith_machine  : public jle::signal_receptor
 {
         typedef     jle::signal<
-                            const jle::dbl&      /*param 1  */,
-                            const jle::dbl&      /*param 2  */,
-                            jle::dbl&            /*result   */>
+                            const Odbl&             /*param 1  */,
+                            const Odbl&             /*param 2  */,
+                            Odbl&    /*result   */>
                     t_signalFunction2arity;
 
         typedef     jle::signal<
-                            const jle::dbl&      /*param 1  */,
-                            jle::dbl&            /*result   */>
+                            const Odbl&         /*param 1  */,
+                            Odbl& /*result   */>
                     t_signalFunction1arity;
 
 
@@ -108,7 +145,7 @@ class ArithMachine  : public jle::signal_receptor
 
 public:
 
-    void ResetMachine(void);
+    void reset_machine(void);
     void PartialReset(void);        //  keeps the heap
 
     //  to add functions directly
@@ -116,9 +153,9 @@ public:
     void AddProgram         (const t_program&   _program);
 
     //  write on memory directly
-    void WriteValueOnStack  (const std::string& refName, const jle::dbl& val);
+    void WriteValueOnStack  (const std::string& refName, const Odbl& val);
 
-    jle::dbl Eval(void);
+    Odbl Eval(void);
     void        Run (void);
 
 
@@ -128,8 +165,8 @@ public:
 
 
     //  Direct access to memory allowed by performance and simplicity
-    jle::dbl GetValueFromHeap(const std::string& refName) const;
-    void        SetValueInHeap  (const std::string& refName, const jle::dbl& val);
+    Odbl GetValueFromHeap(const std::string& refName) const;
+    void                    SetValueInHeap  (const std::string& refName, const Odbl& val);
 
 
 
@@ -140,14 +177,14 @@ private:
 
     std::vector<Instruction>                        program     ;
     std::stack<Data>                                stack       ;
-    std::map<std::string, jle::dbl>              heap        ;
+    std::map<std::string, Odbl>  heap        ;
 
     std::map<std::string, jle::shared_ptr<t_signalFunction1arity> >   functions1  ;
     std::map<std::string, jle::shared_ptr<t_signalFunction2arity> >   functions2  ;
 
 
-    jle::dbl StackTop(void);    //  If it's a reference, it will be solved and data will be returned
-    jle::dbl StackPop(void);    //  It will return the data and it will remove from stack
+    Odbl StackTop(void);    //  If it's a reference, it will be solved and data will be returned
+    Odbl StackPop(void);    //  It will return the data and it will remove from stack
 
 };
 
@@ -165,29 +202,29 @@ class Functions_Basic : public jle::signal_receptor
 {
 public:
 
-    Functions_Basic(ArithMachine& am);
+    Functions_Basic(Arith_machine& am);
 
 
 private:
 
-    void UnnaryMinus(       const jle::dbl& par,
-                            jle::dbl& result);
+    void UnnaryMinus(       const Odbl& par,
+                            Odbl& result);
 
-    void Add        (       const jle::dbl& par1,
-                            const jle::dbl& par2,
-                            jle::dbl& result);
+    void Add        (       const Odbl& par1,
+                            const Odbl& par2,
+                            Odbl& result);
 
-    void Minus      (       const jle::dbl& par1,
-                            const jle::dbl& par2,
-                            jle::dbl& result);
+    void Minus      (       const Odbl& par1,
+                            const Odbl& par2,
+                            Odbl& result);
 
-    void Multiply   (       const jle::dbl& par1,
-                            const jle::dbl& par2,
-                            jle::dbl& result);
+    void Multiply   (       const Odbl& par1,
+                            const Odbl& par2,
+                            Odbl& result);
 
-    void Divide     (       const jle::dbl& par1,
-                            const jle::dbl& par2,
-                            jle::dbl& result);
+    void Divide     (       const Odbl& par1,
+                            const Odbl& par2,
+                            Odbl& result);
 };
 
 
@@ -203,9 +240,9 @@ private:
 
 //    * This string is produced by Humble_parser (first compile step)
 //
-//    * It translate each string line to an ArithMachine sentence
+//    * It translate each string line to an Arith_machine sentence
 //
-//    * It throws a signal with the program generated for ArithMachine
+//    * It throws a signal with the program generated for Arith_machine
 
 // ------------------------------------------------
 
@@ -223,4 +260,4 @@ private:
 
 
 
-#endif // ARITHMACHINE_H
+#endif // ARITH_MACHINE__H
