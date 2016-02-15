@@ -1,3 +1,7 @@
+remove README.MD from Doxyfile
+add an folder for doc in hp
+
+
 hp/ide
 doc
 
