@@ -1,6 +1,16 @@
 hp/ide
 doc
 
+doc calculator
+doc terminals
+doc transf2 and templates
+example idl
+
+
+
+remove non_copiable  =delete
+
+
 
 dsl/idl
 finish
