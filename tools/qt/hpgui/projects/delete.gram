@@ -1,0 +1,12 @@
+EXPR
+
+EXPR ::=  ( EXPR ) operator EXPR
+EXPR ::=  ( EXPR )
+EXPR ::=  num operator EXPR
+EXPR ::=  num
+
+num      ::= ([0-9]+)
+operator ::= ([\+|\-|\*|\/])
+(        ::= '('
+)        ::= ')'
+_        ::= ([ |\t]*)

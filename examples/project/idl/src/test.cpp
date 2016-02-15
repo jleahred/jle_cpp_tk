@@ -12,7 +12,7 @@ namespace idl { namespace pr {
     //
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    
+
     t_simple::t_simple (
               int32_t _i,
               std::string _j,
@@ -22,8 +22,8 @@ namespace idl { namespace pr {
               j(_j),
               s(_s)
         {}
-    
-    
+
+
     //  comparison
     bool t_simple::operator==(const t_simple& r) const
     {
@@ -34,7 +34,7 @@ namespace idl { namespace pr {
         )     return true;
         else  return false;
     }
-    
+
     bool t_simple::operator< (const t_simple& r) const
     {
         if(std::tie(
@@ -48,9 +48,9 @@ namespace idl { namespace pr {
               r.s)
         )     return true;
         else  return false;
-    
+
     }
-    
+
     std::ostream& operator<< (std::ostream& os, const t_simple& t)
     {
         os  << " t_simple { "
@@ -60,9 +60,9 @@ namespace idl { namespace pr {
             << " }";
         return os;
     }
-    
-    
-    
+
+
+
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //
@@ -70,7 +70,7 @@ namespace idl { namespace pr {
     //
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    
+
     t_inline::t_inline (
               int32_t _i,
               std::string _s
@@ -78,8 +78,8 @@ namespace idl { namespace pr {
               i(_i),
               s(_s)
         {}
-    
-    
+
+
     //  comparison
     bool t_inline::operator==(const t_inline& r) const
     {
@@ -89,7 +89,7 @@ namespace idl { namespace pr {
         )     return true;
         else  return false;
     }
-    
+
     bool t_inline::operator< (const t_inline& r) const
     {
         if(std::tie(
@@ -101,9 +101,9 @@ namespace idl { namespace pr {
               r.s)
         )     return true;
         else  return false;
-    
+
     }
-    
+
     std::ostream& operator<< (std::ostream& os, const t_inline& t)
     {
         os  << " t_inline { "
@@ -112,11 +112,11 @@ namespace idl { namespace pr {
             << " }";
         return os;
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     namespace nested {
         //-----------------------------------------------------------------
         //-----------------------------------------------------------------
@@ -125,7 +125,7 @@ namespace idl { namespace pr {
         //
         //-----------------------------------------------------------------
         //-----------------------------------------------------------------
-        
+
         t_inline::t_inline (
                   int32_t _i,
                   std::string _s
@@ -133,8 +133,8 @@ namespace idl { namespace pr {
                   i(_i),
                   s(_s)
             {}
-        
-        
+
+
         //  comparison
         bool t_inline::operator==(const t_inline& r) const
         {
@@ -144,7 +144,7 @@ namespace idl { namespace pr {
             )     return true;
             else  return false;
         }
-        
+
         bool t_inline::operator< (const t_inline& r) const
         {
             if(std::tie(
@@ -156,9 +156,9 @@ namespace idl { namespace pr {
                   r.s)
             )     return true;
             else  return false;
-        
+
         }
-        
+
         std::ostream& operator<< (std::ostream& os, const t_inline& t)
         {
             os  << " t_inline { "
@@ -167,13 +167,13 @@ namespace idl { namespace pr {
                 << " }";
             return os;
         }
-        
-        
-        
-        
+
+
+
+
     }   //  namespace nested {
-    
-    
+
+
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //
@@ -181,7 +181,7 @@ namespace idl { namespace pr {
     //
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    
+
     t_inline2::t_inline2 (
               int32_t _i,
               int64_t _i64,
@@ -191,8 +191,8 @@ namespace idl { namespace pr {
               i64(_i64),
               s(_s)
         {}
-    
-    
+
+
     //  comparison
     bool t_inline2::operator==(const t_inline2& r) const
     {
@@ -203,7 +203,7 @@ namespace idl { namespace pr {
         )     return true;
         else  return false;
     }
-    
+
     bool t_inline2::operator< (const t_inline2& r) const
     {
         if(std::tie(
@@ -217,9 +217,9 @@ namespace idl { namespace pr {
               r.s)
         )     return true;
         else  return false;
-    
+
     }
-    
+
     std::ostream& operator<< (std::ostream& os, const t_inline2& t)
     {
         os  << " t_inline2 { "
@@ -229,9 +229,9 @@ namespace idl { namespace pr {
             << " }";
         return os;
     }
-    
-    
-    
+
+
+
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //
@@ -239,17 +239,17 @@ namespace idl { namespace pr {
     //
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    
+
     //  ctor
     t_tuple::t_tuple(
               int32_t p0,
               std::string p1
     )  :  tuple{ std::make_tuple (
-                  p0,  
-                  p1   
+                  p0,
+                  p1
             )} {};
-    
-    
+
+
     //  comparison
     bool t_tuple::operator==(const t_tuple& rhs) const
     {
@@ -259,16 +259,16 @@ namespace idl { namespace pr {
     {
       return this->tuple < rhs.tuple;
     }
-    
+
     std::ostream& operator<< (std::ostream& os, const t_tuple& t)
     {
         using ::operator<<;
         os << t.tuple;
         return os;
     }
-    
-    
-    
+
+
+
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //
@@ -276,17 +276,17 @@ namespace idl { namespace pr {
     //
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    
+
     //  ctor
     t_tuple2::t_tuple2(
               int32_t p0,
               std::string p1
     )  :  tuple{ std::make_tuple (
-                  p0,  
-                  p1   
+                  p0,
+                  p1
             )} {};
-    
-    
+
+
     //  comparison
     bool t_tuple2::operator==(const t_tuple2& rhs) const
     {
@@ -296,16 +296,16 @@ namespace idl { namespace pr {
     {
       return this->tuple < rhs.tuple;
     }
-    
+
     std::ostream& operator<< (std::ostream& os, const t_tuple2& t)
     {
         using ::operator<<;
         os << t.tuple;
         return os;
     }
-    
-    
-    
+
+
+
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //
@@ -313,7 +313,7 @@ namespace idl { namespace pr {
     //
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    
+
     std::ostream& operator<< (std::ostream& os, const t_color& t)
     {
         os << "en(";
@@ -342,13 +342,13 @@ namespace idl { namespace pr {
                default:
                           throw "ERROR";
         };
-    
+
         os << ")";
         return os;
     }
-    
-    
-    
+
+
+
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //
@@ -356,7 +356,7 @@ namespace idl { namespace pr {
     //
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    
+
     t_type_modifiers::t_type_modifiers (
               int32_t _int_field,
               std::string _string_field,
@@ -376,8 +376,8 @@ namespace idl { namespace pr {
               string_list(_string_list),
               int_list(_int_list)
         {}
-    
-    
+
+
     //  comparison
     bool t_type_modifiers::operator==(const t_type_modifiers& r) const
     {
@@ -393,7 +393,7 @@ namespace idl { namespace pr {
         )     return true;
         else  return false;
     }
-    
+
     bool t_type_modifiers::operator< (const t_type_modifiers& r) const
     {
         if(std::tie(
@@ -417,9 +417,9 @@ namespace idl { namespace pr {
               r.int_list)
         )     return true;
         else  return false;
-    
+
     }
-    
+
     std::ostream& operator<< (std::ostream& os, const t_type_modifiers& t)
     {
         os  << " t_type_modifiers { "
@@ -434,10 +434,10 @@ namespace idl { namespace pr {
             << " }";
         return os;
     }
-    
-    
-    
-    
+
+
+
+
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
     //
@@ -445,19 +445,19 @@ namespace idl { namespace pr {
     //
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
-    
+
     t_union::t_union (const std::string& p)
           : s(p), field(en_field::s) {};
-    
+
     t_union::t_union (const int32_t& p)
           : i(p), field(en_field::i) {};
-    
+
     t_union::t_union (const jle::dbl& p)
           : d(p), field(en_field::d) {};
-    
-    
-    
-    
+
+
+
+
     //  comparison
     bool t_union::operator==(const t_union& r) const
     {
@@ -468,7 +468,7 @@ namespace idl { namespace pr {
         )     return true;
         else  return false;
     }
-    
+
     bool t_union::operator< (const t_union& r) const
     {
         if(std::tie(
@@ -482,9 +482,9 @@ namespace idl { namespace pr {
               r.d)
         )     return true;
         else  return false;
-    
+
     }
-    
+
     std::ostream& operator<< (std::ostream& os, const t_union& t)
     {
         os  << " t_union { ";
@@ -495,10 +495,10 @@ namespace idl { namespace pr {
         os  << " }";
         return os;
     }
-    
-    
-    
-    
+
+
+
+
 }  }   //  namespace idl { namespace pr {
 
 

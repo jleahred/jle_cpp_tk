@@ -23,7 +23,16 @@
    <string>Widget</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -51,7 +60,16 @@
        <string>config</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_9">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -169,7 +187,7 @@
            </property>
            <property name="font">
             <font>
-             <family>Courier 10 Pitch</family>
+             <family>DejaVu Sans Mono</family>
              <pointsize>12</pointsize>
              <weight>50</weight>
              <italic>false</italic>
@@ -180,7 +198,7 @@
             <enum>Qt::ActionsContextMenu</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt &quot;Courier 10 Pitch&quot;;</string>
+            <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
@@ -259,7 +277,7 @@ endl            ::=  __endl__
            </property>
            <property name="font">
             <font>
-             <family>Courier 10 Pitch</family>
+             <family>DejaVu Sans Mono</family>
              <pointsize>12</pointsize>
              <weight>50</weight>
              <italic>false</italic>
@@ -270,7 +288,7 @@ endl            ::=  __endl__
             <enum>Qt::ActionsContextMenu</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt &quot;Courier 10 Pitch&quot;;</string>
+            <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
@@ -307,14 +325,23 @@ endl            ::=  __endl__
             <string>Compiler output</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_6">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
              <widget class="QPlainTextEdit" name="pteCompilerOut">
               <property name="font">
                <font>
-                <family>Courier 10 Pitch</family>
+                <family>DejaVu Sans Mono</family>
                 <pointsize>10</pointsize>
                 <weight>50</weight>
                 <italic>false</italic>
@@ -322,7 +349,7 @@ endl            ::=  __endl__
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">font: 10pt &quot;Courier 10 Pitch&quot;;
+               <string notr="true">font: 10pt &quot;DejaVu Sans Mono&quot;;
 
 </string>
               </property>
@@ -350,7 +377,16 @@ endl            ::=  __endl__
             <string>mantain Nodes (ast)</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_2">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -436,7 +472,16 @@ endl            ::=  __endl__
        <string>Testing</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_7">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -471,14 +516,23 @@ endl            ::=  __endl__
             <string>INPUT</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_3">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
              <widget class="QPlainTextEdit" name="pteInput">
               <property name="font">
                <font>
-                <family>Courier 10 Pitch</family>
+                <family>DejaVu Sans Mono</family>
                 <pointsize>12</pointsize>
                 <weight>50</weight>
                 <italic>false</italic>
@@ -489,7 +543,7 @@ endl            ::=  __endl__
                <enum>Qt::ActionsContextMenu</enum>
               </property>
               <property name="styleSheet">
-               <string notr="true">font: 12pt &quot;Courier 10 Pitch&quot;;</string>
+               <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -551,7 +605,16 @@ DBLOCALPR
             <string>AST</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -590,14 +653,23 @@ DBLOCALPR
             <string>OUTPUT</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_15">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
              <widget class="QPlainTextEdit" name="pteParsed">
               <property name="font">
                <font>
-                <family>Courier 10 Pitch</family>
+                <family>DejaVu Sans Mono</family>
                 <pointsize>12</pointsize>
                 <weight>50</weight>
                 <italic>false</italic>
@@ -605,7 +677,7 @@ DBLOCALPR
                </font>
               </property>
               <property name="styleSheet">
-               <string notr="true">font: 12pt &quot;Courier 10 Pitch&quot;;</string>
+               <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
               </property>
               <property name="frameShape">
                <enum>QFrame::Box</enum>
@@ -636,7 +708,7 @@ DBLOCALPR
           </property>
           <property name="font">
            <font>
-            <family>Courier 10 Pitch</family>
+            <family>DejaVu Sans Mono</family>
             <pointsize>10</pointsize>
             <weight>50</weight>
             <italic>false</italic>
@@ -644,7 +716,7 @@ DBLOCALPR
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">font: 10pt &quot;Courier 10 Pitch&quot;;
+           <string notr="true">font: 10pt &quot;DejaVu Sans Mono&quot;;
 
 </string>
           </property>
@@ -681,7 +753,7 @@ DBLOCALPR
             <enum>Qt::ActionsContextMenu</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt &quot;Courier 10 Pitch&quot;;</string>
+            <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
@@ -703,7 +775,7 @@ DBLOCALPR
             <enum>Qt::ActionsContextMenu</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 12pt &quot;Courier 10 Pitch&quot;;</string>
+            <string notr="true">font: 12pt &quot;DejaVu Sans Mono&quot;;</string>
            </property>
            <property name="frameShape">
             <enum>QFrame::Box</enum>
