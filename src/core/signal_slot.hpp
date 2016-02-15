@@ -38,12 +38,15 @@ namespace internal {
 
 
 class base_connection
-        : private jle::non_copyable
 {
     bool disconnected;
 
 public:
     base_connection() : disconnected(false) {};
+    base_connection(const base_connection&)=delete;
+    base_connection(base_connection&&)=default;
+    base_connection& operator=(const base_connection&)=delete;
+    base_connection& operator=(base_connection&&)=default;
 
     virtual ~base_connection(){};
     virtual bool isSame(base_connection*)= 0;
@@ -81,11 +84,18 @@ public:
 */
 
 
-class signal_receptor : private jle::non_copyable {
+class signal_receptor {
     std::list<jle::weak_ptr<internal::base_connection>> list_connections;
 
 public:
     signal_receptor(void) {};
+
+    signal_receptor(const signal_receptor&)=delete;
+    signal_receptor(signal_receptor&&)=default;
+
+    signal_receptor& operator=(const signal_receptor&)=delete;
+    signal_receptor& operator=(signal_receptor&&)=default;
+
 
     void internal_register_connection(jle::shared_ptr<internal::base_connection> pconnection) {
         list_connections.push_back(pconnection);
@@ -220,7 +230,7 @@ public:
 
 template <typename... Args>
 class signal
-        :   public signal_receptor   // ,  private non_copyable (implicit)
+        :   public signal_receptor
 {
     int processing_emit{0};
     std::list< jle::shared_ptr<internal::base_connectionParam<Args...> > > connections;
@@ -231,6 +241,10 @@ class signal
 
 public:
     signal() = default;
+    signal(const signal&)=delete;
+    signal(signal&&)=default;
+    signal& operator=(const signal&)=delete;
+    signal& operator=(signal&&)=default;
 
     ~signal() {
         try{
