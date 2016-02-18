@@ -66,7 +66,7 @@ Let's start with a common and simple exercise, parsing a math equation.
 
 Lets start with hello world on grammars...
 
-![Image](hello_world1.png)
+![Image](images/hello_world1.png)
 
 This grammar, accepts one or several 'a' char. Simple.
 
@@ -270,7 +270,7 @@ input: (1* (3  +2 ) )* 3+( 8* 9  )
 
 This grammar will produce next tree for entrance ```(1* (3  +2 ) )* 3+( 8* 9  )```
 
-![Image](expression_simple.png)
+![Image](images/expression_simple.png)
 
 Fantastic, but, what if we want to consider operator priority?...
 
@@ -308,7 +308,35 @@ _             ::=    ([ |\t]*)
 
 And here is the tree with correct priority for input ```1+2*3```...
 
-![Image](expresion_priority.png)
+![Image](images/expresion_priority.png)
+
+
+### terminal especial rules
+
+* Predefined constants
+  * \__any\__ -> any value
+  * \__isalpha\__ -> letter
+  * \__islower\__
+  * \__isupper\__
+  * \__isdigit\__
+  * \__isalnum\__
+  * \__endl\__
+  * \__isspace\__
+  * \__isspace*\__  -> zero or more spaces
+  * \__isspace+\__  -> one or more spaces
+  * \__space_tab\__ -> space or tab
+  * All the constants can be negated with **!**
+* Regular expressions
+  * It will be rounded by parenthesis
+* Literals
+  * Marked with **'**
+* Klein star
+  * If the rule finished with __*__, it will be processed as a Klein star
+
+### Non terminal especial rules
+
+* Klein star
+  * If the rule finished with __*__, it will be processed as a Klein star
 
 
 
@@ -331,7 +359,7 @@ Generating *DSLs* is a good example.
 That's the main reason why I build this lib, and in these cases, the game consists
 on getting a text, validate it, and generating a different text.
 
-The output could be also... a program in pcode or c++, or embedded language.
+The output could be also... a program in bytecode or c++, or embedded language.
 
 Yes! this is external DSL
 
@@ -393,6 +421,8 @@ _             ::=    ([ |\t]*)                                 ##transf2-> $(__n
 =             ::=    (=)                          
 ```
 
+Very simple. You can generate an output for the subtree, using *vars* to refer the information on AST, and some predefined vars
+
 
 And it will generate for input ```1+2*3 +(7/9*5) +1```...
 
@@ -419,3 +449,243 @@ A small program, easy to process
 You can see a example [here](https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/calculator)
 
 This is a simple calculator, with vars, functions (extensible), operator priority...
+
+* Predefined vars
+  * \__endl\__
+  * \__space\__
+  * \__dollar_open_par\__
+  * \__close_par\__
+  * \__counter\__
+
+
+
+### Beyond
+
+When you need to work with complex transformation rules, you can define them outside the grammar rule.
+
+```
+[...]
+EXPR    ::=    _ VAR _ = _ EXPR                                 ##transf2-> $(EXPR_TPL)
+
+[...]
+
+__BEGIN_TEMPLATE__:: EXPR_TPL
+
+copy2:$(VAR)
+__END_TEMPLATE__::
+```
+
+You can also define vars to be used as functions (a kind of macro system).
+
+Let see an example from *idl*
+
+```
+MAIN   ::=  FRAME*               ##transf2->$(GENERATE_CODE)
+
+
+
+
+__BEGIN_TEMPLATE__:: GENERATE_CODE
+$(__set__ FRAME_TYPE
+~    $(__set__ TYPE_OPTIONAL          jle::optional<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_RECOMENDED        jle::optional<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_LIST              jle::list<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_WITH_DEFAULT_DATE $(BASIC_TYPE))~
+~    $(__set__ TYPE_WITH_DEFAULT      $(BASIC_TYPE))~
+~    $(__set__ COMP_TYPE_NO_END       $(id)::$(COMPOSED_TYPE))~
+~    $(__set__ COMP_TYPE_END          $(id))~
+~    $(__run__)~
+~    $(TYPE))~
+~
+$(H_FORWARD_FILE)
+$(H_FILE)
+$(CPP_FILE)
+__END_TEMPLATE__::
+```
+
+*$(GENERATE_CODE)* will write the template content as expected.
+
+```
+$(__set__ ...
+```
+
+is a function. In this case, when **FRAME_TYPE** will be reached, it will be replaced by a lot of new **\__set\__**, a **\__run\__** and **$(TYPE)**
+
+The **~** symbol at the beginning of the line, means... *ignore spaces*. And same symbol at the end, means, remove new line.
+
+This lets us to redefine vars, and even define vars with vars inside. When AST is processed, the vars will be replaced by their value. If the value contains vars, the will be replaced by value again, and so...
+
+Once we have declared vars, could be necessary to run again the subtree in order to apply the new defined values. This is done with **\__run\__** function
+
+Functions, starts with **$(** and ends with **)**
+
+* Defined functions
+  * $(VAR_NAME) -> this is a special implicit function it's equivalent to **get \__VAR_NAME\__**
+  * \__ident+\__ -> increase identation
+  * \__ident-\__
+  * \__date_time\__
+  * \__date\__
+  * \__run\__ -> run again subtree applying current vars
+  * \__prune\__
+  * \__nothing\__
+  * \__set\__
+  * \__copy\__
+  * \__alignc\__
+  * \__lmargin\__
+
+This is a declarative language and inmutable.
+
+In some cases, inmutability will require too much computation and complex code. For example, creating a counter.
+
+To deal with these situations (just as exceptions), next mutable functions are provided...
+
+  * \__set_mut\__
+  * \__get_mut\__
+  * \__inc\__
+  * \__dec\__
+
+
+Lets go back to the *idl* example...
+
+```
+MAIN   ::=  FRAME*               ##transf2->$(GENERATE_CODE)
+
+
+
+
+__BEGIN_TEMPLATE__:: GENERATE_CODE
+$(__set__ FRAME_TYPE
+~    $(__set__ TYPE_OPTIONAL          jle::optional<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_RECOMENDED        jle::optional<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_LIST              jle::list<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_WITH_DEFAULT_DATE $(BASIC_TYPE))~
+~    $(__set__ TYPE_WITH_DEFAULT      $(BASIC_TYPE))~
+~    $(__set__ COMP_TYPE_NO_END       $(id)::$(COMPOSED_TYPE))~
+~    $(__set__ COMP_TYPE_END          $(id))~
+~    $(__run__)~
+~    $(TYPE))~
+~
+$(H_FORWARD_FILE)
+$(H_FILE)
+$(CPP_FILE)
+__END_TEMPLATE__::
+```
+
+Once the *AST* is ready, we will run it in order to generate the output.
+
+In this case, **$(GENERATE_CODE)** will be replaced by the template content bellow.
+
+Processing it, will declarate a variable **FRAME_TYPE**, will add the content of forward, h and cpp files...
+
+```
+MAIN   ::=  FRAME*               ##transf2->$(GENERATE_CODE)
+
+
+
+
+__BEGIN_TEMPLATE__:: GENERATE_CODE
+$(__set__ FRAME_TYPE [...])
+~
+$(H_FORWARD_FILE)
+$(H_FILE)
+$(CPP_FILE)
+__END_TEMPLATE__::
+```
+
+
+Let's see the **H_FILE**
+
+```
+__BEGIN_TEMPLATE__:: H_FILE
+__BEGIN_FILE__::$(__file_name__).h
+//  generated on $(__date_time__)
+
+
+#include <cstdint>
+#include <string>
+#include "core/tuple.hpp"
+#include "core/optional.hpp"
+#include "core/dbl.h"
+#include "core/cont/list.hpp"
+
+
+$(__set__  MODULE      $(MODULE_CODE))~
+$(__set__  RECORD      $(RECORD_H))~
+$(__set__  TUPLE       $(TUPLE_H))~
+$(__set__  ENUMERATION $(ENUMERATION_H))~
+$(__set__  UNION       $(UNION_H))~
+$(__run__)
+
+$(FRAME*)
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__::
+```
+
+It writes some text, declare some vars and will write **$(FRAME*)**
+
+
+One example with counters...
+
+```
+__BEGIN_TEMPLATE__:: COUNT_TUPLE_FIELDS
+$(__nothing__     count number of fields)~
+$(__set_mut__  PCOUNTER  0)~
+$(__set__  F_NO_NAMED_NOEND $(__inc__ PCOUNTER)$(F_NO_NAMED))~
+$(__set__  F_NO_NAMED_END   $(__nothing__))~
+$(__run__)~
+__END_TEMPLATE__::
+
+[...]
+
+$(COUNT_TUPLE_FIELDS)~
+$(__nothing__     write fields with counter)~
+$(__set__  F_NO_NAMED_NOEND $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER),$(__endl__)$(F_NO_NAMED))~
+$(__set__  F_NO_NAMED_END $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER))~
+$(__run__)
+
+```
+
+You can see a complete example here [idl](https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/idl)
+
+
+
+## Tooling
+
+Great, we have a LL(n) parser, with rules and templates to generate an output.
+
+### Grammar and templates processor
+
+This has been used to create [hpt](https://github.com/jleahred/jle_cpp_tk/tree/master/tools/hpt)
+
+This is a small program who lets us to define the input files, and grammar with template files.
+
+It will run all, and will produce the result.
+
+### Grammar and template editor
+
+[hpgui](https://github.com/jleahred/jle_cpp_tk/tree/master/tools/qt/hpgui)
+
+This is a simple Qt program who helps us to write grammars, templates and debug it
+
+You can work with several grammars and choose the proper one.
+
+![Image](images/choose_grammar.png)
+
+
+You can edit the grammar and templates
+
+![Image](images/edit_grammar.png)
+
+
+You can edit the input
+
+![Image](images/edit_input.png)
+
+You can edit show the tree with transformations applied
+
+![Image](images/show_tree.png)
+
+
+You can show the output
+
+![Image](images/show_output.png)

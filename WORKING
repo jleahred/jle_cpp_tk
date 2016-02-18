@@ -1,5 +1,10 @@
-remove README.MD from Doxyfile
-add an folder for doc in hp
+check duplicates in doxygen html doc
+    remove README.MD from Doxyfile
+
+doc hpgui
+doc idl
+doc hpt
+
 
 
 hp/ide
