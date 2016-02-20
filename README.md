@@ -304,10 +304,11 @@ In any case, I plan to follow next order (more or less)...
 - (done) ~~integer div 0 protection~~
 - (90%) Message driven programming oriented: synchr, timers
 - (done) ~~parallelism control helper~~
-- (done) LL(n) parser
-- (done) qt gui for LL(n)
+- (done) ~~LL(n) parser~~
+- (done) ~~qt gui for LL(n)~~
 - LL(n) parser documentation
-- (done) IDL class generation
+- (done) ~~IDL class generation base and example~~
+- IDL class generation
     - stream
     - yaml
     - json
@@ -317,7 +318,7 @@ In any case, I plan to follow next order (more or less)...
     - ...
 - IDL documentation
 - .ini and .cfg parsing files
-- ashared_ptr. Destroy it ansynchronous way to avoid destroy when using it
+- ashared_ptr. Destroy it ansynchronous way to avoid deleting when using it
 - IDL fsm generation
 - async signals
 - soft-realtime facilities
@@ -328,4 +329,4 @@ In any case, I plan to follow next order (more or less)...
 
 ## Todo
 
-- At this moment... almost all
+- ...

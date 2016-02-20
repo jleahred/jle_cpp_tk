@@ -446,7 +446,7 @@ fun/2:+
 
 A small program, easy to process
 
-You can see a example [here](https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/calculator)
+You can see an example [here](https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/calculator)
 
 This is a simple calculator, with vars, functions (extensible), operator priority...
 
@@ -463,6 +463,12 @@ This is a simple calculator, with vars, functions (extensible), operator priorit
 
 When you need to work with complex transformation rules, you can define them outside the grammar rule.
 
+We could call the "rules" after *transfor2->* **transformation templates**
+
+When we need complex *transformtion templates* we can write separated from grammars rules
+
+To do that, we can insert the transformation template to a var and getting it as any other var.
+
 ```
 [...]
 EXPR    ::=    _ VAR _ = _ EXPR                                 ##transf2-> $(EXPR_TPL)
@@ -475,7 +481,30 @@ copy2:$(VAR)
 __END_TEMPLATE__::
 ```
 
-You can also define vars to be used as functions (a kind of macro system).
+The text between **__BEGIN_TEMPLATE__:: <name>**  and **__END_TEMPLATE__::** is written in var <name>
+
+A transformation template is a text with functions (or macros if you prefer) inside.
+
+The most common case is function \__get__ for that reason, it is special. If you don't write a function name, it will be \__get__
+
+
+* Defined functions
+  * $(VAR_NAME) -> this is a special implicit function it's equivalent to **$()\__get__ VAR_NAME)**
+  * \__ident+\__ -> increase identation
+  * \__ident-\__
+  * \__date_time\__
+  * \__date\__
+  * \__run\__ -> run again subtree applying current vars
+  * \__prune\__
+  * \__nothing\__
+  * \__set\__
+  * \__copy\__
+  * \__alignc\__
+  * \__lmargin\__
+
+
+This is a declarative language, inmutable, with rebind, and scope of clojure kind.
+
 
 Let see an example from *idl*
 
@@ -501,15 +530,16 @@ $(H_FORWARD_FILE)
 $(H_FILE)
 $(CPP_FILE)
 __END_TEMPLATE__::
-```
-
-*$(GENERATE_CODE)* will write the template content as expected.
 
 ```
-$(__set__ ...
-```
 
-is a function. In this case, when **FRAME_TYPE** will be reached, it will be replaced by a lot of new **\__set\__**, a **\__run\__** and **$(TYPE)**
+The second parameter of first function is quite long.
+
+
+*$(GENERATE_CODE)* will write the var content as expected (defined on \__BEGIN_TEMPLATE__:: GENERATE_CODE...).
+
+
+When **FRAME_TYPE** will be reached, it will be replaced by a lot of new **\__set\__**, a **\__run\__** and **$(TYPE)**
 
 The **~** symbol at the beginning of the line, means... *ignore spaces*. And same symbol at the end, means, remove new line.
 
@@ -517,23 +547,8 @@ This lets us to redefine vars, and even define vars with vars inside. When AST i
 
 Once we have declared vars, could be necessary to run again the subtree in order to apply the new defined values. This is done with **\__run\__** function
 
-Functions, starts with **$(** and ends with **)**
+Remember, functions, starts with **$(** and ends with **)**
 
-* Defined functions
-  * $(VAR_NAME) -> this is a special implicit function it's equivalent to **get \__VAR_NAME\__**
-  * \__ident+\__ -> increase identation
-  * \__ident-\__
-  * \__date_time\__
-  * \__date\__
-  * \__run\__ -> run again subtree applying current vars
-  * \__prune\__
-  * \__nothing\__
-  * \__set\__
-  * \__copy\__
-  * \__alignc\__
-  * \__lmargin\__
-
-This is a declarative language and inmutable.
 
 In some cases, inmutability will require too much computation and complex code. For example, creating a counter.
 
@@ -621,7 +636,7 @@ $(__endl__)$(__endl__)$(__endl__)
 __END_TEMPLATE__::
 ```
 
-It writes some text, declare some vars and will write **$(FRAME*)**
+It writes some text, declare some vars and will write **$(FRAME*)** (variable defined in AST)
 
 
 One example with counters...
