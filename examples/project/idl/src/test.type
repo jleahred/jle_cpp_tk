@@ -51,12 +51,12 @@ t_color   //  enumeration
 //  type modifiers
 t_type_modifiers
 {
-    //  comentary
+    //  commentary
     int_field       :   int32       //  mandatory
     string_field    :   string
 
     opt_string      :   string?     //  optional
-    rec_float       :   double!     //  recomended
+    rec_float       :   double!     //  recommended
 
     def_string0     :   string[<"hi">]                      //  default value
     def_string1     :   string[<"there">][<2015-10-23>]     //  new mandatory since...

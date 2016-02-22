@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
     else
     {
         std::cerr << "bad argument count... " << argc << std::endl;
-        std::cerr << "ussage...\nhpt  <gram-file> <2gram-file>  <input-file>" << std::endl;
+        std::cerr << "usage...\nhpt  <gram-file> <2gram-file>  <input-file>" << std::endl;
         return -1;
     }
 
