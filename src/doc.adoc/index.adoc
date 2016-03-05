@@ -1,0 +1,34 @@
+:toc: left
+:source-highlighter: highlightjs
+:icons: font
+:sectnums:
+//:stylesheet: ./stylesheets/golo.css
+
+= JLE TOOLKIT
+
+José Luis Esteban
+
+
+
+
+//:cpp: {basebackend@docbook:c++:cpp}
+
+
+
+[horizontal]
+Version::
+include::../../VERSION[]
+Writter:: José Luis Esteban
+Generated:: {docdate} {doctime}
+
+
+<<<
+
+
+
+:leveloffset: 1
+
+include::introduction.adoc[]
+include::STATS.adoc[]
+
+:leveloffset: 0
