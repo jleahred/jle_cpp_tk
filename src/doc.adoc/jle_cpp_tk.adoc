@@ -2,12 +2,17 @@
 :source-highlighter: highlightjs
 :icons: font
 :sectnums:
-//:stylesheet: ./stylesheets/golo.css
+:stylesheet: ./stylesheets/golo.css
+:data-uri:
+
+
 
 = JLE TOOLKIT
 
-José Luis Esteban
+image::../../jleahred2s.jpeg[float="left"]
 
+
+José Luis Esteban
 
 
 
@@ -15,12 +20,16 @@ José Luis Esteban
 
 
 
+--
 [horizontal]
 Version::
 include::../../VERSION[]
-Writter:: José Luis Esteban
-Generated:: {docdate} {doctime}
 
+Commit::
+include::../../COMMIT[]
+
+Generated:: {docdate} {doctime}
+--
 
 <<<
 

@@ -10,8 +10,11 @@
 | examples/ |  3402  |  24
 | test/ |  1786  |  10
 | tools/ |  1571  |  9
+|============
 
 
+[options=header,cols="1,^1,^1",width="50%"]
+|============
 | extern | lines | files
 | src/net/ |  10104  |  2
 |============

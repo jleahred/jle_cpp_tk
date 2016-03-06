@@ -18,12 +18,14 @@ examples:
 
 .PHONY : doc
 doc: generate_commit_sha1_file  stats
-	export JLE_CPP_TK="`cat VERSION`  sh1:`cat COMMIT`"; doxygen Doxyfile
+	rm doc/* -rf
+	export JLE_CPP_TK="`cat VERSION`  sh1:`cat COMMIT`"; doxygen Doxyfile; asciidoctor src/doc.adoc/jle_cpp_tk.adoc -o doc/jle_cpp_tk.html
 	echo "\"\"" >  COMMIT
 
 .PHONY : doc_show
 doc_show:
 	firefox doc/html/index.html
+	firefox doc/html/jle_cpp_tk.html
 
 .PHONY : test
 test:
@@ -36,7 +38,7 @@ github:
 	git push github master --force
 
 
-.PHONY : github_doc
+.PHONY : doc_github
 github_doc:  #doc
 	rm -rf /home/maiquel/inet.prj/web/jleahred.github.io/jle_cpp_tk.doc
 	mkdir /home/maiquel/inet.prj/web/jleahred.github.io/jle_cpp_tk.doc
@@ -116,9 +118,12 @@ stats:
 	@echo "| examples/ | "  $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
 	@echo "| test/ | "  $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
 	@echo "| tools/ | "  $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo  "|============" >> STATS.adoc
 
 	@echo "" >> STATS.adoc
 	@echo "" >> STATS.adoc
+	@echo  "[options=header,cols=\"1,^1,^1\",width=\"50%\"]" >> STATS.adoc
+	@echo  "|============" >> STATS.adoc
 	@echo  "| extern | lines | files" >> STATS.adoc
 	@echo "| src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | wc -l)  >> STATS.adoc
 	@echo  "|============" >> STATS.adoc
