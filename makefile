@@ -104,23 +104,24 @@ lib_jle_net: prepare
 
 .PHONY : stats
 stats:
-	@echo "# STATS" > STATS.md
-	@echo  >> STATS.md
-	@echo  "_ | lines | files" >> STATS.md
-	@echo  "------------- | -------------: | -------------:" >> STATS.md
-	@echo "/ | "  $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
-	@echo "src/ | "  $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
-	@echo "src/core/ | "  $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
-	@echo "src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | wc -l)  >> STATS.md
-	@echo "examples/ | "  $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
-	@echo "test/ | "  $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
-	@echo "tools/ | "  $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.md
+	@echo "= STATS" > STATS.adoc
+	@echo  >> STATS.adoc
+	@echo  "[options=header,cols=\"1,^1,^1\",width=\"50%\"]" >> STATS.adoc
+	@echo  "|============" >> STATS.adoc
+	@echo  "| _ | lines | files" >> STATS.adoc
+	@echo "| / | "  $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| src/ | "  $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| src/core/ | "  $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | wc -l)  >> STATS.adoc
+	@echo "| examples/ | "  $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| test/ | "  $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| tools/ | "  $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
 
-	@echo "" >> STATS.md
-	@echo "" >> STATS.md
-	@echo  "extern | lines | files" >> STATS.md
-	@echo  "------------- | -------------: | -------------:" >> STATS.md
-	@echo "src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | wc -l)  >> STATS.md
+	@echo "" >> STATS.adoc
+	@echo "" >> STATS.adoc
+	@echo  "| extern | lines | files" >> STATS.adoc
+	@echo "| src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' -o -name '*.c' | grep  fossa | wc -l)  >> STATS.adoc
+	@echo  "|============" >> STATS.adoc
 
 
 coverity_path := /home/maiquel/inet.prj/cov-analysis-linux64-7.7.0/bin

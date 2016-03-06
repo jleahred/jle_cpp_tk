@@ -28,7 +28,12 @@ Generated:: {docdate} {doctime}
 
 :leveloffset: 1
 
-include::introduction.adoc[]
-include::STATS.adoc[]
+//  introduction
+include::../../README.adoc[]
+
+include::../../STATS.adoc[]
+
+include::../core/README.adoc[]
+
 
 :leveloffset: 0
