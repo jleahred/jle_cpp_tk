@@ -38,11 +38,16 @@ Generated:: {docdate} {doctime}
 :leveloffset: 1
 
 //  introduction
+:docdirlevel: {docdir}/../../
 include::../../README.adoc[]
 
+:docdirlevel: {docdir}/../../
 include::../../STATS.adoc[]
 
+:docdirlevel: {docdir}/../core/
 include::../core/README.adoc[]
 
+:docdirlevel: {docdir}/../core/hp/
+include::../core/hp/README.adoc[]
 
 :leveloffset: 0

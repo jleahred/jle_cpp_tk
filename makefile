@@ -111,13 +111,13 @@ stats:
 	@echo  "[options=header,cols=\"1,^1,^1\",width=\"50%\"]" >> STATS.adoc
 	@echo  "|============" >> STATS.adoc
 	@echo  "| _ | lines | files" >> STATS.adoc
-	@echo "| / | "  $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
-	@echo "| src/ | "  $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
-	@echo "| src/core/ | "  $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
-	@echo "| src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | wc -l)  >> STATS.adoc
-	@echo "| examples/ | "  $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
-	@echo "| test/ | "  $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
-	@echo "| tools/ | "  $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| / | "  $$(find . -name '*.h' -o -name '*.hpp' -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| src/ | "  $$(cd src; find . -name '*.h' -o -name '*.hpp' -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| src/core/ | "  $$(cd src/core; find . -name '*.h' -o -name '*.hpp' -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd src/core; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| src/net/ | "  $$(cd src/net; find . -name '*.h' -o -name '*.hpp' -o -name '*.cpp' | grep -v fossa | xargs cat | wc -l)  " | " $$(cd src/net; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v fossa | wc -l)  >> STATS.adoc
+	@echo "| examples/ | "  $$(cd examples; find . -name '*.h' -o -name '*.hpp' -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd examples; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| test/ | "  $$(cd test; find . -name '*.h' -o -name '*.hpp' -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd test; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
+	@echo "| tools/ | "  $$(cd tools; find . -name '*.h' -o -name '*.hpp' -o -name '*.cpp' | grep -v cov-int | xargs cat | wc -l)  " | " $$(cd tools; find . -name '*.h' -o -name '*.h'pp -o -name '*.cpp' | grep -v cov-int | wc -l)  >> STATS.adoc
 	@echo  "|============" >> STATS.adoc
 
 	@echo "" >> STATS.adoc

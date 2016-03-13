@@ -1,8 +1,9 @@
 = Introduction
 
+On line doc
+http://jleahred.github.io/jle_cpp_tk.doc/jle_cpp_tk.html[(adoc)]
+http://jleahred.github.io/jle_cpp_tk.doc/index.html[(doxys)]
 
-* http://jleahred.github.io/jle_cpp_tk.doc/index.html[online doc doxys]
-* http://jleahred.github.io/jle_cpp_tk.doc/jle_cpp_tk.html[online doc adoc]
 
 
 //<a href="https://scan.coverity.com/projects/5356">

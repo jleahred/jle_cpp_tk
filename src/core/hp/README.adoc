@@ -1,12 +1,16 @@
-# hp & AST
+ifndef::docdirlevel[]
+:docdirlevel: ./
+endif::[]
+
+= hp & AST
 
 
-Full example on examples/project/idl
+Full example on +examples/project/idl+
 
 
-## Aim
+== Aim
 
-Enjoy!
+To enjoy!
 
 A parser is an important tool for a programmer.
 
@@ -18,16 +22,16 @@ give you full freedom.
 
 
 
-## Tools
+== Tools
 
 On `tools` folder we have *hpt* binary. It works with hp and *AST* to process inputs with grammars and generates files.
 
 On `tools/qt` we have a small *ui* to work with grammars and templates
 
 
-## Main actors
+== Main actors
 
-### hp
+=== hp
 
 This is a simple LL(n) parser.
 
@@ -39,7 +43,7 @@ It will create an *AST*
 
 
 
-### AST
+=== AST
 
 As a result of parsing a file with a grammar, an *AST* will
 be generated.
@@ -48,7 +52,7 @@ We can process this *AST* with a *c++* program, or we can use the *templates*
 transformation.
 
 
-### Templates
+=== Templates
 
 A template is a piece of text with functions calls.
 
@@ -57,16 +61,16 @@ will return a *template*
 
 
 
-## Defining a grammar
+== Defining a grammar
 
 
-### Basic grammars
+=== Basic grammars
 
 Let's start with a common and simple exercise, parsing a math equation.
 
 Lets start with hello world on grammars...
 
-![Image](images/hello_world1.png)
+image::{docdirlevel}/images/hello_world1.png[]
 
 This grammar, accepts one or several 'a' char. Simple.
 
@@ -83,13 +87,13 @@ Lets try next one, parenthesis...
 
 It has to accept things like...
 
-~~~~~~~
+----
 abaaa
 aaaabaa
 aba
-~~~~~~~
+----
 
-~~~~~~~
+----
 B
 
 B ::= A  b  A
@@ -99,7 +103,8 @@ A ::= a
 
 a ::= 'a'
 b ::= 'b'
-~~~~~~~
+----
+
 Great.
 
 
@@ -107,22 +112,23 @@ But now, we want same quantity of 'a' at the beginning and at the end.
 
 It has to accept things like...
 
-~~~~~~~
+----
 aaabaaa
 aaaabaaa
 aba
-~~~~~~~
+----
 
 But not...
 
-~~~~~~~
+----
 aabaaa
 aaaaba
 ab
-~~~~~~~
+----
+
 Let's try
 
-~~~~~~~
+----
 B
 
 B ::= a  b  a
@@ -134,13 +140,13 @@ a ::= 'a'
 b ::= 'b'
 aa ::= 'aa'
 aaa ::= 'aaa'
-~~~~~~~
+----
 
 From now on, lasts lines will indicate a valid input, rest of lines will be the grammar
 
 This is not a full solution, and it's not an elegant one either.
 
-~~~~~~~
+----
 B
 
 B ::= a  B  a
@@ -151,13 +157,14 @@ b ::= 'b'
 
 input: aaabaaa
 input: aba
-~~~~~~~
+----
+
 
 This looks great. Generic, concise, simple.
 
 We can move it to parenthesis...
 
-~~~~~~~
+----
 B
 
 B ::= ( B )
@@ -169,13 +176,14 @@ b ::= 'b'
 
 input: (((b)))
 input: (b)
-~~~~~~~
+----
 
-### Expressions grammar
+
+=== Expressions grammar
 
 Let's start with numbers.
 
-~~~~~~~
+----
 EXPR
 
 EXPR ::=  NUM
@@ -185,7 +193,8 @@ NUM  ::=  d
 
 d ::= ([0-9])
 input: 123456
-~~~~~~~
+----
+
 
 Terminal symbols can be defined as *regular expressions* in order to simplify the rule.
 
@@ -193,7 +202,7 @@ To keep the example simple, we will let numbers of any size and just integers.
 
 If terminal symbols can be written as *regular expressions*, then we can simplify...
 
-~~~~~~~
+----
 EXPR
 
 EXPR ::=  num
@@ -201,10 +210,12 @@ EXPR ::=  num
 num ::= ([0-9]+)
 
 input: 123456
-~~~~~~~
+----
+
 
 Added one operator
-~~~~~~~
+
+----
 EXPR
 
 EXPR ::=  num operator num
@@ -213,11 +224,12 @@ num ::= ([0-9]+)
 operator ::= ([\+|\-|\*|\/])
 
 input: 1+2
-~~~~~~~
+----
+
 
 But expressions has to accept multiple operators and numbers...
 
-~~~~~~~
+----
 EXPR
 
 EXPR ::=  num operator EXPR
@@ -227,11 +239,12 @@ num ::= ([0-9]+)
 operator ::= ([\+|\-|\*|\/])
 
 input: 1+2*3
-~~~~~~~
+----
 
 
 And what about the parenthesis?...
-~~~~~~~
+
+----
 EXPR
 
 EXPR ::=  ( EXPR ) operator EXPR
@@ -246,11 +259,11 @@ operator ::= ([\+|\-|\*|\/])
 
 input: (1+2)*3
 input: (1*(3+2))*3+(8*9)
-~~~~~~~
+----
 
 We could want to let spaces between elements.
 
-~~~~~~~
+----
 EXPR
 
 EXPR ::=  _ ( _ EXPR _ ) _ operator _ EXPR
@@ -266,17 +279,17 @@ _        ::= ([ |\t]*)
 
 input: ( 1+2 ) *3
 input: (1* (3  +2 ) )* 3+( 8* 9  )
-~~~~~~~
+----
 
-This grammar will produce next tree for entrance ```(1* (3  +2 ) )* 3+( 8* 9  )```
+This grammar will produce next tree for entrance `(1* (3  +2 ) )* 3+( 8* 9  )`
 
-![Image](images/expression_simple.png)
+image::{docdirlevel}/images/expression_simple.png[]
 
 Fantastic, but, what if we want to consider operator priority?...
 
 Here it is...
 
-~~~~~~~
+----
 EXPR
 
 EXPR    ::=    _ unaryoperator _ ADDS _
@@ -304,43 +317,46 @@ unaryoperator ::=    ([\+|\-])
 _             ::=    ([ |\t]*)
 (             ::=    (\()
 )             ::=    (\))
-~~~~~~~
+----
 
-And here is the tree with correct priority for input ```1+2*3```...
+And here is the tree with correct priority for input `1+2*3`...
 
-![Image](images/expresion_priority.png)
+image::{docdirlevel}/images/expresion_priority.png[]
 
 
-### terminal especial rules
+=== terminal especial rules
 
-* Predefined constants
-  * \__any\__ -> any value
-  * \__isalpha\__ -> letter
-  * \__islower\__
-  * \__isupper\__
-  * \__isdigit\__
-  * \__isalnum\__
-  * \__endl\__
-  * \__isspace\__
-  * \__isspace*\__  -> zero or more spaces
-  * \__isspace+\__  -> one or more spaces
-  * \__space_tab\__ -> space or tab
-  * All the constants can be negated with **!**
-* Regular expressions
+Predefined constants::
+  * `__any__` -> any value
+  * `__isalpha__` -> letter
+  * `__islower__`
+  * `__isupper__`
+  * `__isdigit__`
+  * `__isalnum__`
+  * `__endl__`
+  * `__isspace__`
+  * `__isspace*__`  -> zero or more spaces
+  * `__isspace+__`  -> one or more spaces
+  * `__space_tab__` -> space or tab
+  * All the constants can be negated with `!`
+
+Regular expressions::
   * It will be rounded by parenthesis
-* Literals
-  * Marked with **'**
-* Klein star
+
+Literals::
+  * Marked with `'`
+
+Klein star::
   * If the rule finished with __*__, it will be processed as a Klein star
 
-### Non terminal especial rules
+=== Non terminal especial rules
 
-* Klein star
+Klein star::
   * If the rule finished with __*__, it will be processed as a Klein star
 
 
 
-## Transforming text
+== Transforming text
 
 Validating files is quite interesting.
 
@@ -365,7 +381,7 @@ Yes! this is external DSL
 
 Lets see one example with the expression grammar.
 
-Look to ```##transf2->```
+Look to `##transf2->`
 
 ```
 MAIN
@@ -395,36 +411,36 @@ SUM     ::=    _ add_operator _ VAL _ POWER                     ##transf2-> $(VA
 SUM     ::=    _ add_operator _ VAL _ FACTOR                    ##transf2-> $(VAL)$(__endl__)$(FACTOR)$(__endl__)$(add_operator)
 SUM     ::=    _ add_operator _ VAL _ SUM                       ##transf2-> $(VAL)$(__endl__)$(add_operator)$(__endl__)$(SUM)
 SUM     ::=    _ add_operator _ ( _ EXPR _ ) _ EXPR'            ##transf2-> $(EXPR)$(__endl__)$(add_operator)$(__endl__)$(EXPR')
-SUM     ::=    _                 
+SUM     ::=    _
 
 VAL     ::=    FUNC _ ( _ EXPR _ ) _                            ##transf2-> $(EXPR)fun/1:$(FUNC)
 VAL     ::=    FUNC _ ( _ EXPR _ , _ EXPR _ ) _                 ##transf2-> $(EXPR)$(__endl__)$(EXPR#1)fun/2:$(FUNC)
 
-VAL     ::=    num                            
-VAL     ::=    VAR                              
+VAL     ::=    num
+VAL     ::=    VAR
 VAR     ::=    id                                               ##transf2-> var:$(id)
-FUNC    ::=    id                             
+FUNC    ::=    id
 
 num           ::=    ([0-9]*\.[0-9]+)                           ##transf2-> num:$(t)
 num           ::=    ([0-9]+\.[0-9]*)                           ##transf2-> num:$(t)
 num           ::=    ([0-9]+)                                   ##transf2-> num:$(t)
-id            ::=    ([a-z|A-Z][0-9|a-z|A-Z|_]*)  
+id            ::=    ([a-z|A-Z][0-9|a-z|A-Z|_]*)
 id            ::=    (_+[0-9|a-z|A-Z]+[0-9|a-z|A-Z|_]*)
 powerop       ::=    (\^)                                      ##transf2-> fun/2:$(t)
 mult_operator ::=    ([\*|\/])                                 ##transf2-> fun/2:$(t)
 add_operator  ::=    ([\+|\-])                                 ##transf2-> fun/2:$(t)
 unaryoperator ::=    ([\+|\-])                                 ##transf2-> fun/1:$(t)
 _             ::=    ([ |\t]*)                                 ##transf2-> $(__nothing__)
-(             ::=    (\()                        
-)             ::=    (\))                        
-,             ::=    (,)                          
-=             ::=    (=)                          
+(             ::=    (\()
+)             ::=    (\))
+,             ::=    (,)
+=             ::=    (=)
 ```
 
 Very simple. You can generate an output for the subtree, using *vars* to refer the information on AST, and some predefined vars
 
 
-And it will generate for input ```1+2*3 +(7/9*5) +1```...
+And it will generate for input `1+2*3 +(7/9*5) +1`...
 
 ```
 num:1
@@ -446,24 +462,24 @@ fun/2:+
 
 A small program, easy to process
 
-You can see an example [here](https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/calculator)
+You can see an example https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/calculator[here]
 
 This is a simple calculator, with vars, functions (extensible), operator priority...
 
-* Predefined vars
-  * \__endl\__
-  * \__space\__
-  * \__dollar_open_par\__
-  * \__close_par\__
-  * \__counter\__
+Predefined vars::
+  * `__endl__`
+  * `__space__`
+  * `__dollar_open_par__`
+  * `__close_par__`
+  * `__counter__`
 
 
 
-### Beyond
+=== Beyond
 
 When you need to work with complex transformation rules, you can define them outside the grammar rule.
 
-We could call the "rules" after *transfor2->* **transformation templates**
+We could call the "rules" after `transfor2->` **transformation templates**
 
 When we need complex *transformtion templates* we can write separated from grammars rules
 
@@ -481,34 +497,35 @@ copy2:$(VAR)
 __END_TEMPLATE__::
 ```
 
-The text between **__BEGIN_TEMPLATE__:: <name>**  and **__END_TEMPLATE__::** is written in var <name>
+The text between `__BEGIN_TEMPLATE__: : <name>`  and `__END_TEMPLATE__::` is written in var <name>
 
 A transformation template is a text with functions (or macros if you prefer) inside.
 
-The most common case is function \__get__ for that reason, it is special. If you don't write a function name, it will be \__get__
+The most common case is function `__get__` for that reason, it is special. If you don't write a function name, it will be `__get__`
 
+--
+Defined functions::
+[horizontal]
+`$(VAR_NAME)`::: -> this is a special implicit function it's equivalent to `$(__get__ VAR_NAME)`
+`__ident+__`::: -> increase identation
+`__ident-__`::: _
+`__date_time__`::: _
+`__date__`::: _
+`__run__`::: -> run again subtree applying current vars
+`__prune__`::: _
+`__nothing__`::: _
+`__set__`::: _
+`__copy__`::: _
+`__alignc__`::: _
+`__lmargin__`::: _
+--
 
-* Defined functions
-  * $(VAR_NAME) -> this is a special implicit function it's equivalent to **$()\__get__ VAR_NAME)**
-  * \__ident+\__ -> increase identation
-  * \__ident-\__
-  * \__date_time\__
-  * \__date\__
-  * \__run\__ -> run again subtree applying current vars
-  * \__prune\__
-  * \__nothing\__
-  * \__set\__
-  * \__copy\__
-  * \__alignc\__
-  * \__lmargin\__
-
-
-This is a declarative language, inmutable, with rebind, and scope of clojure kind.
+This is a declarative language, inmutable, with rebind, and scope of closure kind.
 
 
 Let see an example from *idl*
 
-```
+----
 MAIN   ::=  FRAME*               ##transf2->$(GENERATE_CODE)
 
 
@@ -531,38 +548,38 @@ $(H_FILE)
 $(CPP_FILE)
 __END_TEMPLATE__::
 
-```
+----
 
 The second parameter of first function is quite long.
 
 
-*$(GENERATE_CODE)* will write the var content as expected (defined on \__BEGIN_TEMPLATE__:: GENERATE_CODE...).
+`$(GENERATE_CODE)` will write the var content as expected (defined on `__BEGIN_TEMPLATE__: : GENERATE_CODE...`).
 
 
-When **FRAME_TYPE** will be reached, it will be replaced by a lot of new **\__set\__**, a **\__run\__** and **$(TYPE)**
+When `FRAME_TYPE` will be reached, it will be replaced by a lot of new `__set__`, a `__run__` and `$(TYPE)`
 
-The **~** symbol at the beginning of the line, means... *ignore spaces*. And same symbol at the end, means, remove new line.
+The `~` symbol at the beginning of the line, means... *ignore spaces*. And same symbol at the end, means, remove new line.
 
 This lets us to redefine vars, and even define vars with vars inside. When AST is processed, the vars will be replaced by their value. If the value contains vars, the will be replaced by value again, and so...
 
-Once we have declared vars, could be necessary to run again the subtree in order to apply the new defined values. This is done with **\__run\__** function
+Once we have declared vars, could be necessary to run again the subtree in order to apply the new defined values. This is done with `__run__` function
 
-Remember, functions, starts with **$(** and ends with **)**
+Remember, functions, starts with `$(` and ends with `)`
 
 
 In some cases, inmutability will require too much computation and complex code. For example, creating a counter.
 
 To deal with these situations (just as exceptions), next mutable functions are provided...
 
-  * \__set_mut\__
-  * \__get_mut\__
-  * \__inc\__
-  * \__dec\__
+  * `__set_mut__`
+  * `__get_mut__`
+  * `__inc__`
+  * `__dec__`
 
 
 Lets go back to the *idl* example...
 
-```
+----
 MAIN   ::=  FRAME*               ##transf2->$(GENERATE_CODE)
 
 
@@ -584,15 +601,15 @@ $(H_FORWARD_FILE)
 $(H_FILE)
 $(CPP_FILE)
 __END_TEMPLATE__::
-```
+----
 
 Once the *AST* is ready, we will run it in order to generate the output.
 
-In this case, **$(GENERATE_CODE)** will be replaced by the template content bellow.
+In this case, `$(GENERATE_CODE)` will be replaced by the template content bellow.
 
-Processing it, will declarate a variable **FRAME_TYPE**, will add the content of forward, h and cpp files...
+Processing it, will declare a variable `FRAME_TYPE`, will add the content of forward, h and cpp files...
 
-```
+----
 MAIN   ::=  FRAME*               ##transf2->$(GENERATE_CODE)
 
 
@@ -605,12 +622,12 @@ $(H_FORWARD_FILE)
 $(H_FILE)
 $(CPP_FILE)
 __END_TEMPLATE__::
-```
+----
 
 
 Let's see the **H_FILE**
 
-```
+----
 __BEGIN_TEMPLATE__:: H_FILE
 __BEGIN_FILE__::$(__file_name__).h
 //  generated on $(__date_time__)
@@ -634,9 +651,9 @@ $(__run__)
 $(FRAME*)
 $(__endl__)$(__endl__)$(__endl__)
 __END_TEMPLATE__::
-```
+----
 
-It writes some text, declare some vars and will write **$(FRAME*)** (variable defined in AST)
+It writes some text, declare some vars and will write `$(FRAME*)` (variable defined in AST)
 
 
 One example with counters...
@@ -660,47 +677,48 @@ $(__run__)
 
 ```
 
-You can see a complete example here [idl](https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/idl)
+You can see a full example here https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/idl[idl]
 
 
 
-## Tooling
+== Tooling
 
 Great, we have a LL(n) parser, with rules and templates to generate an output.
 
-### Grammar and templates processor
+=== Grammar and templates processor
 
-This has been used to create [hpt](https://github.com/jleahred/jle_cpp_tk/tree/master/tools/hpt)
+This has been used to create https://github.com/jleahred/jle_cpp_tk/tree/master/tools/hpt[hpt]
 
 This is a small program who lets us to define the input files, and grammar with template files.
 
 It will run all, and will produce the result.
 
-### Grammar and template editor
+=== Grammar and template editor
 
-[hpgui](https://github.com/jleahred/jle_cpp_tk/tree/master/tools/qt/hpgui)
+https://github.com/jleahred/jle_cpp_tk/tree/master/tools/qt/hpgui[hpgui]
 
 This is a simple Qt program who helps us to write grammars, templates and debug it
 
 You can work with several grammars and choose the proper one.
 
-![Image](images/choose_grammar.png)
+
+image::{docdirlevel}/images/choose_grammar.png[]
 
 
 You can edit the grammar and templates
 
-![Image](images/edit_grammar.png)
+image::{docdirlevel}/images/edit_grammar.png[]
 
 
 You can edit the input
 
-![Image](images/edit_input.png)
+image::{docdirlevel}/images/edit_input.png[]
 
 You can edit show the tree with transformations applied
 
-![Image](images/show_tree.png)
+image::{docdirlevel}/images/show_tree.png[]
 
 
 You can show the output
 
-![Image](images/show_output.png)
+image::{docdirlevel}/images/show_output.png[]
