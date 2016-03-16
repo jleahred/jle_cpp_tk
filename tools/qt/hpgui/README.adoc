@@ -1,0 +1,35 @@
+ifndef::docdirlevel[]
+:docdirlevel: ./
+endif::[]
+
+
+= Grammar and template editor
+
+Part of https://github.com/jleahred/jle_cpp_tk/tree/master/src/core/hp[jle_cpp_tk/parser]
+
+
+This is a simple Qt program who helps us to write grammars, templates and debug it
+
+You can work with several grammars and choose the proper one.
+
+image::{docdirlevel}/images/choose_grammar.png[]
+
+
+You can edit the grammar and templates
+
+image::{docdirlevel}/images/edit_grammar.png[]
+
+
+You can edit the input
+
+image::{docdirlevel}/images/edit_input.png[]
+
+
+You can edit show the tree with transformations applied
+
+image::{docdirlevel}/images/show_tree.png[]
+
+
+You can show the output
+
+image::{docdirlevel}/images/show_output.png[]

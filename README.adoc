@@ -2,7 +2,7 @@
 
 On line doc
 http://jleahred.github.io/jle_cpp_tk.doc/jle_cpp_tk.html[(adoc)]
-http://jleahred.github.io/jle_cpp_tk.doc/index.html[(doxys)]
+http://jleahred.github.io/jle_cpp_tk.doc/index.html[(doxygen)]
 
 
 
@@ -36,7 +36,7 @@ I loved my CountPtr implementation, I did with tuples what was possible and havi
 
 I know It will be necessary to rewrite some parts of the library in order to be updated to last versions of {cpp}. It's part of the game.
 
-Previously I wrote the documentation with **asciidoc**, muse over emacs and doxys on some projects. Now I'm going to do it with doxygen (I'm not a fan of these kind of tools, I prefer something like asciidoc or emacs/muse, but it's a standard).
+Previously I wrote the documentation with *asciidoc*, *muse* over emacs and *doxys* on some projects. Now I'm going to add doxygen (I'm not a fan of these kind of tools, I prefer something like asciidoc or emacs/muse, but it's a standard).
 
 
 

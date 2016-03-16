@@ -39,11 +39,12 @@ github:
 
 
 .PHONY : doc_github
-github_doc:  #doc
+doc_github:  doc
 	rm -rf /home/maiquel/inet.prj/web/jleahred.github.io/jle_cpp_tk.doc
 	mkdir /home/maiquel/inet.prj/web/jleahred.github.io/jle_cpp_tk.doc
 	cp -r doc/html/* /home/maiquel/inet.prj/web/jleahred.github.io/jle_cpp_tk.doc
-	cd /home/maiquel/inet.prj/web/jleahred.github.io/; git gui; git push github master
+	cp -r doc/*.html /home/maiquel/inet.prj/web/jleahred.github.io/jle_cpp_tk.doc
+	cd /home/maiquel/inet.prj/web/jleahred.github.io/; git gui; git push github master --force
 
 
 

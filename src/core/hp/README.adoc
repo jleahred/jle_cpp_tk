@@ -2,7 +2,7 @@ ifndef::docdirlevel[]
 :docdirlevel: ./
 endif::[]
 
-= hp & AST
+= core / hp & AST
 
 
 Full example on +examples/project/idl+

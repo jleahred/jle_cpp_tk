@@ -1,10 +1,23 @@
-# idl
+= hpt
 
-Using [jle/hp](https://github.com/jleahred/jle_cpp_tk/tree/master/src/core/hp)
-[jle/hpt](https://github.com/jleahred/jle_cpp_tk/tree/master/tools/hpt)
-we will generate the cpp source code from an idl (external DSL to define structs)
+Humble Parser Template
 
-This is an example of input
+This is a small console program working with
+https://github.com/jleahred/jle_cpp_tk/tree/master/src/core/hp[jle/hp]
+
+It will receive the grammar files and input file
+
+```
+usage...
+hpt  <gram-file> <2gram-file>  <input-file>
+```
+
+
+It will run hp in order to build the AST and it will run the AST making
+transformations as defined in grammar and template files.
+
+
+Input example...
 
 ```
 /* multiline
@@ -91,13 +104,11 @@ t_composed {
     i2    :  int32
     comp  :  idl.pr.t_simple
 }
+
 ```
 
-We have line and multiline comments, we have simple and inlined struct definitions,
-nested modules, tuples, enumerations, unions, composition, type modifiers...
+It will produce forwarded header, header and cpp code.
 
+A full example...
 
-IMPORTANT
-
-Union type will be mapped in cpp combining enum with struct.
-Then you can use it simulating unions on ADT combined with cpp switch
+https://github.com/jleahred/jle_cpp_tk/tree/master/examples/project/idl[jle/idl example]

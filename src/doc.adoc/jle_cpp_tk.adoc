@@ -35,7 +35,7 @@ Generated:: {docdate} {doctime}
 
 
 
-:leveloffset: 1
+:leveloffset: +1
 
 //  introduction
 :docdirlevel: {docdir}/../../
@@ -50,4 +50,31 @@ include::../core/README.adoc[]
 :docdirlevel: {docdir}/../core/hp/
 include::../core/hp/README.adoc[]
 
-:leveloffset: 0
+:docdirlevel: {docdir}/../net/
+include::../net/README.adoc[]
+
+= Tools
+:leveloffset: +1
+
+:docdirlevel: {docdir}/../../tools/hpt/
+include::../../tools/hpt/README.adoc[]
+
+:docdirlevel: {docdir}/../../tools/qt/hpgui/
+include::../../tools/qt/hpgui/README.adoc[]
+
+:leveloffset: -1
+
+
+= Examples
+:leveloffset: +1
+
+:docdirlevel: {docdir}../../examples/project/calculator/
+include::../../examples/project/calculator/README.adoc[]
+
+:docdirlevel: {docdir}../../examples/project/idl/
+include::../../examples/project/idl/README.adoc[]
+
+:leveloffset: -1
+
+
+:leveloffset: -1
