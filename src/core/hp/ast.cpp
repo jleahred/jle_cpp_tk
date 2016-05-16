@@ -294,7 +294,7 @@ std::string replace_transf2(    AST_node_item&                                  
         std::string rc_result;
         enum class  rc_status { normal, rem_symbol, removing };
         rc_status status = rc_status::normal;
-        for(c : s) {
+        for(auto c : s) {
             switch (status) {
             case rc_status::normal:
                 if(c == removing_symbol)

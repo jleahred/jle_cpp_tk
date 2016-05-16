@@ -3,7 +3,7 @@
 #
 #
 
-QMAKE_CXXFLAGS += -std=c++1z
+#QMAKE_CXXFLAGS += -std=c++1z
 
 QT += widgets
 

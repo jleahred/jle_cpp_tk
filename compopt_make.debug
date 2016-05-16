@@ -1,5 +1,5 @@
 # compiler flags (-g -O2 -Wall)
-CXXFLAGS_DEBUG = -std=c++1z -g -O0 -Werror -Wall -W -Wundef -Wpointer-arith  -Wfloat-equal -fexceptions -Winit-self -Wconversion
+CXXFLAGS_DEBUG = -g -O0 -Werror -Wall -W -Wundef -Wpointer-arith  -Wfloat-equal -fexceptions -Winit-self -Wconversion
 
 CXXFLAGS_DEBUG += -Wclobbered  -Wempty-body  -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -Wno-unused-result
 
