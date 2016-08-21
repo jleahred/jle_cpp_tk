@@ -414,18 +414,28 @@ std::string replace_transf2(    AST_node_item&                                  
         }
         else
         {
-//                    if(var_name == "__get__")
-//                    {
-//                        if(std::get<1>(command_and_params).size()!=2)
-//                        {
-//                            add += JLE_SS("invalid param count (" << full_command << ")");
-//                        }
-//                        else {
-//                            exec_rule_for_replace(get_template_content(std::get<1>(command_and_params)[1], templates, declared_vars));
-//                        }
-//                    }
-//                    else
-            if(id == "__set__")
+            if(id == "__get__")
+            {
+                //auto id_params_command = get_id(std::get<1>(id_params));
+                auto var_name = std::get<1>(id_params);
+                if(var_name.empty())
+                    add += JLE_SS("invalid var_name on  (" << full_command << ")");
+                else
+                {
+                    std::map<std::string, std::string>::const_iterator it = map_items_found.find(var_name);
+                    if (it != map_items_found.end())        //  add var
+                    {
+                        add2result(0);
+                        add += it->second;
+                        add2result(0);
+                    }
+                    else
+                    {
+                        add += JLE_SS("unknown var_name on  (" << full_command << ")  var: " << var_name);
+                    }
+                }
+            }
+            else if(id == "__set__")
             {
                 auto id_params_command = get_id(std::get<1>(id_params));
                 auto var_name = std::get<0>(id_params_command);

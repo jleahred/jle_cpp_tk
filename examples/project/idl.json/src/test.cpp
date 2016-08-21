@@ -1,34 +1,5 @@
 #include "test.h"
 
-#include "core/dbl.h"
-
-
-
-template<typename T>        //  provisional
-void assing2json(json& j, const std::string& name, const T& v);
-
-
-template<typename T>        //  provisional
-void assing2json(json& j, const std::string& name, const T& v)
-{
-    j[name] = v;
-}
-
-
-template<>
-void assing2json(json& j, const std::string& name, const jle::dbl& v)
-{
-    j[name] = double(v);
-}
-
-
-template<typename T>        //  provisional
-void assing2json(json& j, const std::string& name, const jle::optional<T>& v)
-{
-    assing2json(j, name, *v);
-}
-
-
 
 
 
@@ -96,9 +67,10 @@ namespace idl { namespace pr {
     json to_json(const t_simple& t)
     {
          json result;
-         assing2json(result, "i", t.i);
-         assing2json(result, "j", t.j);
-         assing2json(result, "s", t.s);
+    
+    unknown (__if__   $(FULL_TYPE.BASIC_TYPE)
+        $(__set__  FNAMED_NOEND result["$(id)"] = t.$(id);$(__endl__)$(FNAMED))    $(__set__  FNAMED_END   result["$(id)"] = t.$(id);)) with id (__if__)     
+    
          return result;
     }
     
@@ -158,8 +130,10 @@ namespace idl { namespace pr {
     json to_json(const t_inline& t)
     {
          json result;
-         assing2json(result, "i", t.i);
-         assing2json(result, "s", t.s);
+    
+    unknown (__if__   $(FULL_TYPE.BASIC_TYPE)
+        $(__set__  FNAMED_NOEND result["$(id)"] = t.$(id);$(__endl__)$(FNAMED))    $(__set__  FNAMED_END   result["$(id)"] = t.$(id);)) with id (__if__)     
+    
          return result;
     }
     
@@ -223,8 +197,10 @@ namespace idl { namespace pr {
         json to_json(const t_inline& t)
         {
              json result;
-             assing2json(result, "i", t.i);
-             assing2json(result, "s", t.s);
+        
+        unknown (__if__   $(FULL_TYPE.BASIC_TYPE)
+            $(__set__  FNAMED_NOEND result["$(id)"] = t.$(id);$(__endl__)$(FNAMED))    $(__set__  FNAMED_END   result["$(id)"] = t.$(id);)) with id (__if__)     
+        
              return result;
         }
         
@@ -294,9 +270,10 @@ namespace idl { namespace pr {
     json to_json(const t_inline2& t)
     {
          json result;
-         assing2json(result, "i", t.i);
-         assing2json(result, "i64", t.i64);
-         assing2json(result, "s", t.s);
+    
+    unknown (__if__   $(FULL_TYPE.BASIC_TYPE)
+        $(__set__  FNAMED_NOEND result["$(id)"] = t.$(id);$(__endl__)$(FNAMED))    $(__set__  FNAMED_END   result["$(id)"] = t.$(id);)) with id (__if__)     
+    
          return result;
     }
     
@@ -510,14 +487,10 @@ namespace idl { namespace pr {
     json to_json(const t_type_modifiers& t)
     {
          json result;
-         assing2json(result, "int_field", t.int_field);
-         assing2json(result, "string_field", t.string_field);
-         assing2json(result, "opt_string", t.opt_string);
-         assing2json(result, "rec_float", t.rec_float);
-         assing2json(result, "def_string0", t.def_string0);
-         assing2json(result, "def_string1", t.def_string1);
-         //assing2json(result, "string_list", t.string_list);
-         //assing2json(result, "int_list", t.int_list);
+    
+    unknown (__if__   $(FULL_TYPE.BASIC_TYPE)
+        $(__set__  FNAMED_NOEND result["$(id)"] = t.$(id);$(__endl__)$(FNAMED))    $(__set__  FNAMED_END   result["$(id)"] = t.$(id);)) with id (__if__)     
+    
          return result;
     }
     
@@ -642,8 +615,10 @@ std::ostream& operator<< (std::ostream& os, const t_composed& t)
 json to_json(const t_composed& t)
 {
      json result;
-     assing2json(result, "i2", t.i2);
-     assing2json(result, "comp", t.comp);
+
+unknown (__if__   $(FULL_TYPE.BASIC_TYPE)
+    $(__set__  FNAMED_NOEND result["$(id)"] = t.$(id);$(__endl__)$(FNAMED))    $(__set__  FNAMED_END   result["$(id)"] = t.$(id);)) with id (__if__)     
+
      return result;
 }
 

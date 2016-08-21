@@ -73,18 +73,6 @@ __BEGIN_FILE__::$(__file_name__).cpp
 #include "$(__file_name_no_path__).h"
 
 
-template<typename T>        //  provisional
-void assing2json(json& j, const std::string& name, const T& v)
-{
-    j[name] = v;
-}
-template<typename T>        //  provisional
-void assing2json(json& j, const std::string& name, const jle::optional<T>& v)
-{
-    j[name] = *v;
-}
-
-
 
 $(__set__  MODULE      $(MODULE_CODE))~
 $(__set__  RECORD      $(RECORD_CPP))~
@@ -240,11 +228,17 @@ $(__run__)~
 
 json to_json(const $(id)& t)
 {
-$(__set__  FNAMED_NOEND assing2json(result, "$(id)", t.$(id)$(__close_par__);$(__endl__)$(FNAMED))~
-$(__set__  FNAMED_END   assing2json(result, "$(id)", t.$(id)$(__close_par__);)~
-$(__run__)~
      $(__lmargin__ json result;)
+
+$(__set__  FNAMED_NOEND $(__nothing__))~
+$(__set__  FNAMED_END   $(__nothing__))~
+$(__if__   $(FULL_TYPE.BASIC_TYPE)
+    $(__set__  FNAMED_NOEND result["$(id)"] = t.$(id);$(__endl__)$(FNAMED))~
+    $(__set__  FNAMED_END   result["$(id)"] = t.$(id);)~
+)~
+$(__run__)~
      $(__lmargin__ $(RECORD_FIELDS))
+
      $(__lmargin__ return result;)
 }
 

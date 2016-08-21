@@ -1,0 +1,9 @@
+MAIN
+
+MAIN ::= A   ##transf2->$(A) .. $(A/B) .. $(A/B/b)
+
+A ::= B
+
+B ::= b   ##transf2->BB
+
+b ::= 'b'
