@@ -1,0 +1,108 @@
+= idl.json
+
+Using https://github.com/jleahred/jle_cpp_tk/tree/master/src/core/hp[jle/hp]
+and https://github.com/jleahred/jle_cpp_tk/tree/master/tools/hpt[jle/hpt]
+
+It will generate code to work with json.hpp  https://github.com/nlohmann/json
+
+
+
+we will generate the cpp source code from an idl (external DSL to define structs)
+
+This is an example of input
+
+[source,cpp]
+----------------
+/* multiline
+    comment
+*/
+
+module idl.pr {
+
+t_simple {
+    i : int32
+    j : string
+    s : string
+
+/* multiline
+    comment
+*/
+}
+
+
+t_inline {  i: int32,  s: string  }
+
+module nested {  t_inline {  i: int32,  s: string  }  }
+
+
+
+t_inline2 {
+   i: int32,   i64: int64
+   s: string
+}
+
+
+t_tuple {  int32,  string  }
+
+t_tuple2 {
+    int32
+    string
+}
+
+
+t_color   //  enumeration
+{
+    |  red
+    |  blue
+    |  green
+    |  orange
+    |  pink
+    |  white
+    |  black
+}
+
+
+
+//  type modifiers
+t_type_modifiers
+{
+    //  commentary
+    int_field       :   int32       //  mandatory
+    string_field    :   string
+
+    opt_string      :   string?     //  optional
+    rec_float       :   double!     //  recommended
+
+    def_string0     :   string[<"hi">]                      //  default value
+    def_string1     :   string[<"there">][<2015-10-23>]     //  new mandatory since...
+
+
+    string_list     :   string[]
+    int_list        :   int32[]
+}
+
+
+t_union
+{
+    |  s : string
+    |  i : int32
+    |  d : double
+}
+
+
+}  // module idl.pr {
+
+
+t_composed {
+    i2    :  int32
+    comp  :  idl.pr.t_simple
+}
+----------------
+
+We have line and multiline comments, we have simple and inlined struct definitions,
+nested modules, tuples, enumerations, unions, composition, type modifiers...
+
+
+[IMPORTANT]
+Union type will be mapped in cpp combining enum with struct.
+Then you can use it simulating unions on ADT combined with cpp switch

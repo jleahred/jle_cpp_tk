@@ -1,0 +1,157 @@
+MAIN
+
+MAIN   ::=  FRAME*               ##transf2->$(GENERATE_CODE)
+
+
+FRAME  ::= .__. MODULE .__.
+FRAME  ::= .__. TYPE .__.        ##transf2->$(FRAME_TYPE)
+
+TYPE   ::=  RECORD
+TYPE   ::=  TUPLE
+TYPE   ::=  ENUMERATION
+TYPE   ::=  UNION
+
+
+
+//  MODULE
+MODULE ::= module ._. MOD_ID ._.  { .__.  FRAME*  .__. }   ##transf2->$(MODULE)
+MOD_ID ::= id _. MOD_ID                                    ##transf2->$(MOD_IDS_)
+MOD_ID ::= id                                              ##transf2->$(MOD_ID_)
+module ::= 'module'
+
+
+//  RECORD
+RECORD ::= id .__. {  RECORD_FIELDS  }        ##transf2->$(RECORD)
+
+//RECORD_FIELDS ::=  FNAMED  PROP                
+RECORD_FIELDS ::=  FNAMED                      
+
+FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   endl    .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
+FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   ._.   ,       .__.   FNAMED    ##transf2-> $(FNAMED_NOEND)
+FNAMED ::=  .__.   id   ._. : ._.   FULL_TYPE   .__.                           ##transf2-> $(FNAMED_END)
+
+
+//  TUPLE
+TUPLE ::= id .__. {  TUPLE_FIELDS  }        ##transf2->$(TUPLE)
+
+//TUPLE_FIELDS ::=  F_NO_NAMED  PROP                
+TUPLE_FIELDS ::=  F_NO_NAMED
+
+F_NO_NAMED ::=  .__.   FULL_TYPE   ._.   endl    .__.   F_NO_NAMED    ##transf2-> $(F_NO_NAMED_NOEND)
+F_NO_NAMED ::=  .__.   FULL_TYPE   ._.   ,       .__.   F_NO_NAMED    ##transf2-> $(F_NO_NAMED_NOEND)
+F_NO_NAMED ::=  .__.   FULL_TYPE   .__.                               ##transf2-> $(F_NO_NAMED_END)
+
+
+
+//  ENUMERATION
+ENUMERATION        ::= id .__. {  ENUM_ITEMS  }          ##transf2->$(ENUMERATION)
+
+ENUM_ITEMS ::=  .__.   | ._.  id   ._.   endl    .__.  ENUM_ITEMS   ##transf2-> $(ENUM_ITEM_NOEND)
+ENUM_ITEMS ::=  .__.   | ._.  id   ._.   ,       .__.  ENUM_ITEMS   ##transf2-> $(ENUM_ITEM_NOEND)
+ENUM_ITEMS ::=  .__.   | ._.  id   .__.                             ##transf2-> $(ENUM_ITEM_END)
+
+
+//  UNION
+UNION ::= id .__. {  UNION_FIELDS  }        ##transf2->$(UNION)
+
+UNION_FIELDS ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   endl    .__.  UNION_FIELDS  ##transf2-> $(FUNION_NOEND)
+UNION_FIELDS ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   ._.   ,       .__.  UNION_FIELDS  ##transf2-> $(FUNION_NOEND)
+UNION_FIELDS ::=  .__.   | ._.  id   ._. : ._.   B_L_TYPE   .__.                              ##transf2-> $(FUNION_END)
+
+
+
+FULL_TYPE  ::=  TYPE_LIST                  
+FULL_TYPE  ::=  TYPE_OPTIONAL              
+FULL_TYPE  ::=  TYPE_RECOMENDED            
+FULL_TYPE  ::=  TYPE_WITH_DEFAULT_DATE     
+FULL_TYPE  ::=  TYPE_WITH_DEFAULT          
+FULL_TYPE  ::=  BASIC_TYPE                 
+
+
+B_L_TYPE  ::=  BASIC_TYPE
+B_L_TYPE  ::=  TYPE_LIST
+
+BASIC_TYPE  ::= string  
+BASIC_TYPE  ::= double  
+BASIC_TYPE  ::= int32   
+BASIC_TYPE  ::= int64   
+BASIC_TYPE  ::= COMPOSED_TYPE
+
+COMPOSED_TYPE ::= id _. COMPOSED_TYPE   ##transf2->$(COMP_TYPE_NO_END)
+COMPOSED_TYPE ::= id                    ##transf2->$(COMP_TYPE_END)
+
+
+TYPE_LIST  ::= BASIC_TYPE [ ]        ##transf2->$(TYPE_LIST)
+
+TYPE_OPTIONAL   ::= BASIC_TYPE ?     ##transf2->$(TYPE_OPTIONAL)
+TYPE_RECOMENDED ::= BASIC_TYPE !     ##transf2->$(TYPE_RECOMENDED)
+
+TYPE_WITH_DEFAULT_DATE  ::= BASIC_TYPE [< !>]* >] [<   # # # # - # # - # #   >]  ##transf2->$(TYPE_WITH_DEFAULT_DATE)
+TYPE_WITH_DEFAULT       ::= BASIC_TYPE [< !>]* >]                                ##transf2->$(TYPE_WITH_DEFAULT)
+
+PROP  ::=  .__.  prop : _ endl  PROP_LINE*
+PROP_LINE ::=  !} !endl* endl
+prop ::= 'prop'
+
+
+
+
+
+
+string ::= 'string'   ##transf2->std::string
+double ::= 'double'   ##transf2->jle::dbl
+int32  ::= 'int32'    ##transf2->int32_t
+int64  ::= 'int64'    ##transf2->int64_t
+
+
+
+
+.__.  ::=  __  MULTILINE_COMMENT  .__.    ##transf2->$(__prune__)
+.__.  ::=  __  SINGLELINE_COMMENT .__.    ##transf2->$(__prune__)
+.__.  ::=  __                             ##transf2->$(__prune__)
+._.   ::=  _   MULTILINE_COMMENT  ._.     ##transf2->$(__prune__)
+._.   ::=  _   SINGLELINE_COMMENT         ##transf2->$(__prune__)
+._.   ::=  _                              ##transf2->$(__prune__)
+
+SINGLELINE_COMMENT   ::=  _  /_/  !endl*              ##transf2->$(__prune__)
+MULTILINE_COMMENT    ::=  /*_  IN_ML_COMMENT*  _*/    ##transf2->$(__prune__)
+IN_ML_COMMENT        ::=  u__                         ##transf2->$(__prune__)
+IN_ML_COMMENT        ::=  !_*/                        ##transf2->$(__prune__)
+
+
+/*_   ::=  '/*'
+_*/   ::=  '*/'
+!_*/  ::=  !'*/'
+/_/   ::=  '//'
+
+
+_      ::=  ([ \t]*)  
+__     ::=  __isspace*__
+u__    ::=  __isspace__
+endl   ::=  __endl__
+!endl  ::= !__endl__
+
+
+id  ::=  ([_A-Za-z][A-Za-z0-9_]*)
+{   ::=  '{'
+}   ::=  '}'
+!}  ::=  !'}'
+:   ::=  ':'
+,   ::=  ','
+|   ::=  '|'
+[   ::=  '['
+]   ::=  ']'
+?   ::=  '?'
+!   ::=  '!'
+[<  ::=  '[<'
+>]  ::=  '>]'
+!>] ::=  !'>]'
+#   ::=  ([0-9])
+-   ::=  '-'
+_.  ::=  '.'
+
+
+
+
+
+ 
