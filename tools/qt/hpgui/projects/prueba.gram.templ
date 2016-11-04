@@ -1,0 +1,523 @@
+__BEGIN_TEMPLATE__:: GENERATE_CODE
+$(__set__ FRAME_TYPE
+~    $(__set__ TYPE_OPTIONAL          jle::optional<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_RECOMENDED        jle::optional<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_LIST              jle::list<$(BASIC_TYPE)>)~
+~    $(__set__ TYPE_WITH_DEFAULT_DATE $(BASIC_TYPE))~
+~    $(__set__ TYPE_WITH_DEFAULT      $(BASIC_TYPE))~
+~    $(__set__ COMP_TYPE_NO_END       $(id)::$(COMPOSED_TYPE))~
+~    $(__set__ COMP_TYPE_END          $(id))~
+~    $(__run__)~
+~    $(TYPE))~
+~
+$(H_FORWARD_FILE)
+$(H_FILE)
+$(CPP_FILE)
+__END_TEMPLATE__:: 
+
+
+
+__BEGIN_TEMPLATE__:: H_FORWARD_FILE
+__BEGIN_FILE__::$(__file_name__)_forward.h
+//  generated on $(__date_time__)
+
+
+$(__set__  MODULE      $(MODULE_CODE))~
+$(__set__  RECORD      struct $(id);$(__endl__))~
+$(__set__  TUPLE       struct $(id);$(__endl__))~
+$(__set__  ENUMERATION enum class $(id);$(__endl__))~
+$(__set__  UNION       struct $(id);$(__endl__))~
+$(__run__)
+
+$(__get__ FRAME*)
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: H_FILE
+__BEGIN_FILE__::$(__file_name__).h
+//  generated on $(__date_time__)
+
+
+#include <cstdint>
+#include <string>
+#include "core/tuple.hpp"
+#include "core/optional.hpp"
+#include "core/dbl.h"
+#include "core/cont/list.hpp"
+
+
+$(__set__  MODULE      $(MODULE_CODE))~
+$(__set__  RECORD      $(RECORD_H))~
+$(__set__  TUPLE       $(TUPLE_H))~
+$(__set__  ENUMERATION $(ENUMERATION_H))~
+$(__set__  UNION       $(UNION_H))~
+$(__run__)
+
+$(FRAME*)
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+
+__BEGIN_TEMPLATE__:: CPP_FILE
+__BEGIN_FILE__::$(__file_name__).cpp
+#include "$(__file_name_no_path__).h"
+
+$(__set__  MODULE      $(MODULE_CODE))~
+$(__set__  RECORD      $(RECORD_CPP))~
+$(__set__  TUPLE       $(TUPLE_CPP))~
+$(__set__  ENUMERATION $(ENUMERATION_CPP))~
+$(__set__  UNION       $(UNION_CPP))~
+$(__run__)
+
+$(FRAME*)
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+__BEGIN_TEMPLATE__::MODULE_CODE
+$(__set__ BEGIN_MOD
+~            $(__set__ MOD_IDS_  namespace $(id) { $(MOD_ID))~
+~            $(__set__ MOD_ID_ namespace $(id) { )~
+~            $(__run__)~
+~            $(MOD_ID))~
+$(__set__ END_MOD
+~            $(__set__ MOD_IDS_  }  $(MOD_ID))~
+~            $(__set__ MOD_ID_  })~
+~            $(__run__)~
+~            $(MOD_ID))~
+~
+
+
+$(BEGIN_MOD)
+    $(__lmargin__  $(FRAME*))
+$(END_MOD)   //  $(BEGIN_MOD)$(__endl__)$(__endl__)
+
+__END_TEMPLATE__:: 
+
+
+
+__BEGIN_TEMPLATE__:: RECORD_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (record)   $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct $(id) {
+
+    //  fields  ...................................
+$(__set__  FNAMED_NOEND  $(FULL_TYPE) $(id);$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END    $(FULL_TYPE) $(id);)~
+$(__run__)~
+
+        $(__lmargin__  $(__alignc__ $(RECORD_FIELDS)))~
+
+    //  ...........................................
+
+
+    //  ctor
+    $(id)() = delete;
+    $(id) (
+$(__set__  FNAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(FULL_TYPE) _$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
+    );
+    $(id) (const $(id)& ) = default;
+    $(id) (      $(id)&&) = default;
+
+    //  assign
+    $(id)& operator=(const $(id)& ) = default;
+    $(id)& operator=(      $(id)&&) = default;
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: RECORD_CPP
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (record)   $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+$(id)::$(id) (
+$(__set__  FNAMED_NOEND $(FULL_TYPE) _$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(FULL_TYPE) _$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
+    )  :
+$(__set__  FNAMED_NOEND $(id)(_$(id)$(__close_par__),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id)(_$(id)$(__close_par__))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS))
+    {}
+
+
+//  comparison
+bool $(id)::operator==(const $(id)& r) const
+{
+$(__set__  FNAMED_NOEND $(id) == r.$(id)  &&$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id) == r.$(id))~
+$(__run__)~
+    if(
+        $(__lmargin__ $(RECORD_FIELDS))
+    )     return true;
+    else  return false;
+}
+
+bool $(id)::operator< (const $(id)& r) const
+{
+$(__set__  FNAMED_NOEND $(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   $(id))~
+$(__run__)~
+    if(std::tie(
+          $(__lmargin__ $(RECORD_FIELDS)))
+       <
+       std::tie(
+$(__set__  FNAMED_NOEND r.$(id),$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   r.$(id))~
+$(__run__)~
+          $(__lmargin__ $(RECORD_FIELDS)))
+    )     return true;
+    else  return false;
+
+}
+
+std::ostream& operator<< (std::ostream& os, const $(id)& t)
+{
+$(__set__  FNAMED_NOEND << "$(id): " << t.$(id) << ", "$(__endl__)$(FNAMED))~
+$(__set__  FNAMED_END   << "$(id): " << t.$(id))~
+$(__run__)~
+    os  << " $(id) { " 
+           $(__lmargin__ $(RECORD_FIELDS))
+        << " }";
+    return os;
+}
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+
+
+
+__BEGIN_TEMPLATE__:: COUNT_TUPLE_FIELDS
+$(__nothing__     count number of fields)~
+$(__set_mut__  PCOUNTER  0)~
+$(__set__  F_NO_NAMED_NOEND $(__inc__ PCOUNTER)$(F_NO_NAMED))~
+$(__set__  F_NO_NAMED_END   $(__nothing__))~
+$(__run__)~
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: TUPLE_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (tuple)  $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct $(id) {
+
+    //  fields  ...................................
+$(__set__  F_NO_NAMED_NOEND  $(FULL_TYPE) ,$(__endl__)$(F_NO_NAMED))~
+$(__set__  F_NO_NAMED_END    $(FULL_TYPE) )~
+$(__run__)~
+    jle::tuple<
+                $(__lmargin__  $(__alignc__ $(TUPLE_FIELDS)))
+    >  tuple;
+    //  ...........................................
+
+
+    jle::tuple<
+                $(__lmargin__  $(__alignc__ $(TUPLE_FIELDS)))
+    >&
+    operator*() { return  tuple;  }
+
+    //  ctor
+    $(id)() = delete;
+    $(id) (
+$(COUNT_TUPLE_FIELDS)~
+$(__nothing__     write fields with counter)~
+$(__set__  F_NO_NAMED_NOEND $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER),$(__endl__)$(F_NO_NAMED))~
+$(__set__  F_NO_NAMED_END $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER))~
+$(__run__)
+          $(__lmargin__ $(TUPLE_FIELDS))
+    );
+    $(id) (const $(id)& ) = default;
+    $(id) (      $(id)&&) = default;
+
+    //  assign
+    $(id)& operator=(const $(id)& ) = default;
+    $(id)& operator=(      $(id)&&) = default;
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: TUPLE_CPP
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (tuple)  $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+//  ctor
+$(id)::$(id)(
+~    $(COUNT_TUPLE_FIELDS)~
+~    $(__nothing__     write fields with counter)~
+~    $(__set__  F_NO_NAMED_NOEND $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER),$(__endl__)$(F_NO_NAMED))~
+~    $(__set__  F_NO_NAMED_END   $(FULL_TYPE) p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER))~
+~    $(__run__)
+          $(__lmargin__ $(TUPLE_FIELDS))
+)  :  tuple{ std::make_tuple (
+~             $(COUNT_TUPLE_FIELDS)~
+~             $(__nothing__     write fields with counter)~
+~             $(__set__  F_NO_NAMED_NOEND p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER),$(__endl__)$(F_NO_NAMED))~
+~             $(__set__  F_NO_NAMED_END   p$(__get_mut__ PCOUNTER)$(__dec__ PCOUNTER))~
+~             $(__run__)
+              $(__lmargin__  $(__alignc__ $(TUPLE_FIELDS)))
+        )} {};
+
+
+//  comparison
+bool $(id)::operator==(const $(id)& rhs) const
+{
+  return this->tuple == rhs.tuple;
+}
+bool $(id)::operator< (const $(id)& rhs) const
+{
+  return this->tuple < rhs.tuple;
+}
+
+std::ostream& operator<< (std::ostream& os, const $(id)& t)
+{
+    using ::operator<<;
+    os << t.tuple;
+    return os;
+}
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+__BEGIN_TEMPLATE__:: ENUMERATION_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (enumeration)  $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+enum class $(id) {
+$(__set__  ENUM_ITEM_NOEND  $(id) ,$(__endl__)$(ENUM_ITEMS))~
+$(__set__  ENUM_ITEM_END    $(id) )~
+$(__run__)~
+                $(__lmargin__  $(__alignc__ $(ENUM_ITEMS)))
+};
+std::ostream& operator<< (std::ostream& os, const $(id)& t);
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+__BEGIN_TEMPLATE__:: ENUMERATION_CPP
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (enumeration)  $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+std::ostream& operator<< (std::ostream& os, const $(id)& t)
+{
+$(__copy__  ENUM_NAME id)~
+    os << "en(";
+    switch(t) {
+$(__set__  ENUM_ITEM_NOEND
+           case $(ENUM_NAME)::$(id):
+                      os << "$(id)";
+                      break;
+           $(ENUM_ITEMS))~
+$(__set__  ENUM_ITEM_END  
+           case $(ENUM_NAME)::$(id):
+                      os << "$(id)";
+                      break;)~
+$(__run__)~
+           $(ENUM_ITEMS)
+           default:
+                      throw "ERROR";
+    };
+    
+    os << ")";
+    return os;
+}
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+__BEGIN_TEMPLATE__:: UNION_H
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (union)   $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+$(__copy__ UNION_NAME  id)~
+
+struct $(UNION_NAME) {
+    
+    enum class  en_field { 
+$(__set__  FUNION_NOEND  $(id),$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    $(id))~
+$(__run__)~
+        $(__lmargin__  $(__alignc__ $(UNION_FIELDS)))
+    };
+
+    //  fields  ...................................
+$(__set__  FUNION_NOEND  const jle::optional<$(B_L_TYPE)> $(id);$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    const jle::optional<$(B_L_TYPE)> $(id);)~
+$(__run__)~
+
+        $(__lmargin__  $(__alignc__ $(UNION_FIELDS)))
+
+        const  en_field   field;
+
+    //  ...........................................
+
+
+    //  ctor
+    $(id)() = delete;
+$(__set__  FUNION_NOEND  $(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__);$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    $(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__);)~
+$(__run__)~
+    $(__lmargin__ $(UNION_FIELDS))
+
+    $(id) (const $(id)& ) = default;
+    $(id) (      $(id)&&) = default;
+
+    //  assign
+    $(id)& operator=(const $(id)& ) = default;
+    $(id)& operator=(      $(id)&&) = default;
+
+    //  comparison
+    bool operator==(const $(id)& ) const;
+    bool operator< (const $(id)& ) const;
+};
+std::ostream& operator<< (std::ostream& o, const $(id)& t);
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 
+
+
+
+
+
+
+
+__BEGIN_TEMPLATE__:: UNION_CPP
+$(__copy__ UNION_NAME  id)~
+
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+//
+//    (union)   $(id)
+//
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+$(__set__  FUNION_NOEND  $(UNION_NAME)::$(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__) 
+      : $(id)(p$(__close_par__), field(en_field::$(id)$(__close_par__) {};$(__endl__)$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END    $(UNION_NAME)::$(UNION_NAME) (const $(B_L_TYPE)& p$(__close_par__) 
+      : $(id)(p$(__close_par__), field(en_field::$(id)$(__close_par__) {};$(__endl__))~
+$(__run__)~
+$(UNION_FIELDS)
+
+
+
+//  comparison
+bool $(id)::operator==(const $(id)& r) const
+{
+$(__set__  FUNION_NOEND $(id) == r.$(id)  &&$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END   $(id) == r.$(id))~
+$(__run__)~
+    if(
+        $(__lmargin__ $(UNION_FIELDS))
+    )     return true;
+    else  return false;
+}
+
+bool $(id)::operator< (const $(id)& r) const
+{
+$(__set__  FUNION_NOEND $(id),$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END   $(id))~
+$(__run__)~
+    if(std::tie(
+          $(__lmargin__ $(UNION_FIELDS)))
+       <
+       std::tie(
+$(__set__  FUNION_NOEND r.$(id),$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END   r.$(id))~
+$(__run__)~
+          $(__lmargin__ $(UNION_FIELDS)))
+    )     return true;
+    else  return false;
+
+}
+
+std::ostream& operator<< (std::ostream& os, const $(id)& t)
+{
+$(__set__  FUNION_NOEND else if(t.$(id)$(__close_par__)  os << "$(id): " << t.$(id);$(__endl__)$(UNION_FIELDS))~
+$(__set__  FUNION_END   else if(t.$(id)$(__close_par__)  os << "$(id): " << t.$(id);)~
+$(__run__)~
+    os  << " $(id) { "; 
+           if(false) {;}
+           $(__lmargin__ $(UNION_FIELDS))
+    os  << " }";
+    return os;
+}
+$(__endl__)$(__endl__)$(__endl__)
+__END_TEMPLATE__:: 

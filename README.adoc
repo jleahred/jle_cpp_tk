@@ -17,7 +17,7 @@ http://jleahred.github.io/jle_cpp_tk.doc/index.html[(doxygen)]
 === Why
 
 {cpp} is growing incredible fast and it will continue in next future.
-A more complete library, variadic templates, lambdas, string-view, smart-pointers, move semantic, concurrency, files, initializer lists, type inference...
+To get more complete library, variadic templates, lambdas, string-view, smart-pointers, move semantic, concurrency, files, initializer lists, type inference...
 
 To learn, to practice new features from {cpp}, to have a toolset to complete {cpp} library, to program in {cpp} with less "undefined behavior"
 
@@ -26,15 +26,17 @@ Once upon a time...
 
 I wrote some rules and {cpp} tools to help colleagues with no experience in {cpp} to survive with it.
 
-But later, I discover It was pleasant to work with these tools, safe, easy to use, low dependencies... I'm also very interested in doing safe programs (no crashes)
+But later, I discover It was pleasant to work with these tools, safe, easy to use, low dependencies... I'm also very interested in making safe programs (no crashes)
 
-This toolset compiles with modern {cpp} (and will be, {cpp} feature), but is not fully idiomatic. Some of the tools has been added to {cpp} (regular expressions, tuples, date time...), and there are new ways to solve most of the problems.
+This toolset compiles with modern {cpp} (and it will be), but is not fully idiomatic. Some of the tools has been added to {cpp} standard library (regular expressions, tuples, date time...), and there are new ways to solve most of the problems.
+It was time to play and learn with new {cpp} and these concepts
 
 Let's enjoy and learn new {cpp}. Let's have toolkit working with new {cpp}. Let's create your basic tools to develop from scratch. It's a great excuse!!!
 
-I loved my CountPtr implementation, I did with tuples what was possible and having my own tuples has been very interesting, now all this things... will be replaced by std implementation or a new development using new {cpp}.
+I loved my CountPtr implementation, my old tuples worked fine...
+Now both will be replaced by std implementation. Other tools, will be rewrited with modern {cpp}.
 
-I know It will be necessary to rewrite some parts of the library in order to be updated to last versions of {cpp}. It's part of the game.
+I know It will be necessary to update frequently some parts of the library in order to keep updated to last versions of {cpp}. It's part of the game.
 
 Previously I wrote the documentation with *asciidoc*, *muse* over emacs and *doxys* on some projects. Now I'm going to add doxygen (I'm not a fan of these kind of tools, I prefer something like asciidoc or emacs/muse, but it's a standard).
 
@@ -43,25 +45,25 @@ Previously I wrote the documentation with *asciidoc*, *muse* over emacs and *dox
 
 === Directives
 
-My aim is different from {cpp}.
+I'm not focused on radical performance, I prefer:
 
 - Safety
     - I don't like undefined behaviour
-    - I don't like crashes due to programming mistakes. {cpp} is a dangerous language. It's easy to have crashes, I want a library protecting and helping the programmer.
+    - I don't like crashes due to programming mistakes. {cpp} could be a dangerous language. It's easy to have crashes, I want a library protecting and helping the programmer.
     - Message driven programming
-    - If we have a fail processing a message, usually is better to inform about it and continue with next one.
+    - If we have a failure processing a message, usually is better to inform about it and continue with next one.
 - KISS and YAGNI
     - Easy to use API (the implementation could be complex)
     - I will introduce features as soon I will require
-    - No thousands of options, better few options, easy to use and less verbose
+    - No thousands of options, better few options, easy to use and less verbose (try to compose, please)
 - Make difficult to produce *"write only code"* using this library. The code using this library...
-    - could not be simple to write
     - has to be easy to read
+    - writting simplicity is less important
 - Small
-    - This is to have basic features, not incredible possibilities. There are great C++ libraries for that.
+    - This is about having basic features, not incredible possibilities. There are great C++ libraries for that.
 - Portability (win/linux)
 - zero dependency
-    - {cpp} doesn't have a standard dependency tool. It is going to be a small library, complex dependencies not required
+    - {cpp} doesn't have a standard dependency tool. It is going to be a small library, complex dependencies will be avoided
 - Easy to compile
 
 Performance is desired but not over safety, easy api...
@@ -72,7 +74,7 @@ Performance is desired but not over safety, easy api...
 
 NOTE: Important working on a team.
 
-C++ is not the safest programing language in the world. In fact, it's easy to produce *undefined behaviour* working with {cpp}.
+C++ is not the safest programming language in the world. In fact, it's easy to produce *undefined behaviour* working with {cpp}.
 
 WARNING: undefined behavior is all arround you...
 
@@ -85,11 +87,11 @@ In {cpp} you can have *undefined behaviour* for several errors.
 
 Most of these undefined behaviours ends with a program crash.
 
-My aim is to reduce program crashes. I want my program keep running even after an error.
+My aim is to reduce program crashes. I want my programs keep running even after an error.
 
 I don't try to transform {cpp} in Erlang or Elixir.
 And yes, I know that Rust is the tool which try to be efficient,
-close to metal and  with no undefined behaviour.
+close to metal and safe.
 
 I enjoy learning and practicing Erlang/elixir. I learned several concepts with them.
 Rust looks quite interesting and promising, we will see what happens in the future, meanwhile,
@@ -137,7 +139,7 @@ Concurrency is great. Why?
 
 1. Several problems are easy to solve in a concurrent way
 2. Avoid active waiting
-3. Use all machine cores (better perfornce)
+3. Use all machine cores (better performance)
 4. Avoid full program stop waiting for a task
 
 I love concurrency and parallelism, but I love it with languages like Erlang and
@@ -156,7 +158,7 @@ continues being difficult to maintain.
 
 You could have a great thread safe code working perfect. But some day, you could call a different function and your code, could not be thread safe anymore. This will be difficult to detect and very difficult to solve.
 
-[quote, Chromim Guidelines, http://www.chromium.org/developers/coding-style/cpp-dos-and-donts]
+[quote, Chromium Guidelines, http://www.chromium.org/developers/coding-style/cpp-dos-and-donts]
 ______________
 The majority of Chrome code is intended to be single-threaded, where this presents no problem.  When in multi-threaded code, however, the right answer is usually to use a base::LazyInstance.
 ______________
